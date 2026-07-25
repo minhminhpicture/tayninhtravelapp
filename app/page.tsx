@@ -94,7 +94,7 @@ const foods = [
   { name: "Bánh tráng cuốn", category: "ricepaper", note: "Nhiều vị mặn, ngọt, cay, chua; thường cuốn cùng tép hành, bơ hoặc muối." },
   { name: "Bánh tráng nướng", category: "ricepaper", note: "Món ăn vặt giòn thơm, dễ mua khi khám phá Tây Ninh." },
   { name: "Muối Tây Ninh", category: "gift", note: "Có cả loại chay và mặn; phù hợp dùng tại chỗ hoặc mua về làm quà." },
-  { name: "Mãng cầu Núi Bà", category: "gift", note: "Trái cây nổi bật của vùng chân núi Bà Đen, thơm và vị ngọt thanh." },
+  { name: "Mãng cầu Núi Bà", category: "gift", note: "Trái cây nổi bật của vùng chân núi Bà Đen, thơm và vị ngọt thanh.", url: "https://app.nabaden.vn" },
   { name: "Nem bưởi", category: "vegetarian", note: "Món chay đặc trưng, có vị chua ngọt và kết cấu dai nhẹ." },
   { name: "Bánh canh chay", category: "vegetarian", note: "Lựa chọn thanh nhẹ, phù hợp hành trình tham quan vùng đất Thánh." },
   { name: "Kẹo thèo lèo", category: "sweet", note: "Món ngọt giòn thơm từ đậu phộng và mạch nha, tiện mua làm quà." },
@@ -362,17 +362,22 @@ export default function HomePage() {
                 ))}
               </div>
               <div className="food-list">
-                {filteredFoods.map((item, index) => (
-                  <article className="food-card" key={item.name}>
-                    <span>{String(index + 1).padStart(2, "0")}</span>
-                    <div><h3>{item.name}</h3><p>{item.note}</p></div>
-                    <button onClick={() => openMap(`${item.name}, Tây Ninh`)} aria-label={`Tìm ${item.name} trên bản đồ`}><MapPin size={18} /></button>
-                  </article>
-                ))}
+                {filteredFoods.map((item, index) => {
+                  const externalUrl = "url" in item ? item.url : undefined;
+                  return (
+                    <article className="food-card" key={item.name}>
+                      <span>{String(index + 1).padStart(2, "0")}</span>
+                      <div><h3>{item.name}</h3><p>{item.note}</p></div>
+                      <button
+                        onClick={() => externalUrl ? window.open(externalUrl, "_blank") : openMap(`${item.name}, Tây Ninh`)}
+                        aria-label={externalUrl ? `Mở trang ${item.name}` : `Tìm ${item.name} trên bản đồ`}
+                      >
+                        {externalUrl ? <ChevronRight size={18} /> : <MapPin size={18} />}
+                      </button>
+                    </article>
+                  );
+                })}
               </div>
-              <a className="source-note" href="https://sunworld.vn/vi/ba-den/an-choi/an-gi-o-tay-ninh" target="_blank" rel="noreferrer">
-                Nội dung được tóm lược từ cẩm nang Sun World Bà Đen <ChevronRight size={16} />
-              </a>
             </section>
           )}
 
