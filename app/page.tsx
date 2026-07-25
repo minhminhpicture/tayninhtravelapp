@@ -44,12 +44,14 @@ type RentalDraft = {
 };
 
 const destinations = [
-  { id: "nui-ba-den", name: "Núi Bà Đen", type: "Tâm linh · Thiên nhiên", image: "/destinations/nui-ba-den.jpg", time: "Cả ngày", rating: "4.9" },
-  { id: "toa-thanh", name: "Tòa Thánh Tây Ninh", type: "Văn hóa · Kiến trúc", image: "/destinations/toa-thanh.webp", time: "2 giờ", rating: "4.8" },
-  { id: "chua-go-ken", name: "Chùa Gò Kén", type: "Tâm linh · Check-in", image: "/destinations/chua-go-ken.jpg", time: "1.5 giờ", rating: "4.7" },
-  { id: "lo-go", name: "Lò Gò – Xa Mát", type: "Sinh thái · Khám phá", image: "/destinations/lo-go-xa-mat.jpg", time: "Nửa ngày", rating: "4.8" },
-  { id: "ho-dau-tieng", name: "Hồ Dầu Tiếng", type: "Cắm trại · Hoàng hôn", image: "/destinations/ho-dau-tieng.jpg", time: "3 giờ", rating: "4.8" },
-  { id: "am-thuc", name: "Ẩm thực Tây Ninh", type: "Đặc sản · Trải nghiệm", image: "/destinations/am-thuc.jpg", time: "2 giờ", rating: "4.9" },
+  { id: "nui-ba-den", name: "Núi Bà Đen", type: "Tâm linh · Thiên nhiên", image: "/destinations/mia-nui-ba-den.jpg", time: "Cả ngày", rating: "4.9", address: "Xã Thạnh Tân, Tây Ninh", mapQuery: "Núi Bà Đen, Tây Ninh" },
+  { id: "thap-binh-thanh", name: "Tháp cổ Bình Thạnh", type: "Di tích · Kiến trúc", image: "/destinations/mia-thap-binh-thanh.jpg", time: "1 giờ", rating: "4.7", address: "ĐT786, xã Bình Thạnh, Tây Ninh", mapQuery: "Tháp cổ Bình Thạnh, Tây Ninh" },
+  { id: "thap-chop-mat", name: "Tháp Chóp Mạt", type: "Di tích · Văn hóa Óc Eo", image: "/destinations/mia-thap-chop-mat.jpg", time: "1 giờ", rating: "4.6", address: "Ấp Xóm Mới, xã Tân Phong, Tây Ninh", mapQuery: "Tháp Chóp Mạt, Tân Biên, Tây Ninh" },
+  { id: "toa-thanh", name: "Tòa Thánh Tây Ninh", type: "Văn hóa · Kiến trúc", image: "/destinations/mia-toa-thanh.jpg", time: "2 giờ", rating: "4.8", address: "Đường Phạm Hộ Pháp, Hòa Thành, Tây Ninh", mapQuery: "Tòa Thánh Tây Ninh" },
+  { id: "chua-go-ken", name: "Chùa Gò Kén", type: "Tâm linh · Check-in", image: "/destinations/mia-chua-go-ken.jpg", time: "1.5 giờ", rating: "4.7", address: "QL22B, Long Thành Trung, Tây Ninh", mapQuery: "Chùa Gò Kén, Tây Ninh" },
+  { id: "ho-dau-tieng", name: "Hồ Dầu Tiếng", type: "Cắm trại · Hoàng hôn", image: "/destinations/mia-ho-dau-tieng.jpg", time: "3 giờ", rating: "4.8", address: "Khu vực hồ Dầu Tiếng, Tây Ninh", mapQuery: "Hồ Dầu Tiếng, Tây Ninh" },
+  { id: "lo-go", name: "Vườn quốc gia Lò Gò – Xa Mát", type: "Sinh thái · Khám phá", image: "/destinations/mia-lo-go-xa-mat.jpg", time: "Nửa ngày", rating: "4.8", address: "QL22B, xã Tân Bình, Tân Biên, Tây Ninh", mapQuery: "Vườn quốc gia Lò Gò Xa Mát, Tây Ninh" },
+  { id: "ma-thien-lanh", name: "Ma Thiên Lãnh", type: "Thiên nhiên · Trekking", image: "/destinations/mia-ma-thien-lanh.jpg", time: "Nửa ngày", rating: "4.7", address: "Xã Bình Minh, Tây Ninh", mapQuery: "Ma Thiên Lãnh, Tây Ninh" },
 ];
 
 const services = [
@@ -68,8 +70,8 @@ const quickActions = [
 
 const heroSlides = [
   { image: "/hero.png", alt: "Toàn cảnh du lịch Tây Ninh" },
-  { image: "/destinations/nui-ba-den.jpg", alt: "Núi Bà Đen Tây Ninh" },
-  { image: "/destinations/toa-thanh.webp", alt: "Tòa Thánh Tây Ninh" },
+  { image: "/destinations/mia-nui-ba-den.jpg", alt: "Núi Bà Đen Tây Ninh" },
+  { image: "/destinations/mia-toa-thanh.jpg", alt: "Tòa Thánh Tây Ninh" },
 ];
 
 const tourDays = [
@@ -302,7 +304,7 @@ export default function HomePage() {
                 <div className="section-title"><div><span>GỢI Ý CHO BẠN</span><h2>Điểm đến nổi bật</h2></div><button onClick={() => setTab("explore")}>Xem thêm</button></div>
                 <div className="card-scroll">
                   {destinations.slice(0, 4).map((item) => (
-                    <DestinationCard key={item.id} item={item} favorite={favorites.includes(item.id)} onFavorite={() => toggleFavorite(item.id)} onMap={() => openMap(`${item.name}, Tây Ninh`)} />
+                    <DestinationCard key={item.id} item={item} favorite={favorites.includes(item.id)} onFavorite={() => toggleFavorite(item.id)} onMap={() => openMap(item.mapQuery)} />
                   ))}
                 </div>
               </section>
@@ -337,7 +339,7 @@ export default function HomePage() {
               <div className="filter-row"><button className="active">Tất cả</button><button>Tâm linh</button><button>Thiên nhiên</button><button onClick={() => setTab("food")}>Ẩm thực</button></div>
               <div className="destination-grid">
                 {destinations.map((item) => (
-                  <DestinationCard key={item.id} item={item} favorite={favorites.includes(item.id)} onFavorite={() => toggleFavorite(item.id)} onMap={() => openMap(`${item.name}, Tây Ninh`)} />
+                  <DestinationCard key={item.id} item={item} favorite={favorites.includes(item.id)} onFavorite={() => toggleFavorite(item.id)} onMap={() => openMap(item.mapQuery)} />
                 ))}
               </div>
               <h2 className="subheading">Dịch vụ nổi bật</h2>
@@ -547,7 +549,7 @@ export default function HomePage() {
               {favorites.length ? (
                 <div className="destination-grid">
                   {destinations.filter((item) => favorites.includes(item.id)).map((item) => (
-                    <DestinationCard key={item.id} item={item} favorite onFavorite={() => toggleFavorite(item.id)} onMap={() => openMap(`${item.name}, Tây Ninh`)} />
+                    <DestinationCard key={item.id} item={item} favorite onFavorite={() => toggleFavorite(item.id)} onMap={() => openMap(item.mapQuery)} />
                   ))}
                 </div>
               ) : (
@@ -578,7 +580,7 @@ export default function HomePage() {
               <label><Search size={20} /><input autoFocus value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Bạn muốn đi đâu?" /></label>
               <div className="search-results">
                 {results.map((item) => (
-                  <button key={item.id} onClick={() => { openMap(`${item.name}, Tây Ninh`); setSearchOpen(false); }}>
+                  <button key={item.id} onClick={() => { openMap(item.mapQuery); setSearchOpen(false); }}>
                     <img src={item.image} alt="" /><span><b>{item.name}</b><small>{item.type}</small></span><Navigation size={18} />
                   </button>
                 ))}
@@ -615,6 +617,7 @@ function DestinationCard({ item, favorite, onFavorite, onMap }: { item: typeof d
       </div>
       <div className="destination-info">
         <b>{item.name}</b><small>{item.type}</small>
+        <small className="destination-address"><MapPin size={12} /> {item.address}</small>
         <button onClick={onMap}><MapPin size={14} /> Chỉ đường</button>
       </div>
     </article>
