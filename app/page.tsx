@@ -47,8 +47,8 @@ const destinations = [
   { id: "nui-ba-den", name: "Núi Bà Đen", type: "Tâm linh · Thiên nhiên", image: "/destinations/mia-nui-ba-den.jpg", time: "Cả ngày", rating: "4.9", address: "Xã Thạnh Tân, Tây Ninh", mapQuery: "Núi Bà Đen, Tây Ninh" },
   { id: "thap-binh-thanh", name: "Tháp cổ Bình Thạnh", type: "Di tích · Kiến trúc", image: "/destinations/mia-thap-binh-thanh.jpg", time: "1 giờ", rating: "4.7", address: "ĐT786, xã Bình Thạnh, Tây Ninh", mapQuery: "Tháp cổ Bình Thạnh, Tây Ninh" },
   { id: "thap-chop-mat", name: "Tháp Chóp Mạt", type: "Di tích · Văn hóa Óc Eo", image: "/destinations/mia-thap-chop-mat.jpg", time: "1 giờ", rating: "4.6", address: "Ấp Xóm Mới, xã Tân Phong, Tây Ninh", mapQuery: "Tháp Chóp Mạt, Tân Biên, Tây Ninh" },
-  { id: "toa-thanh", name: "Tòa Thánh Tây Ninh", type: "Văn hóa · Kiến trúc", image: "/destinations/mia-toa-thanh.jpg", time: "2 giờ", rating: "4.8", address: "Đường Phạm Hộ Pháp, Hòa Thành, Tây Ninh", mapQuery: "Tòa Thánh Tây Ninh" },
-  { id: "chua-go-ken", name: "Chùa Gò Kén", type: "Tâm linh · Check-in", image: "/destinations/mia-chua-go-ken.jpg", time: "1.5 giờ", rating: "4.7", address: "QL22B, Long Thành Trung, Tây Ninh", mapQuery: "Chùa Gò Kén, Tây Ninh" },
+  { id: "toa-thanh", name: "Tòa Thánh Tây Ninh", type: "Văn hóa · Kiến trúc", image: "/destinations/mia-chua-go-ken.jpg", time: "2 giờ", rating: "4.8", address: "Đường Phạm Hộ Pháp, Hòa Thành, Tây Ninh", mapQuery: "Tòa Thánh Tây Ninh" },
+  { id: "chua-go-ken", name: "Chùa Gò Kén", type: "Tâm linh · Check-in", image: "/destinations/mia-toa-thanh.jpg", time: "1.5 giờ", rating: "4.7", address: "QL22B, Long Thành Trung, Tây Ninh", mapQuery: "Chùa Gò Kén, Tây Ninh" },
   { id: "ho-dau-tieng", name: "Hồ Dầu Tiếng", type: "Cắm trại · Hoàng hôn", image: "/destinations/mia-ho-dau-tieng.jpg", time: "3 giờ", rating: "4.8", address: "Khu vực hồ Dầu Tiếng, Tây Ninh", mapQuery: "Hồ Dầu Tiếng, Tây Ninh" },
   { id: "lo-go", name: "Vườn quốc gia Lò Gò – Xa Mát", type: "Sinh thái · Khám phá", image: "/destinations/mia-lo-go-xa-mat.jpg", time: "Nửa ngày", rating: "4.8", address: "QL22B, xã Tân Bình, Tân Biên, Tây Ninh", mapQuery: "Vườn quốc gia Lò Gò Xa Mát, Tây Ninh" },
   { id: "ma-thien-lanh", name: "Ma Thiên Lãnh", type: "Thiên nhiên · Trekking", image: "/destinations/mia-ma-thien-lanh.jpg", time: "Nửa ngày", rating: "4.7", address: "Xã Bình Minh, Tây Ninh", mapQuery: "Ma Thiên Lãnh, Tây Ninh" },
@@ -71,7 +71,7 @@ const quickActions = [
 const heroSlides = [
   { image: "/hero.png", alt: "Toàn cảnh du lịch Tây Ninh" },
   { image: "/destinations/mia-nui-ba-den.jpg", alt: "Núi Bà Đen Tây Ninh" },
-  { image: "/destinations/mia-toa-thanh.jpg", alt: "Tòa Thánh Tây Ninh" },
+  { image: "/destinations/mia-chua-go-ken.jpg", alt: "Tòa Thánh Tây Ninh" },
 ];
 
 const tourDays = [
