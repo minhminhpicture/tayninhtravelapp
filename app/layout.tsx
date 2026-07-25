@@ -1,6 +1,14 @@
 import type { Metadata, Viewport } from "next";
+import { Be_Vietnam_Pro } from "next/font/google";
 import { headers } from "next/headers";
 import "./globals.css";
+
+const beVietnamPro = Be_Vietnam_Pro({
+  variable: "--font-be-vietnam-pro",
+  subsets: ["latin", "vietnamese"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+  display: "swap",
+});
 
 export async function generateMetadata(): Promise<Metadata> {
   const incoming = await headers();
@@ -36,5 +44,5 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="vi"><body>{children}</body></html>;
+  return <html lang="vi"><body className={beVietnamPro.variable}>{children}</body></html>;
 }
