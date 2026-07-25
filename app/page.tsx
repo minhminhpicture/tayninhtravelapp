@@ -70,7 +70,7 @@ const quickActions = [
   { label: "Tour", icon: Route, action: "service" },
   { label: "Thuê xe", icon: Bike, action: "service" },
   { label: "Ẩm thực", icon: Utensils, action: "food" },
-  { label: "Sự kiện", icon: PartyPopper, action: "events" },
+  { label: "Lễ hội", icon: PartyPopper, action: "events" },
   { label: "Hỗ trợ", icon: CircleHelp, action: "support" },
 ];
 
@@ -192,17 +192,6 @@ const allEvents: EventItem[] = [
     image: "/events/via-ba-linh-son.jpg",
     note: "Lễ hội tâm linh lớn nhất miền Nam với nghi thức Trình thập cúng, thu hút hàng triệu khách hành hương.",
     mapQuery: "Linh Sơn Tiên Thạch Tự, Tây Ninh",
-  },
-  {
-    name: "Tháng 7 không nhựa dùng một lần",
-    lunarDate: "Tháng 7 dương lịch",
-    startDate: "2026-07-01",
-    endDate: "2026-07-31",
-    location: "Khu du lịch quốc gia Núi Bà Đen",
-    image: "/events/thang-7-khong-nhua.png",
-    note: "Cùng trở thành “Đại sứ xanh”: mang bình nước, ly cá nhân, túi vải và hạn chế đồ nhựa dùng một lần khi khám phá Núi Bà Đen.",
-    mapQuery: "Khu du lịch quốc gia Núi Bà Đen, Tây Ninh",
-    url: "https://khudulichnuibaden.tayninh.gov.vn/thang-7-khong-nhua-su-dung-mot-lan",
   },
   {
     name: "Lễ Vu Lan – Báo hiếu",
@@ -902,15 +891,15 @@ function HomeEventsSection({ events, onViewAll, onMap }: { events: EventItem[]; 
     <section className="section home-events">
       <div className="section-title">
         <div>
-          <span>{featuredStatus === "happening" ? "ĐANG DIỄN RA" : "SẮP TỚI"} · {monthLabel.toUpperCase()}</span>
-          <h2>Tháng này ở Tây Ninh</h2>
+          <span>{featuredStatus === "happening" ? "ĐANG DIỄN RA" : "LỄ HỘI TRUYỀN THỐNG"} · {monthLabel.toUpperCase()}</span>
+          <h2>Lễ hội văn hóa Tây Ninh</h2>
         </div>
-        <button onClick={onViewAll}>Tất cả sự kiện</button>
+        <button onClick={onViewAll}>Tất cả lễ hội</button>
       </div>
       <article className="month-event-card">
         <img src={featuredEvent.image} alt={featuredEvent.name} />
         <div className="month-event-copy">
-          <span><PartyPopper size={14} /> {featuredStatus === "happening" ? "Đang diễn ra" : "Sắp tới"}</span>
+          <span><PartyPopper size={14} /> {featuredStatus === "happening" ? "Đang diễn ra" : "Lễ hội tiêu biểu"}</span>
           <h3>{featuredEvent.name}</h3>
           <p>{featuredEvent.note}</p>
           <small><MapPin size={13} /> {featuredEvent.location}</small>
@@ -934,7 +923,7 @@ function HomeEventsSection({ events, onViewAll, onMap }: { events: EventItem[]; 
               <article className="event-scroll-card" key={event.name}>
                 <img src={event.image} alt={event.name} loading="lazy" />
                 <div>
-                  <span className={`event-status ${status}`}>{status === "happening" ? "Đang diễn ra" : "Sắp tới"}</span>
+                  <span className={`event-status ${status}`}>{status === "happening" ? "Đang diễn ra" : "Hằng năm"}</span>
                   <h4>{event.name}</h4>
                   <small><CalendarDays size={11} /> {event.lunarDate}</small>
                   <small><MapPin size={11} /> {event.location}</small>
@@ -959,8 +948,8 @@ function EventsPage({ events, onMap }: { events: EventItem[]; onMap: (q: string)
 
   return (
     <section className="page-section events-page">
-      <span className="page-kicker">SẮC MÀU VĂN HÓA</span>
-      <h1>Sự kiện Tây Ninh</h1>
+      <span className="page-kicker">LỄ HỘI TRUYỀN THỐNG HẰNG NĂM</span>
+      <h1>Lễ hội văn hóa Tây Ninh</h1>
 
       {featured && (
         <article className="event-featured">
