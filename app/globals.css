@@ -14,7 +14,7 @@
 * { box-sizing: border-box; }
 html { background: #dce6df; }
 body { margin: 0; color: var(--ink); background: linear-gradient(135deg, #dce6df, #f5eee2); font-family: var(--font-be-vietnam-pro), ui-sans-serif, system-ui, sans-serif; font-size: clamp(15px, 3.8vw, 17px); text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
-button, input { font: inherit; }
+button, input, textarea { font: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
 button { cursor: pointer; }
 
@@ -118,6 +118,85 @@ button { cursor: pointer; }
 .support-panel small { color: var(--muted); font-size: 11px; line-height: 1.4; margin-top: 3px; }
 .support-panel button { border: 0; background: var(--mint); color: var(--green); font-size: 11px; font-weight: 800; padding: 9px 10px; border-radius: 99px; }
 
+.food-hero { min-height: 224px; position: relative; overflow: hidden; border-radius: 23px; color: #fff; display: flex; align-items: flex-end; padding: 18px; }
+.food-hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(6,27,20,.03), rgba(6,27,20,.9)); }
+.food-hero > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.food-hero > div { position: relative; z-index: 1; }
+.food-hero span { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
+.food-hero h2 { font-size: clamp(22px, 6.5vw, 29px); line-height: 1.2; margin: 8px 0 5px; }
+.food-hero p { font-size: 12px; line-height: 1.55; color: rgba(255,255,255,.84); margin: 0; max-width: 370px; }
+.food-filters { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 16px 0; padding-bottom: 2px; }
+.food-filters button { border: 1px solid var(--line); color: var(--muted); background: #fff; padding: 9px 13px; border-radius: 99px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+.food-filters button.active { background: var(--pine); border-color: var(--pine); color: #fff; }
+.food-list { display: grid; gap: 10px; }
+.food-card { display: grid; grid-template-columns: 34px 1fr 37px; gap: 10px; align-items: center; padding: 13px; background: #fff; border: 1px solid var(--line); border-radius: 17px; }
+.food-card > span { width: 31px; height: 31px; display: grid; place-items: center; border-radius: 10px; background: #fff1dc; color: #9e6115; font-size: 11px; font-weight: 900; }
+.food-card h3 { margin: 0 0 4px; font-size: 14px; line-height: 1.35; }
+.food-card p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
+.food-card button { width: 37px; height: 37px; display: grid; place-items: center; border: 0; border-radius: 12px; background: var(--mint); color: var(--green); }
+.source-note { margin-top: 16px; padding: 12px 13px; border-radius: 14px; background: #eef3f0; color: var(--green); display: flex; align-items: center; justify-content: space-between; gap: 8px; text-decoration: none; font-size: 11px; line-height: 1.45; font-weight: 700; }
+
+.rental-intro { min-height: 90px; display: flex; align-items: center; gap: 12px; padding: 11px; background: var(--pine); color: #fff; border-radius: 20px; margin-bottom: 20px; overflow: hidden; }
+.rental-intro img { width: 78px; height: 68px; object-fit: cover; border-radius: 14px; background: #fff; }
+.rental-intro div { display: grid; gap: 4px; }
+.rental-intro b { font-size: 15px; }
+.rental-intro span { color: rgba(255,255,255,.75); font-size: 11px; line-height: 1.45; }
+.form-section { margin-top: 19px; }
+.field-label { display: block; color: var(--ink); font-size: 13px; font-weight: 800; margin-bottom: 10px; }
+.vehicle-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.vehicle-options > button { min-height: 123px; position: relative; border: 1px solid var(--line); background: #fff; color: var(--ink); border-radius: 18px; padding: 13px; display: grid; justify-items: start; text-align: left; }
+.vehicle-options > button.active { border: 2px solid var(--green); padding: 12px; background: #f5fbf8; }
+.vehicle-options > button > span { width: 42px; height: 42px; border-radius: 14px; display: grid; place-items: center; background: var(--mint); color: var(--green); margin-bottom: 8px; }
+.vehicle-options > button:nth-child(2) > span { color: #366987; background: #e8f0f7; }
+.vehicle-options b { font-size: 13px; }
+.vehicle-options small { margin-top: 3px; color: var(--muted); font-size: 10px; line-height: 1.35; }
+.vehicle-options i { position: absolute; right: 9px; top: 9px; width: 21px; height: 21px; border-radius: 50%; display: grid; place-items: center; background: var(--green); color: #fff; font-style: normal; }
+.date-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.date-grid label, .text-field { display: grid; gap: 6px; }
+.date-grid label span, .text-field span { color: var(--muted); font-size: 11px; font-weight: 700; }
+.date-grid input, .text-field input, .text-field textarea { width: 100%; min-width: 0; border: 1px solid var(--line); border-radius: 13px; outline: none; background: #fff; color: var(--ink); padding: 11px 12px; font-size: 12px; }
+.date-grid input:focus, .text-field input:focus, .text-field textarea:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(20,108,81,.09); }
+.text-field { margin-top: 11px; }
+.text-field textarea { resize: vertical; line-height: 1.5; }
+.quantity-field { min-height: 60px; margin-top: 10px; padding: 9px 11px; border: 1px solid var(--line); border-radius: 14px; background: #fff; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.quantity-field > span { display: grid; }
+.quantity-field > span b { font-size: 12px; }
+.quantity-field > span small { color: var(--muted); font-size: 10px; margin-top: 3px; }
+.quantity-field > div { display: flex; align-items: center; gap: 12px; }
+.quantity-field > div button { width: 34px; height: 34px; border: 0; border-radius: 11px; display: grid; place-items: center; background: var(--mint); color: var(--green); font-size: 18px; }
+.quantity-field > div b { min-width: 18px; text-align: center; font-size: 14px; }
+.availability-card { margin-top: 15px; padding: 12px 13px; border-radius: 16px; display: flex; align-items: flex-start; gap: 10px; }
+.availability-card.waiting { background: #f1f3f2; color: #66736c; }
+.availability-card.available { background: #e8f6ef; color: #126343; }
+.availability-card.busy { background: #fff0e8; color: #a85227; }
+.availability-card > span { display: grid; flex: 1; }
+.availability-card b { font-size: 12px; line-height: 1.4; }
+.availability-card small { font-size: 10px; line-height: 1.45; opacity: .78; margin-top: 3px; }
+.rental-actions { display: grid; grid-template-columns: 1fr 1.15fr; gap: 9px; margin-top: 20px; }
+.rental-actions button { min-height: 46px; border-radius: 14px; display: flex; justify-content: center; align-items: center; gap: 7px; font-size: 12px; font-weight: 800; }
+.secondary-action { border: 1px solid var(--line); background: #fff; color: var(--green); }
+.quote-action { border: 0; background: var(--green); color: #fff; }
+.quote-card { margin-top: 14px; padding: 15px; border-radius: 20px; background: var(--pine); color: #fff; }
+.quote-head { display: flex; align-items: center; gap: 10px; margin-bottom: 13px; }
+.quote-head > span { width: 42px; height: 42px; border-radius: 13px; display: grid; place-items: center; color: var(--pine); background: #fff; }
+.quote-head > div { display: grid; }
+.quote-head b { font-size: 14px; }
+.quote-head small { margin-top: 3px; color: rgba(255,255,255,.7); font-size: 10px; line-height: 1.35; }
+.quote-card dl { margin: 0 0 13px; display: grid; gap: 1px; overflow: hidden; border-radius: 13px; background: rgba(255,255,255,.14); }
+.quote-card dl > div { display: flex; justify-content: space-between; gap: 14px; padding: 9px 11px; background: rgba(7,38,28,.78); font-size: 11px; }
+.quote-card dt { color: rgba(255,255,255,.65); }
+.quote-card dd { margin: 0; text-align: right; font-weight: 700; }
+.quote-card > button { width: 100%; min-height: 43px; border-radius: 13px; border: 1px solid rgba(255,255,255,.2); background: rgba(255,255,255,.09); color: #fff; display: flex; align-items: center; justify-content: center; gap: 7px; font-size: 11px; font-weight: 800; }
+.quote-card > button + button { margin-top: 8px; }
+.quote-card > button.zalo-action { border: 0; background: #1679db; }
+.draft-list { margin-top: 27px; }
+.draft-row { min-height: 62px; display: flex; align-items: center; gap: 10px; padding: 9px 10px; border: 1px solid var(--line); border-radius: 15px; background: #fff; margin-top: 8px; }
+.draft-row > span { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; color: var(--green); background: var(--mint); }
+.draft-row > div { flex: 1; display: grid; }
+.draft-row b { font-size: 12px; }
+.draft-row small { color: var(--muted); font-size: 10px; margin-top: 3px; }
+.draft-row button { width: 34px; height: 34px; border: 0; border-radius: 11px; display: grid; place-items: center; background: #f4f4f2; color: var(--muted); }
+
 .bottom-nav { position: absolute; bottom: 0; left: 0; right: 0; z-index: 30; height: calc(72px + env(safe-area-inset-bottom)); padding: 7px 10px env(safe-area-inset-bottom); background: rgba(255,255,255,.96); backdrop-filter: blur(18px); border-top: 1px solid var(--line); display: grid; grid-template-columns: 1fr 1fr 60px 1fr 1fr; align-items: center; }
 .bottom-nav > button { border: 0; background: none; color: #79877f; display: grid; justify-items: center; gap: 4px; font-size: clamp(9px, 2.7vw, 11px); line-height: 1.2; padding: 5px 1px; }
 .bottom-nav > button.active { color: var(--green); font-weight: 800; }
@@ -183,6 +262,12 @@ button { cursor: pointer; }
   .bottom-nav .nav-main { width: 48px; height: 48px; }
   .support-panel { align-items: flex-start; flex-wrap: wrap; }
   .support-panel button { margin-left: 34px; }
+  .food-card { grid-template-columns: 31px 1fr 34px; gap: 8px; padding: 11px; }
+  .vehicle-options { gap: 7px; }
+  .vehicle-options > button { padding: 10px; }
+  .vehicle-options > button.active { padding: 9px; }
+  .date-grid { grid-template-columns: 1fr; }
+  .rental-actions { grid-template-columns: 1fr; }
 }
 @media (max-width: 320px) {
   .brand small { display: none; }

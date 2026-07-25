@@ -10,7 +10,9 @@ import {
   Check,
   ChevronRight,
   CircleHelp,
+  ClipboardCheck,
   Compass,
+  Copy,
   Download,
   Heart,
   Home,
@@ -20,7 +22,10 @@ import {
   MessageCircle,
   Mountain,
   Navigation,
+  NotebookTabs,
   Phone,
+  Plus,
+  ReceiptText,
   Route,
   Search,
   Send,
@@ -33,8 +38,16 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
-type Tab = "home" | "explore" | "plan" | "saved";
+type Tab = "home" | "explore" | "food" | "rental" | "plan" | "saved";
 type InstallPrompt = Event & { prompt: () => Promise<void> };
+type VehicleType = "motorbike" | "vf3";
+type RentalDraft = {
+  id: string;
+  vehicle: VehicleType;
+  startDate: string;
+  endDate: string;
+  quantity: number;
+};
 
 const destinations = [
   { id: "nui-ba-den", name: "Núi Bà Đen", type: "Tâm linh · Thiên nhiên", image: "/destinations/nui-ba-den.jpg", time: "Cả ngày", rating: "4.9" },
@@ -46,9 +59,9 @@ const destinations = [
 ];
 
 const services = [
-  { title: "Tour Tây Ninh", note: "1 ngày · 2 ngày 1 đêm", image: "/tour.webp", icon: BusFront, color: "mint" },
-  { title: "Vé cáp treo", note: "Đặt online · Nhận vé nhanh", image: "/cable-car.jpg", icon: CableCar, color: "amber" },
-  { title: "Thuê xe", note: "Xe máy · VinFast VF3", image: "/vehicle.png", icon: CarFront, color: "blue" },
+  { id: "tour", title: "Tour Tây Ninh", note: "1 ngày · 2 ngày 1 đêm", image: "/tour.webp", icon: BusFront, color: "mint" },
+  { id: "ticket", title: "Vé cáp treo", note: "Đặt online · Nhận vé nhanh", image: "/cable-car.jpg", icon: CableCar, color: "amber" },
+  { id: "rental", title: "Thuê xe", note: "Kiểm tra lịch xe máy · VinFast VF3", image: "/vehicle.png", icon: CarFront, color: "blue" },
 ];
 
 const quickActions = [
@@ -60,6 +73,32 @@ const quickActions = [
   { label: "Hỗ trợ", icon: CircleHelp, action: "support" },
 ];
 
+const foodCategories = [
+  { id: "all", label: "Tất cả" },
+  { id: "savory", label: "Món mặn" },
+  { id: "ricepaper", label: "Bánh tráng" },
+  { id: "gift", label: "Đặc sản quà" },
+  { id: "vegetarian", label: "Món chay" },
+  { id: "sweet", label: "Món ngọt" },
+];
+
+const foods = [
+  { name: "Bánh canh Trảng Bàng", category: "savory", note: "Sợi bánh canh mềm dai, nước dùng xương ngọt thanh, thường dùng kèm thịt heo và rau." },
+  { name: "Bò tơ Tây Ninh", category: "savory", note: "Thịt mềm, ngọt vừa; phổ biến với các món nướng, lẩu, nhúng giấm." },
+  { name: "Ốc núi Bà Đen", category: "savory", note: "Ốc sống trong hang đá, có vị thảo mộc; thường hấp, luộc hoặc xào." },
+  { name: "Mắm chua thịt luộc", category: "savory", note: "Vị chua, cay, mặn, ngọt; ăn cùng thịt luộc, bánh tráng và rau sống." },
+  { name: "Bánh xèo rau rừng", category: "savory", note: "Bánh xèo giòn cuốn cùng nhiều loại rau rừng đặc trưng Tây Ninh." },
+  { name: "Bánh tráng phơi sương", category: "ricepaper", note: "Bánh dẻo dai, có thể dùng trực tiếp; đặc sản nổi tiếng của Trảng Bàng." },
+  { name: "Bánh tráng cuốn", category: "ricepaper", note: "Nhiều vị mặn, ngọt, cay, chua; thường cuốn cùng tép hành, bơ hoặc muối." },
+  { name: "Bánh tráng nướng", category: "ricepaper", note: "Món ăn vặt giòn thơm, dễ mua khi khám phá Tây Ninh." },
+  { name: "Muối Tây Ninh", category: "gift", note: "Có cả loại chay và mặn; phù hợp dùng tại chỗ hoặc mua về làm quà." },
+  { name: "Mãng cầu Núi Bà", category: "gift", note: "Trái cây nổi bật của vùng chân núi Bà Đen, thơm và vị ngọt thanh." },
+  { name: "Nem bưởi", category: "vegetarian", note: "Món chay đặc trưng, có vị chua ngọt và kết cấu dai nhẹ." },
+  { name: "Bánh canh chay", category: "vegetarian", note: "Lựa chọn thanh nhẹ, phù hợp hành trình tham quan vùng đất Thánh." },
+  { name: "Kẹo thèo lèo", category: "sweet", note: "Món ngọt giòn thơm từ đậu phộng và mạch nha, tiện mua làm quà." },
+  { name: "Mứt chùm ruột", category: "sweet", note: "Vị chua ngọt, màu đỏ bắt mắt, là món quà vặt quen thuộc." },
+];
+
 export default function HomePage() {
   const [tab, setTab] = useState<Tab>("home");
   const [favorites, setFavorites] = useState<string[]>([]);
@@ -69,10 +108,23 @@ export default function HomePage() {
   const [installPrompt, setInstallPrompt] = useState<InstallPrompt | null>(null);
   const [installHint, setInstallHint] = useState(false);
   const [toast, setToast] = useState("");
+  const [foodCategory, setFoodCategory] = useState("all");
+  const [vehicle, setVehicle] = useState<VehicleType>("motorbike");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [quantity, setQuantity] = useState(1);
+  const [pickupPlace, setPickupPlace] = useState("");
+  const [customerName, setCustomerName] = useState("");
+  const [customerPhone, setCustomerPhone] = useState("");
+  const [rentalNote, setRentalNote] = useState("");
+  const [quoteVisible, setQuoteVisible] = useState(false);
+  const [rentalDrafts, setRentalDrafts] = useState<RentalDraft[]>([]);
 
   useEffect(() => {
     const saved = localStorage.getItem("tn-favorites");
     if (saved) setFavorites(JSON.parse(saved));
+    const drafts = localStorage.getItem("tn-rental-drafts");
+    if (drafts) setRentalDrafts(JSON.parse(drafts));
     if ("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js");
     const onInstall = (event: Event) => {
       event.preventDefault();
@@ -86,9 +138,37 @@ export default function HomePage() {
     localStorage.setItem("tn-favorites", JSON.stringify(favorites));
   }, [favorites]);
 
+  useEffect(() => {
+    localStorage.setItem("tn-rental-drafts", JSON.stringify(rentalDrafts));
+  }, [rentalDrafts]);
+
   const results = useMemo(() => destinations.filter((item) =>
     `${item.name} ${item.type}`.toLowerCase().includes(query.toLowerCase())
   ), [query]);
+
+  const filteredFoods = useMemo(
+    () => foodCategory === "all" ? foods : foods.filter((item) => item.category === foodCategory),
+    [foodCategory],
+  );
+
+  const dateRangeValid = Boolean(startDate && endDate && startDate <= endDate);
+  const hasLocalConflict = dateRangeValid && rentalDrafts.some((draft) =>
+    draft.vehicle === vehicle && startDate <= draft.endDate && endDate >= draft.startDate
+  );
+
+  const vehicleLabel = vehicle === "motorbike" ? "Xe máy" : "VinFast VF3";
+  const quoteText = [
+    "YÊU CẦU KIỂM TRA & BÁO GIÁ THUÊ XE TÂY NINH",
+    `Loại xe: ${vehicleLabel}`,
+    `Ngày nhận: ${startDate || "Chưa chọn"}`,
+    `Ngày trả: ${endDate || "Chưa chọn"}`,
+    `Số lượng: ${quantity}`,
+    `Nơi nhận xe: ${pickupPlace || "Sẽ trao đổi"}`,
+    `Khách hàng: ${customerName || "Chưa cung cấp"}`,
+    `Số điện thoại: ${customerPhone || "Chưa cung cấp"}`,
+    `Ghi chú: ${rentalNote || "Không có"}`,
+    "Vui lòng kiểm tra xe còn trống và gửi báo giá giúp tôi.",
+  ].join("\n");
 
   const notify = (message: string) => {
     setToast(message);
@@ -111,6 +191,31 @@ export default function HomePage() {
 
   const openMap = (name = "Tây Ninh") => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name)}`, "_blank");
   const openZalo = () => window.open("https://zalo.me/0584556556", "_blank");
+  const copyQuote = async () => {
+    if (!dateRangeValid) {
+      notify("Vui lòng chọn ngày nhận và ngày trả hợp lệ");
+      return false;
+    }
+    await navigator.clipboard.writeText(quoteText);
+    notify("Đã sao chép nội dung báo giá");
+    return true;
+  };
+  const sendQuoteToZalo = async () => {
+    const copied = await copyQuote();
+    if (!copied) return;
+    window.open("https://zalo.me/0584556556", "_blank");
+  };
+  const saveRentalDraft = () => {
+    if (!dateRangeValid) {
+      notify("Vui lòng chọn ngày thuê hợp lệ");
+      return;
+    }
+    setRentalDrafts((drafts) => [
+      ...drafts,
+      { id: crypto.randomUUID(), vehicle, startDate, endDate, quantity },
+    ]);
+    notify("Đã lưu lịch tạm trên thiết bị");
+  };
 
   return (
     <main className="app-shell">
@@ -147,7 +252,8 @@ export default function HomePage() {
                     <button key={label} onClick={() => {
                       if (action === "map") openMap();
                       else if (action === "support") openZalo();
-                      else if (action === "food") { setQuery("Ẩm thực"); setSearchOpen(true); }
+                      else if (action === "food") setTab("food");
+                      else if (label === "Thuê xe") setTab("rental");
                       else setTab("explore");
                     }}>
                       <span><Icon size={23} strokeWidth={1.8} /></span>
@@ -169,8 +275,8 @@ export default function HomePage() {
               <section className="section">
                 <div className="section-title"><div><span>DỄ DÀNG ĐẶT TRƯỚC</span><h2>Dịch vụ du lịch</h2></div></div>
                 <div className="service-list">
-                  {services.map(({ title, note, image, icon: Icon, color }) => (
-                    <button className="service-card" key={title} onClick={openZalo}>
+                  {services.map(({ id, title, note, image, icon: Icon, color }) => (
+                    <button className="service-card" key={title} onClick={() => id === "rental" ? setTab("rental") : openZalo()}>
                       <img src={image} alt="" />
                       <span className={`service-icon ${color}`}><Icon size={21} /></span>
                       <span className="service-copy"><b>{title}</b><small>{note}</small></span>
@@ -193,7 +299,7 @@ export default function HomePage() {
               <span className="page-kicker">ĐI ĐÂU HÔM NAY?</span>
               <h1>Khám phá Tây Ninh</h1>
               <button className="search-box" onClick={() => setSearchOpen(true)}><Search size={19} /> Tìm điểm đến, dịch vụ...<span>⌘K</span></button>
-              <div className="filter-row"><button className="active">Tất cả</button><button>Tâm linh</button><button>Thiên nhiên</button><button>Ẩm thực</button></div>
+              <div className="filter-row"><button className="active">Tất cả</button><button>Tâm linh</button><button>Thiên nhiên</button><button onClick={() => setTab("food")}>Ẩm thực</button></div>
               <div className="destination-grid">
                 {destinations.map((item) => (
                   <DestinationCard key={item.id} item={item} favorite={favorites.includes(item.id)} onFavorite={() => toggleFavorite(item.id)} onMap={() => openMap(`${item.name}, Tây Ninh`)} />
@@ -201,13 +307,137 @@ export default function HomePage() {
               </div>
               <h2 className="subheading">Dịch vụ nổi bật</h2>
               <div className="service-list">
-                {services.map(({ title, note, image, icon: Icon, color }) => (
-                  <button className="service-card" key={title} onClick={openZalo}>
+                {services.map(({ id, title, note, image, icon: Icon, color }) => (
+                  <button className="service-card" key={title} onClick={() => id === "rental" ? setTab("rental") : openZalo()}>
                     <img src={image} alt="" /><span className={`service-icon ${color}`}><Icon size={21} /></span>
                     <span className="service-copy"><b>{title}</b><small>{note}</small></span><ChevronRight size={20} />
                   </button>
                 ))}
               </div>
+            </section>
+          )}
+
+          {tab === "food" && (
+            <section className="page-section food-page">
+              <span className="page-kicker">HƯƠNG VỊ ĐẤT THÁNH</span>
+              <h1>Ẩm thực Tây Ninh</h1>
+              <div className="food-hero">
+                <img src="/destinations/am-thuc.jpg" alt="Đặc sản ẩm thực Tây Ninh" />
+                <div>
+                  <span><Utensils size={16} /> Cẩm nang món ngon</span>
+                  <h2>Ăn gì khi đến Tây Ninh?</h2>
+                  <p>Từ bánh canh Trảng Bàng, bò tơ đến bánh tráng phơi sương và các món quà địa phương.</p>
+                </div>
+              </div>
+              <div className="food-filters" aria-label="Lọc món ăn">
+                {foodCategories.map((category) => (
+                  <button key={category.id} className={foodCategory === category.id ? "active" : ""} onClick={() => setFoodCategory(category.id)}>
+                    {category.label}
+                  </button>
+                ))}
+              </div>
+              <div className="food-list">
+                {filteredFoods.map((item, index) => (
+                  <article className="food-card" key={item.name}>
+                    <span>{String(index + 1).padStart(2, "0")}</span>
+                    <div><h3>{item.name}</h3><p>{item.note}</p></div>
+                    <button onClick={() => openMap(`${item.name}, Tây Ninh`)} aria-label={`Tìm ${item.name} trên bản đồ`}><MapPin size={18} /></button>
+                  </article>
+                ))}
+              </div>
+              <a className="source-note" href="https://sunworld.vn/vi/ba-den/an-choi/an-gi-o-tay-ninh" target="_blank" rel="noreferrer">
+                Nội dung được tóm lược từ cẩm nang Sun World Bà Đen <ChevronRight size={16} />
+              </a>
+            </section>
+          )}
+
+          {tab === "rental" && (
+            <section className="page-section rental-page">
+              <span className="page-kicker">CHỦ ĐỘNG KHÁM PHÁ</span>
+              <h1>Đặt thuê xe</h1>
+              <div className="rental-intro">
+                <img src="/vehicle.png" alt="Thuê xe máy và VinFast VF3 tại Tây Ninh" />
+                <div><b>Kiểm tra lịch nhanh</b><span>Chọn xe và thời gian để tạo yêu cầu báo giá.</span></div>
+              </div>
+
+              <div className="form-section">
+                <label className="field-label">1. Chọn loại xe</label>
+                <div className="vehicle-options">
+                  <button className={vehicle === "motorbike" ? "active" : ""} onClick={() => { setVehicle("motorbike"); setQuoteVisible(false); }}>
+                    <span><Bike size={25} /></span><b>Xe máy</b><small>Linh hoạt · Tiết kiệm</small>
+                    {vehicle === "motorbike" && <i><Check size={13} /></i>}
+                  </button>
+                  <button className={vehicle === "vf3" ? "active" : ""} onClick={() => { setVehicle("vf3"); setQuoteVisible(false); }}>
+                    <span><CarFront size={25} /></span><b>VinFast VF3</b><small>Nhỏ gọn · Có điều hòa</small>
+                    {vehicle === "vf3" && <i><Check size={13} /></i>}
+                  </button>
+                </div>
+              </div>
+
+              <div className="form-section">
+                <label className="field-label">2. Thời gian & số lượng</label>
+                <div className="date-grid">
+                  <label><span>Ngày nhận</span><input type="date" value={startDate} onChange={(event) => { setStartDate(event.target.value); setQuoteVisible(false); }} /></label>
+                  <label><span>Ngày trả</span><input type="date" value={endDate} onChange={(event) => { setEndDate(event.target.value); setQuoteVisible(false); }} /></label>
+                </div>
+                <div className="quantity-field">
+                  <span><b>Số lượng xe</b><small>Tối thiểu 1 xe</small></span>
+                  <div><button onClick={() => setQuantity((value) => Math.max(1, value - 1))}>−</button><b>{quantity}</b><button onClick={() => setQuantity((value) => Math.min(20, value + 1))}><Plus size={16} /></button></div>
+                </div>
+                <label className="text-field"><span>Nơi nhận xe</span><input value={pickupPlace} onChange={(event) => setPickupPlace(event.target.value)} placeholder="Khách sạn, bến xe hoặc địa chỉ..." /></label>
+              </div>
+
+              <div className={`availability-card ${!dateRangeValid ? "waiting" : hasLocalConflict ? "busy" : "available"}`}>
+                {!dateRangeValid ? <CalendarDays size={22} /> : hasLocalConflict ? <CircleHelp size={22} /> : <ClipboardCheck size={22} />}
+                <span>
+                  <b>{!dateRangeValid ? "Chọn ngày để kiểm tra" : hasLocalConflict ? "Có lịch tạm trùng thời gian" : "Chưa ghi nhận lịch trùng trên thiết bị"}</b>
+                  <small>Tình trạng xe thực tế sẽ được nhân viên xác nhận qua Zalo.</small>
+                </span>
+              </div>
+
+              <div className="form-section">
+                <label className="field-label">3. Thông tin liên hệ</label>
+                <div className="date-grid">
+                  <label><span>Họ và tên</span><input value={customerName} onChange={(event) => setCustomerName(event.target.value)} placeholder="Tên khách thuê" /></label>
+                  <label><span>Số điện thoại</span><input type="tel" inputMode="tel" value={customerPhone} onChange={(event) => setCustomerPhone(event.target.value)} placeholder="09xx xxx xxx" /></label>
+                </div>
+                <label className="text-field"><span>Ghi chú thêm</span><textarea value={rentalNote} onChange={(event) => setRentalNote(event.target.value)} placeholder="Giờ nhận xe, giao tận nơi, loại xe mong muốn..." rows={3} /></label>
+              </div>
+
+              <div className="rental-actions">
+                <button className="secondary-action" onClick={saveRentalDraft}><NotebookTabs size={18} /> Lưu lịch tạm</button>
+                <button className="quote-action" onClick={() => {
+                  if (!dateRangeValid) return notify("Vui lòng chọn ngày thuê hợp lệ");
+                  setQuoteVisible(true);
+                }}><ReceiptText size={19} /> Tạo báo giá</button>
+              </div>
+
+              {quoteVisible && (
+                <div className="quote-card">
+                  <div className="quote-head"><span><ReceiptText size={20} /></span><div><b>Yêu cầu báo giá</b><small>Giá thuê được xác nhận sau khi kiểm tra xe.</small></div></div>
+                  <dl>
+                    <div><dt>Loại xe</dt><dd>{vehicleLabel}</dd></div>
+                    <div><dt>Thời gian</dt><dd>{startDate} → {endDate}</dd></div>
+                    <div><dt>Số lượng</dt><dd>{quantity} xe</dd></div>
+                    <div><dt>Nhận xe</dt><dd>{pickupPlace || "Trao đổi sau"}</dd></div>
+                  </dl>
+                  <button onClick={copyQuote}><Copy size={18} /> Sao chép nội dung</button>
+                  <button className="zalo-action" onClick={sendQuoteToZalo}><Send size={18} /> Sao chép & mở Zalo</button>
+                </div>
+              )}
+
+              {rentalDrafts.length > 0 && (
+                <div className="draft-list">
+                  <div className="section-title"><div><span>TRÊN THIẾT BỊ NÀY</span><h2>Lịch đã lưu tạm</h2></div></div>
+                  {rentalDrafts.map((draft) => (
+                    <div className="draft-row" key={draft.id}>
+                      <span>{draft.vehicle === "motorbike" ? <Bike size={19} /> : <CarFront size={19} />}</span>
+                      <div><b>{draft.vehicle === "motorbike" ? "Xe máy" : "VinFast VF3"} · {draft.quantity} xe</b><small>{draft.startDate} → {draft.endDate}</small></div>
+                      <button onClick={() => setRentalDrafts((items) => items.filter((item) => item.id !== draft.id))} aria-label="Xóa lịch tạm"><X size={17} /></button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </section>
           )}
 
