@@ -162,8 +162,8 @@ button { cursor: pointer; }
 .food-filters button { border: 1px solid var(--line); color: var(--muted); background: #fff; padding: 9px 13px; border-radius: 99px; font-size: 11px; font-weight: 700; white-space: nowrap; }
 .food-filters button.active { background: var(--pine); border-color: var(--pine); color: #fff; }
 .food-list { display: grid; gap: 10px; }
-.food-card { display: grid; grid-template-columns: 34px 1fr 37px; gap: 10px; align-items: center; padding: 13px; background: #fff; border: 1px solid var(--line); border-radius: 17px; }
-.food-card > span { width: 31px; height: 31px; display: grid; place-items: center; border-radius: 10px; background: #fff1dc; color: #9e6115; font-size: 11px; font-weight: 900; }
+.food-card { display: grid; grid-template-columns: 76px 1fr 37px; gap: 11px; align-items: center; padding: 9px; background: #fff; border: 1px solid var(--line); border-radius: 17px; overflow: hidden; }
+.food-card > img { width: 76px; height: 76px; display: block; object-fit: cover; border-radius: 13px; background: var(--cream); }
 .food-card h3 { margin: 0 0 4px; font-size: 14px; line-height: 1.35; }
 .food-card p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
 .food-card button { width: 37px; height: 37px; display: grid; place-items: center; border: 0; border-radius: 12px; background: var(--mint); color: var(--green); }
@@ -281,7 +281,8 @@ button { cursor: pointer; }
   .bottom-nav .nav-main { width: 48px; height: 48px; }
   .support-panel { align-items: flex-start; flex-wrap: wrap; }
   .support-panel button { margin-left: 34px; }
-  .food-card { grid-template-columns: 31px 1fr 34px; gap: 8px; padding: 11px; }
+  .food-card { grid-template-columns: 62px 1fr 34px; gap: 8px; padding: 8px; }
+  .food-card > img { width: 62px; height: 68px; }
   .vehicle-options { gap: 7px; }
   .vehicle-options > button { padding: 10px; }
   .vehicle-options > button.active { padding: 9px; }

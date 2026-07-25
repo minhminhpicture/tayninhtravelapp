@@ -114,20 +114,20 @@ const foodCategories = [
 ];
 
 const foods = [
-  { name: "Bánh canh Trảng Bàng", category: "savory", note: "Sợi bánh canh mềm dai, nước dùng xương ngọt thanh, thường dùng kèm thịt heo và rau." },
-  { name: "Bò tơ Tây Ninh", category: "savory", note: "Thịt mềm, ngọt vừa; phổ biến với các món nướng, lẩu, nhúng giấm." },
-  { name: "Ốc núi Bà Đen", category: "savory", note: "Ốc sống trong hang đá, có vị thảo mộc; thường hấp, luộc hoặc xào." },
-  { name: "Mắm chua thịt luộc", category: "savory", note: "Vị chua, cay, mặn, ngọt; ăn cùng thịt luộc, bánh tráng và rau sống." },
-  { name: "Bánh xèo rau rừng", category: "savory", note: "Bánh xèo giòn cuốn cùng nhiều loại rau rừng đặc trưng Tây Ninh." },
-  { name: "Bánh tráng phơi sương", category: "ricepaper", note: "Bánh dẻo dai, có thể dùng trực tiếp; đặc sản nổi tiếng của Trảng Bàng." },
-  { name: "Bánh tráng cuốn", category: "ricepaper", note: "Nhiều vị mặn, ngọt, cay, chua; thường cuốn cùng tép hành, bơ hoặc muối." },
-  { name: "Bánh tráng nướng", category: "ricepaper", note: "Món ăn vặt giòn thơm, dễ mua khi khám phá Tây Ninh." },
-  { name: "Muối Tây Ninh", category: "gift", note: "Có cả loại chay và mặn; phù hợp dùng tại chỗ hoặc mua về làm quà." },
-  { name: "Mãng cầu Núi Bà", category: "gift", note: "Trái cây nổi bật của vùng chân núi Bà Đen, thơm và vị ngọt thanh.", url: "https://app.nabaden.vn" },
-  { name: "Nem bưởi", category: "vegetarian", note: "Món chay đặc trưng, có vị chua ngọt và kết cấu dai nhẹ." },
-  { name: "Bánh canh chay", category: "vegetarian", note: "Lựa chọn thanh nhẹ, phù hợp hành trình tham quan vùng đất Thánh." },
-  { name: "Kẹo thèo lèo", category: "sweet", note: "Món ngọt giòn thơm từ đậu phộng và mạch nha, tiện mua làm quà." },
-  { name: "Mứt chùm ruột", category: "sweet", note: "Vị chua ngọt, màu đỏ bắt mắt, là món quà vặt quen thuộc." },
+  { name: "Bánh canh Trảng Bàng", category: "savory", image: "/foods/banh-canh-trang-bang.jpg", note: "Sợi bánh canh mềm dai, nước dùng xương ngọt thanh, thường dùng kèm thịt heo và rau." },
+  { name: "Bò tơ Tây Ninh", category: "savory", image: "/foods/bo-to.jpg", note: "Thịt mềm, ngọt vừa; phổ biến với các món nướng, lẩu, nhúng giấm." },
+  { name: "Ốc núi Bà Đen", category: "savory", image: "/foods/oc-nui.jpg", note: "Ốc sống trong hang đá, có vị thảo mộc; thường hấp, luộc hoặc xào." },
+  { name: "Mắm chua thịt luộc", category: "savory", image: "/foods/mam-chua-thit-luoc.jpg", note: "Vị chua, cay, mặn, ngọt; ăn cùng thịt luộc, bánh tráng và rau sống." },
+  { name: "Bánh xèo rau rừng", category: "savory", image: "/foods/banh-xeo-rau-rung.jpg", note: "Bánh xèo giòn cuốn cùng nhiều loại rau rừng đặc trưng Tây Ninh." },
+  { name: "Bánh tráng phơi sương", category: "ricepaper", image: "/foods/banh-trang-phoi-suong.jpg", note: "Bánh dẻo dai, có thể dùng trực tiếp; đặc sản nổi tiếng của Trảng Bàng." },
+  { name: "Bánh tráng cuốn", category: "ricepaper", image: "/foods/banh-trang-cuon.jpg", note: "Nhiều vị mặn, ngọt, cay, chua; thường cuốn cùng tép hành, bơ hoặc muối." },
+  { name: "Bánh tráng nướng", category: "ricepaper", image: "/foods/banh-trang-nuong.jpg", note: "Món ăn vặt giòn thơm, dễ mua khi khám phá Tây Ninh." },
+  { name: "Muối Tây Ninh", category: "gift", image: "/foods/muoi-tay-ninh.jpg", note: "Có cả loại chay và mặn; phù hợp dùng tại chỗ hoặc mua về làm quà." },
+  { name: "Mãng cầu Núi Bà", category: "gift", image: "/foods/mang-cau.jpg", note: "Trái cây nổi bật của vùng chân núi Bà Đen, thơm và vị ngọt thanh.", url: "https://app.nabaden.vn" },
+  { name: "Nem bưởi", category: "vegetarian", image: "/foods/nem-buoi.jpg", note: "Món chay đặc trưng, có vị chua ngọt và kết cấu dai nhẹ." },
+  { name: "Bánh canh chay", category: "vegetarian", image: "/foods/banh-canh-chay.jpg", note: "Lựa chọn thanh nhẹ, phù hợp hành trình tham quan vùng đất Thánh." },
+  { name: "Kẹo thèo lèo", category: "sweet", image: "/foods/keo-theo-leo.jpg", note: "Món ngọt giòn thơm từ đậu phộng và mạch nha, tiện mua làm quà." },
+  { name: "Mứt chùm ruột", category: "sweet", image: "/foods/mut-chum-ruot.jpg", note: "Vị chua ngọt, màu đỏ bắt mắt, là món quà vặt quen thuộc." },
 ];
 
 export default function HomePage() {
@@ -403,7 +403,7 @@ export default function HomePage() {
               <span className="page-kicker">HƯƠNG VỊ ĐẤT THÁNH</span>
               <h1>Ẩm thực Tây Ninh</h1>
               <div className="food-hero">
-                <img src="/destinations/am-thuc.jpg" alt="Đặc sản ẩm thực Tây Ninh" />
+                <img src="/foods/banh-canh-trang-bang.jpg" alt="Đặc sản ẩm thực Tây Ninh" />
                 <div>
                   <span><Utensils size={16} /> Cẩm nang món ngon</span>
                   <h2>Ăn gì khi đến Tây Ninh?</h2>
@@ -418,11 +418,11 @@ export default function HomePage() {
                 ))}
               </div>
               <div className="food-list">
-                {filteredFoods.map((item, index) => {
+                {filteredFoods.map((item) => {
                   const externalUrl = "url" in item ? item.url : undefined;
                   return (
                     <article className="food-card" key={item.name}>
-                      <span>{String(index + 1).padStart(2, "0")}</span>
+                      <img src={item.image} alt={item.name} loading="lazy" />
                       <div><h3>{item.name}</h3><p>{item.note}</p></div>
                       <button
                         onClick={() => externalUrl ? window.open(externalUrl, "_blank") : openMap(`${item.name}, Tây Ninh`)}
