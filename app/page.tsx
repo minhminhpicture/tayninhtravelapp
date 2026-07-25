@@ -223,6 +223,11 @@ export default function HomePage() {
   const openMap = (name = "Tây Ninh") => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name)}`, "_blank");
   const openZalo = () => window.open("https://zalo.me/0584556556", "_blank");
   const openTicket = () => window.open("https://nuibaden.lnm.vn", "_blank");
+  const openTab = (nextTab: Tab) => {
+    setTab(nextTab);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    document.querySelector(".screen-content")?.scrollTo({ top: 0, behavior: "smooth" });
+  };
   const copyQuote = async () => {
     if (!dateRangeValid) {
       notify("Vui lòng chọn ngày nhận và ngày trả hợp lệ");
@@ -563,11 +568,11 @@ export default function HomePage() {
         </div>
 
         <nav className="bottom-nav" aria-label="Điều hướng chính">
-          <NavButton active={tab === "home"} icon={Home} label="Trang chủ" onClick={() => setTab("home")} />
-          <NavButton active={tab === "explore"} icon={Compass} label="Khám phá" onClick={() => setTab("explore")} />
+          <NavButton active={tab === "home"} icon={Home} label="Trang chủ" onClick={() => openTab("home")} />
+          <NavButton active={["explore", "tour", "food", "rental"].includes(tab)} icon={Compass} label="Khám phá" onClick={() => openTab("explore")} />
           <button className="nav-main" onClick={() => setSearchOpen(true)} aria-label="Tìm kiếm"><Search size={24} /></button>
-          <NavButton active={tab === "plan"} icon={Route} label="Lịch trình" onClick={() => setTab("plan")} />
-          <NavButton active={tab === "saved"} icon={Heart} label="Đã lưu" onClick={() => setTab("saved")} />
+          <NavButton active={tab === "plan"} icon={Route} label="Lịch trình" onClick={() => openTab("plan")} />
+          <NavButton active={tab === "saved"} icon={Heart} label="Đã lưu" onClick={() => openTab("saved")} />
         </nav>
 
         {searchOpen && (
@@ -622,5 +627,5 @@ function DestinationCard({ item, favorite, onFavorite, onMap }: { item: typeof d
 }
 
 function NavButton({ active, icon: Icon, label, onClick }: { active: boolean; icon: typeof Home; label: string; onClick: () => void }) {
-  return <button className={active ? "active" : ""} onClick={onClick}><Icon size={21} strokeWidth={active ? 2.4 : 1.8} /><span>{label}</span></button>;
+  return <button className={active ? "active" : ""} onClick={onClick} aria-current={active ? "page" : undefined}><Icon size={21} strokeWidth={active ? 2.4 : 1.8} /><span>{label}</span></button>;
 }
