@@ -259,6 +259,10 @@ export default function HomePage() {
             <span className="brand-mark"><img src="/icon-192.png" alt="" /></span>
             <span><small>KHÁM PHÁ</small>TÂY NINH</span>
           </button>
+          <button className="install-top" onClick={install} aria-label="Cài ứng dụng Khám Phá Tây Ninh">
+            <Download size={17} />
+            <span>Cài app</span>
+          </button>
         </header>
 
         <div className="screen-content">
