@@ -34,7 +34,11 @@ import {
 import { useEffect, useMemo, useState } from "react";
 
 type Tab = "home" | "explore" | "tour" | "events" | "food" | "rental" | "plan" | "saved";
-type InstallPrompt = Event & { prompt: () => Promise<void> };
+type InstallPrompt = Event & {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed"; platform: string }>;
+};
+type InstallPlatform = "ios" | "android" | "in-app" | "desktop";
 type VehicleType = "motorbike" | "vf3";
 type RentalDraft = {
   id: string;
@@ -106,42 +110,135 @@ const tourDays = [
   },
 ];
 
-const events = [
+type EventItem = {
+  name: string;
+  lunarDate: string;
+  startDate: string;
+  endDate: string;
+  location: string;
+  image: string;
+  note: string;
+  mapQuery: string;
+  url?: string;
+};
+
+const allEvents: EventItem[] = [
   {
-    name: "Lễ hội xuân Núi Bà Đen",
-    schedule: "Dịp Tết Nguyên đán",
-    location: "Khu du lịch Núi Bà Đen",
+    name: "Lễ vía Đức Phật Di Lặc",
+    lunarDate: "Mùng 1 tháng Giêng",
+    startDate: "2026-01-17",
+    endDate: "2026-01-17",
+    location: "Núi Bà Đen",
     image: "/events/xuan-nui-ba-den.jpg",
-    note: "Không khí đầu xuân linh thiêng với nghi thức Phật giáo, dâng hương, cầu bình an và các hoạt động văn hóa dân gian.",
+    note: "Nghi lễ cầu an đầu năm, dâng hương và chiêm bái tượng Phật lớn trên đỉnh núi.",
     mapQuery: "Khu du lịch Núi Bà Đen, Tây Ninh",
   },
   {
-    name: "Lễ Vía Bà Linh Sơn Thánh Mẫu",
-    schedule: "Mùng 5 tháng 5 âm lịch",
-    location: "Núi Bà Đen",
-    image: "/events/via-ba-linh-son.jpg",
-    note: "Một trong những sự kiện tâm linh quan trọng với nghi thức Trình thập cúng, thu hút đông đảo khách hành hương.",
-    mapQuery: "Linh Sơn Tiên Thạch Tự, Tây Ninh",
+    name: "Hội Xuân Núi Bà Đen",
+    lunarDate: "Mùng 4 – hết tháng Giêng",
+    startDate: "2026-01-21",
+    endDate: "2026-02-17",
+    location: "Khu du lịch Núi Bà Đen",
+    image: "/events/xuan-nui-ba-den.jpg",
+    note: "Sự kiện lớn nhất đầu năm với nghi thức Phật giáo, dâng hương, cầu bình an, văn hóa dân gian và biểu diễn nghệ thuật.",
+    mapQuery: "Khu du lịch Núi Bà Đen, Tây Ninh",
   },
   {
-    name: "Lễ hội truyền thống động Kim Quang",
-    schedule: "Tổ chức hằng năm",
-    location: "Động Kim Quang",
+    name: "Đại lễ vía Đức Chí Tôn",
+    lunarDate: "Mùng 9 tháng Giêng",
+    startDate: "2026-02-24",
+    endDate: "2026-02-25",
+    location: "Tòa Thánh Tây Ninh",
+    image: "/events/yen-dieu-tri-cung.jpg",
+    note: "Đại lễ quan trọng nhất của đạo Cao Đài, tín đồ khắp nơi quy tụ về Tòa Thánh với nghi thức trang trọng.",
+    mapQuery: "Tòa Thánh Tây Ninh",
+  },
+  {
+    name: "Lễ hội truyền thống Động Kim Quang",
+    lunarDate: "14 tháng Giêng",
+    startDate: "2026-03-02",
+    endDate: "2026-03-02",
+    location: "Động Kim Quang, Núi Bà Đen",
     image: "/events/dong-kim-quang.jpg",
     note: "Lễ rước kiệu, dâng hương và biểu diễn văn nghệ dân gian gắn với lịch sử, tín ngưỡng địa phương.",
     mapQuery: "Động Kim Quang, Tây Ninh",
   },
   {
-    name: "Lễ hội Yến Diêu Trì Cung",
-    schedule: "Rằm tháng 8 âm lịch",
+    name: "Lễ vía Quán Thế Âm Bồ Tát",
+    lunarDate: "19 tháng 2 âm lịch",
+    startDate: "2026-04-07",
+    endDate: "2026-04-07",
+    location: "Núi Bà Đen",
+    image: "/events/xuan-nui-ba-den.jpg",
+    note: "Đại lễ tôn kính Quán Thế Âm Bồ Tát với hàng ngàn phật tử dâng hương, tụng kinh và phóng sinh.",
+    mapQuery: "Khu du lịch Núi Bà Đen, Tây Ninh",
+  },
+  {
+    name: "Đại lễ Phật Đản",
+    lunarDate: "Rằm tháng 4 âm lịch",
+    startDate: "2026-05-31",
+    endDate: "2026-05-31",
+    location: "Các chùa & Tòa Thánh Tây Ninh",
+    image: "/events/dong-kim-quang.jpg",
+    note: "Kỷ niệm ngày Đức Phật Thích Ca đản sinh, các chùa tổ chức lễ tắm Phật, thả đèn hoa đăng trang trọng.",
+    mapQuery: "Núi Bà Đen, Tây Ninh",
+  },
+  {
+    name: "Lễ vía Bà Linh Sơn Thánh Mẫu",
+    lunarDate: "Mùng 4–6 tháng 5 âm lịch",
+    startDate: "2026-06-18",
+    endDate: "2026-06-20",
+    location: "Núi Bà Đen",
+    image: "/events/via-ba-linh-son.jpg",
+    note: "Lễ hội tâm linh lớn nhất miền Nam với nghi thức Trình thập cúng, thu hút hàng triệu khách hành hương.",
+    mapQuery: "Linh Sơn Tiên Thạch Tự, Tây Ninh",
+  },
+  {
+    name: "Tháng 7 không nhựa dùng một lần",
+    lunarDate: "Tháng 7 dương lịch",
+    startDate: "2026-07-01",
+    endDate: "2026-07-31",
+    location: "Khu du lịch quốc gia Núi Bà Đen",
+    image: "/events/thang-7-khong-nhua.png",
+    note: "Cùng trở thành “Đại sứ xanh”: mang bình nước, ly cá nhân, túi vải và hạn chế đồ nhựa dùng một lần khi khám phá Núi Bà Đen.",
+    mapQuery: "Khu du lịch quốc gia Núi Bà Đen, Tây Ninh",
+    url: "https://khudulichnuibaden.tayninh.gov.vn/thang-7-khong-nhua-su-dung-mot-lan",
+  },
+  {
+    name: "Lễ Vu Lan – Báo hiếu",
+    lunarDate: "Rằm tháng 7 âm lịch",
+    startDate: "2026-08-27",
+    endDate: "2026-08-27",
+    location: "Các chùa Tây Ninh",
+    image: "/events/dong-kim-quang.jpg",
+    note: "Mùa Vu Lan báo hiếu, các chùa tổ chức lễ cầu siêu, bông hồng cài áo và thả đèn hoa đăng trên sông.",
+    mapQuery: "Núi Bà Đen, Tây Ninh",
+  },
+  {
+    name: "Đại lễ Hội yến Diêu Trì Cung",
+    lunarDate: "Rằm tháng 8 âm lịch",
+    startDate: "2026-09-25",
+    endDate: "2026-09-25",
     location: "Tòa Thánh Tây Ninh",
     image: "/events/yen-dieu-tri-cung.jpg",
     note: "Đại lễ quan trọng của đạo Cao Đài với nghi thức trang trọng, múa rồng, múa lân và diễn hành xe hoa.",
     mapQuery: "Tòa Thánh Tây Ninh",
   },
   {
+    name: "Lễ kỷ niệm Đức Quyền Giáo Tông",
+    lunarDate: "12 tháng 10 âm lịch",
+    startDate: "2026-11-01",
+    endDate: "2026-11-01",
+    location: "Tòa Thánh Tây Ninh",
+    image: "/events/yen-dieu-tri-cung.jpg",
+    note: "Lễ tưởng niệm Đức Quyền Giáo Tông, tín đồ Cao Đài khắp nơi hội tụ dâng hương và tế lễ long trọng.",
+    mapQuery: "Tòa Thánh Tây Ninh",
+  },
+  {
     name: "Lễ giỗ Quan Lớn Trà Vong",
-    schedule: "Ngày 15 tháng 10 âm lịch",
+    lunarDate: "15 tháng 10 âm lịch",
+    startDate: "2026-11-04",
+    endDate: "2026-11-04",
     location: "Đền Trà Vong, Trảng Bàng",
     image: "/events/quan-lon-tra-vong.jpg",
     note: "Dịp tưởng nhớ vị tướng có công bảo vệ vùng đất, kết hợp hát bội, diễn tuồng và hội chợ ẩm thực.",
@@ -149,7 +246,9 @@ const events = [
   },
   {
     name: "Lễ hội Kỳ Yên",
-    schedule: "Theo lịch các đình làng",
+    lunarDate: "Theo lịch các đình làng",
+    startDate: "2026-02-01",
+    endDate: "2026-12-31",
     location: "Các đình làng Tây Ninh",
     image: "/events/ky-yen.jpg",
     note: "Lễ hội đậm nét Nam Bộ với rước sắc thần, tế thần nông và nhiều trò chơi dân gian cộng đồng.",
@@ -157,13 +256,34 @@ const events = [
   },
   {
     name: "Lễ hội bánh tráng Trảng Bàng",
-    schedule: "Theo lịch tổ chức từng năm",
+    lunarDate: "Theo lịch tổ chức từng năm",
+    startDate: "2026-03-01",
+    endDate: "2026-12-31",
     location: "Trảng Bàng, Tây Ninh",
     image: "/events/banh-trang-trang-bang.jpg",
     note: "Không gian tôn vinh nghề làm bánh tráng, trình diễn thủ công, giao lưu văn hóa và thưởng thức đặc sản.",
     mapQuery: "Trảng Bàng, Tây Ninh",
   },
 ];
+
+function getEventStatus(event: EventItem, now: Date): "happening" | "upcoming" | "past" {
+  const start = new Date(event.startDate + "T00:00:00");
+  const end = new Date(event.endDate + "T23:59:59");
+  if (now >= start && now <= end) return "happening";
+  if (now < start) return "upcoming";
+  return "past";
+}
+
+function getMonthLabel(monthIndex: number): string {
+  const labels = ["Th\u00e1ng 1", "Th\u00e1ng 2", "Th\u00e1ng 3", "Th\u00e1ng 4", "Th\u00e1ng 5", "Th\u00e1ng 6", "Th\u00e1ng 7", "Th\u00e1ng 8", "Th\u00e1ng 9", "Th\u00e1ng 10", "Th\u00e1ng 11", "Th\u00e1ng 12"];
+  return labels[monthIndex] || "";
+}
+
+function formatDateRange(startDate: string, endDate: string): string {
+  const fmt = (d: string) => { const p = d.split("-"); return `${p[2]}/${p[1]}`; };
+  if (startDate === endDate) return fmt(startDate);
+  return `${fmt(startDate)} \u2013 ${fmt(endDate)}`;
+}
 
 const foodCategories = [
   { id: "all", label: "Tất cả" },
@@ -199,6 +319,8 @@ export default function HomePage() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [installPrompt, setInstallPrompt] = useState<InstallPrompt | null>(null);
   const [installHint, setInstallHint] = useState(false);
+  const [installPlatform, setInstallPlatform] = useState<InstallPlatform>("desktop");
+  const [isInstalled, setIsInstalled] = useState(false);
   const [toast, setToast] = useState("");
   const [heroSlide, setHeroSlide] = useState(0);
   const [foodCategory, setFoodCategory] = useState("all");
@@ -217,13 +339,35 @@ export default function HomePage() {
     if (saved) setFavorites(JSON.parse(saved));
     const drafts = localStorage.getItem("tn-rental-drafts");
     if (drafts) setRentalDrafts(JSON.parse(drafts));
-    if ("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js");
+    const userAgent = navigator.userAgent;
+    const inAppBrowser = /Zalo|FBAN|FBAV|Instagram|Line\//i.test(userAgent);
+    const isiOS = /iPad|iPhone|iPod/i.test(userAgent);
+    const isAndroid = /Android/i.test(userAgent);
+    setInstallPlatform(inAppBrowser ? "in-app" : isiOS ? "ios" : isAndroid ? "android" : "desktop");
+    setIsInstalled(
+      window.matchMedia("(display-mode: standalone)").matches
+      || ("standalone" in navigator && Boolean((navigator as Navigator & { standalone?: boolean }).standalone)),
+    );
+
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js").then((registration) => registration.update()).catch(() => undefined);
+    }
     const onInstall = (event: Event) => {
       event.preventDefault();
       setInstallPrompt(event as InstallPrompt);
     };
+    const onInstalled = () => {
+      setInstallPrompt(null);
+      setInstallHint(false);
+      setIsInstalled(true);
+      notify("Ứng dụng đã được cài đặt");
+    };
     window.addEventListener("beforeinstallprompt", onInstall);
-    return () => window.removeEventListener("beforeinstallprompt", onInstall);
+    window.addEventListener("appinstalled", onInstalled);
+    return () => {
+      window.removeEventListener("beforeinstallprompt", onInstall);
+      window.removeEventListener("appinstalled", onInstalled);
+    };
   }, []);
 
   useEffect(() => {
@@ -274,13 +418,24 @@ export default function HomePage() {
   };
 
   const install = async () => {
+    if (isInstalled) {
+      notify("Ứng dụng đã có trên màn hình chính");
+      return;
+    }
     if (installPrompt) {
       await installPrompt.prompt();
+      const choice = await installPrompt.userChoice;
       setInstallPrompt(null);
-      notify("Đã gửi yêu cầu cài ứng dụng");
+      if (choice.outcome === "accepted") notify("Đang thêm ứng dụng vào thiết bị");
+      else setInstallHint(true);
     } else {
       setInstallHint(true);
     }
+  };
+
+  const copyAppLink = async () => {
+    await navigator.clipboard.writeText(window.location.href);
+    notify("Đã sao chép đường dẫn ứng dụng");
   };
 
   const openMap = (name = "Tây Ninh") => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name)}`, "_blank");
@@ -320,10 +475,12 @@ export default function HomePage() {
             <span className="brand-mark"><img src="/icon-192.png" alt="" /></span>
             <span><small>KHÁM PHÁ</small>TÂY NINH</span>
           </button>
-          <button className="install-top" onClick={install} aria-label="Cài ứng dụng Khám Phá Tây Ninh">
-            <Download size={17} />
-            <span>Cài app</span>
-          </button>
+          {!isInstalled && (
+            <button className="install-top" onClick={install} aria-label="Cài ứng dụng Khám Phá Tây Ninh">
+              <Download size={17} />
+              <span>Cài app</span>
+            </button>
+          )}
         </header>
 
         <div className="screen-content">
@@ -366,6 +523,8 @@ export default function HomePage() {
                 </div>
               </section>
 
+              <HomeEventsSection events={allEvents} onViewAll={() => setTab("events")} onMap={openMap} />
+
               <section className="section">
                 <div className="section-title"><div><span>GỢI Ý CHO BẠN</span><h2>Điểm đến nổi bật</h2></div><button onClick={() => setTab("explore")}>Xem thêm</button></div>
                 <div className="card-scroll">
@@ -389,11 +548,13 @@ export default function HomePage() {
                 </div>
               </section>
 
-              <section className="install-card">
-                <div><Download size={24} /></div>
-                <span><b>Cài ứng dụng Khám Phá Tây Ninh</b><small>Mở nhanh, toàn màn hình, dùng tiện lợi như app.</small></span>
-                <button onClick={install}>Cài ngay</button>
-              </section>
+              {!isInstalled && (
+                <section className="install-card">
+                  <div><Download size={24} /></div>
+                  <span><b>Cài ứng dụng Khám Phá Tây Ninh</b><small>Mở nhanh, toàn màn hình, dùng tiện lợi như app.</small></span>
+                  <button onClick={install}>Cài ngay</button>
+                </section>
+              )}
             </>
           )}
 
@@ -504,33 +665,7 @@ export default function HomePage() {
           )}
 
           {tab === "events" && (
-            <section className="page-section events-page">
-              <span className="page-kicker">SẮC MÀU VĂN HÓA</span>
-              <h1>Sự kiện Tây Ninh</h1>
-              <article className="event-featured">
-                <img src={events[0].image} alt={events[0].name} />
-                <div>
-                  <span><PartyPopper size={15} /> Lễ hội nổi bật</span>
-                  <h2>{events[0].name}</h2>
-                  <p>{events[0].note}</p>
-                  <button onClick={() => openMap(events[0].mapQuery)}><MapPin size={15} /> Xem địa điểm</button>
-                </div>
-              </article>
-              <div className="event-list">
-                {events.slice(1).map((event) => (
-                  <article className="event-card" key={event.name}>
-                    <img src={event.image} alt={event.name} loading="lazy" />
-                    <div>
-                      <span className="event-date"><CalendarDays size={13} /> {event.schedule}</span>
-                      <h2>{event.name}</h2>
-                      <small><MapPin size={12} /> {event.location}</small>
-                      <p>{event.note}</p>
-                      <button onClick={() => openMap(event.mapQuery)}>Chỉ đường <Navigation size={14} /></button>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </section>
+            <EventsPage events={allEvents} onMap={openMap} />
           )}
 
           {tab === "rental" && (
@@ -691,8 +826,30 @@ export default function HomePage() {
               <button className="modal-close" onClick={() => setInstallHint(false)}><X size={21} /></button>
               <span className="install-visual"><Share2 size={29} /></span>
               <h2>Thêm vào màn hình chính</h2>
-              <p>Trên iPhone/iPad, nhấn nút <b>Chia sẻ</b>, sau đó chọn <b>Thêm vào MH chính</b>. Trên Android, mở menu trình duyệt và chọn <b>Cài đặt ứng dụng</b>.</p>
-              <button className="primary-wide" onClick={() => setInstallHint(false)}>Đã hiểu</button>
+              {installPlatform === "in-app" && (
+                <>
+                  <p>Bạn đang mở ứng dụng trong Zalo hoặc Facebook. Hãy nhấn menu <b>⋯</b>, chọn <b>Mở bằng Safari/Chrome</b>, rồi nhấn lại nút <b>Cài app</b>.</p>
+                  <button className="primary-wide" onClick={copyAppLink}><Copy size={18} /> Sao chép đường dẫn</button>
+                </>
+              )}
+              {installPlatform === "ios" && (
+                <>
+                  <p>Trong Safari, nhấn nút <b>Chia sẻ</b> ở thanh công cụ, kéo xuống và chọn <b>Thêm vào Màn hình chính</b>, sau đó nhấn <b>Thêm</b>.</p>
+                  <button className="primary-wide" onClick={() => setInstallHint(false)}>Đã hiểu</button>
+                </>
+              )}
+              {installPlatform === "android" && (
+                <>
+                  <p>Trong Chrome, nhấn menu <b>⋮</b> rồi chọn <b>Cài đặt ứng dụng</b> hoặc <b>Thêm vào màn hình chính</b>. Nếu vừa mở trang, hãy chờ vài giây và thử lại.</p>
+                  <button className="primary-wide" onClick={() => setInstallHint(false)}>Đã hiểu</button>
+                </>
+              )}
+              {installPlatform === "desktop" && (
+                <>
+                  <p>Trong Chrome hoặc Edge, nhấn biểu tượng cài đặt ở cuối thanh địa chỉ, hoặc mở menu trình duyệt và chọn <b>Cài đặt Khám Phá Tây Ninh</b>.</p>
+                  <button className="primary-wide" onClick={() => setInstallHint(false)}>Đã hiểu</button>
+                </>
+              )}
             </section>
           </div>
         )}
@@ -722,4 +879,155 @@ function DestinationCard({ item, favorite, onFavorite, onMap }: { item: typeof d
 
 function NavButton({ active, icon: Icon, label, onClick }: { active: boolean; icon: typeof Home; label: string; onClick: () => void }) {
   return <button className={active ? "active" : ""} onClick={onClick}><Icon size={21} strokeWidth={active ? 2.4 : 1.8} /><span>{label}</span></button>;
+}
+
+function HomeEventsSection({ events, onViewAll, onMap }: { events: EventItem[]; onViewAll: () => void; onMap: (q: string) => void }) {
+  const now = new Date();
+  const monthLabel = getMonthLabel(now.getMonth());
+
+  const happeningEvents = events.filter((e) => getEventStatus(e, now) === "happening");
+  const upcomingEvents = events
+    .filter((e) => getEventStatus(e, now) === "upcoming")
+    .sort((a, b) => a.startDate.localeCompare(b.startDate))
+    .slice(0, 5);
+
+  const featuredEvent = happeningEvents[0] || upcomingEvents[0];
+  const scrollEvents = [...happeningEvents, ...upcomingEvents].filter((e) => e !== featuredEvent).slice(0, 6);
+
+  if (!featuredEvent) return null;
+
+  const featuredStatus = getEventStatus(featuredEvent, now);
+
+  return (
+    <section className="section home-events">
+      <div className="section-title">
+        <div>
+          <span>{featuredStatus === "happening" ? "ĐANG DIỄN RA" : "SẮP TỚI"} · {monthLabel.toUpperCase()}</span>
+          <h2>Tháng này ở Tây Ninh</h2>
+        </div>
+        <button onClick={onViewAll}>Tất cả sự kiện</button>
+      </div>
+      <article className="month-event-card">
+        <img src={featuredEvent.image} alt={featuredEvent.name} />
+        <div className="month-event-copy">
+          <span><PartyPopper size={14} /> {featuredStatus === "happening" ? "Đang diễn ra" : "Sắp tới"}</span>
+          <h3>{featuredEvent.name}</h3>
+          <p>{featuredEvent.note}</p>
+          <small><MapPin size={13} /> {featuredEvent.location}</small>
+          <small><CalendarDays size={13} /> {featuredEvent.lunarDate} · DL: {formatDateRange(featuredEvent.startDate, featuredEvent.endDate)}</small>
+          <div>
+            {featuredEvent.url ? (
+              <button onClick={() => window.open(featuredEvent.url, "_blank")}>Xem chi tiết <ChevronRight size={14} /></button>
+            ) : (
+              <button onClick={() => onMap(featuredEvent.mapQuery)}>Chỉ đường <ChevronRight size={14} /></button>
+            )}
+            <button onClick={() => onMap(featuredEvent.mapQuery)} aria-label="Mở địa điểm trên Google Maps"><Navigation size={15} /></button>
+          </div>
+        </div>
+      </article>
+
+      {scrollEvents.length > 0 && (
+        <div className="events-scroll">
+          {scrollEvents.map((event) => {
+            const status = getEventStatus(event, now);
+            return (
+              <article className="event-scroll-card" key={event.name}>
+                <img src={event.image} alt={event.name} loading="lazy" />
+                <div>
+                  <span className={`event-status ${status}`}>{status === "happening" ? "Đang diễn ra" : "Sắp tới"}</span>
+                  <h4>{event.name}</h4>
+                  <small><CalendarDays size={11} /> {event.lunarDate}</small>
+                  <small><MapPin size={11} /> {event.location}</small>
+                </div>
+                <button onClick={() => onMap(event.mapQuery)} aria-label={`Chỉ đường đến ${event.name}`}><Navigation size={14} /></button>
+              </article>
+            );
+          })}
+        </div>
+      )}
+    </section>
+  );
+}
+
+function EventsPage({ events, onMap }: { events: EventItem[]; onMap: (q: string) => void }) {
+  const now = new Date();
+  const happening = events.filter((e) => getEventStatus(e, now) === "happening");
+  const upcoming = events.filter((e) => getEventStatus(e, now) === "upcoming").sort((a, b) => a.startDate.localeCompare(b.startDate));
+  const past = events.filter((e) => getEventStatus(e, now) === "past").sort((a, b) => b.startDate.localeCompare(a.startDate));
+  const featured = happening[0] || upcoming[0];
+  const monthLabel = getMonthLabel(now.getMonth());
+
+  return (
+    <section className="page-section events-page">
+      <span className="page-kicker">SẮC MÀU VĂN HÓA</span>
+      <h1>Sự kiện Tây Ninh</h1>
+
+      {featured && (
+        <article className="event-featured">
+          <img src={featured.image} alt={featured.name} />
+          <div>
+            <span><PartyPopper size={15} /> {getEventStatus(featured, now) === "happening" ? "Đang diễn ra" : "Sắp tới"} · {monthLabel}</span>
+            <h2>{featured.name}</h2>
+            <p>{featured.note}</p>
+            {featured.url ? (
+              <button onClick={() => window.open(featured.url, "_blank")}><ChevronRight size={15} /> Xem chi tiết</button>
+            ) : (
+              <button onClick={() => onMap(featured.mapQuery)}><Navigation size={15} /> Chỉ đường</button>
+            )}
+          </div>
+        </article>
+      )}
+
+      {happening.length > 0 && (
+        <>
+          <h2 className="events-group-title"><span className="status-dot happening" /> Đang diễn ra</h2>
+          <div className="event-list">
+            {happening.map((event) => (
+              <EventCard key={event.name} event={event} onMap={onMap} status="happening" />
+            ))}
+          </div>
+        </>
+      )}
+
+      {upcoming.length > 0 && (
+        <>
+          <h2 className="events-group-title"><span className="status-dot upcoming" /> Sắp tới</h2>
+          <div className="event-list">
+            {upcoming.map((event) => (
+              <EventCard key={event.name} event={event} onMap={onMap} status="upcoming" />
+            ))}
+          </div>
+        </>
+      )}
+
+      {past.length > 0 && (
+        <>
+          <h2 className="events-group-title"><span className="status-dot past" /> Đã qua</h2>
+          <div className="event-list">
+            {past.map((event) => (
+              <EventCard key={event.name} event={event} onMap={onMap} status="past" />
+            ))}
+          </div>
+        </>
+      )}
+    </section>
+  );
+}
+
+function EventCard({ event, onMap, status }: { event: EventItem; onMap: (q: string) => void; status: "happening" | "upcoming" | "past" }) {
+  return (
+    <article className={`event-card ${status === "past" ? "event-past" : ""}`}>
+      <img src={event.image} alt={event.name} loading="lazy" />
+      <div>
+        <span className="event-date"><CalendarDays size={13} /> {event.lunarDate} · DL: {formatDateRange(event.startDate, event.endDate)}</span>
+        <h2>{event.name}</h2>
+        <small><MapPin size={12} /> {event.location}</small>
+        <p>{event.note}</p>
+        <div className="event-actions">
+          <button onClick={() => onMap(event.mapQuery)}>Chỉ đường <Navigation size={14} /></button>
+          {event.url && <button onClick={() => window.open(event.url, "_blank")}>Chi tiết <ChevronRight size={14} /></button>}
+        </div>
+      </div>
+    </article>
+  );
 }
