@@ -16,7 +16,6 @@ import {
   Home,
   MapPin,
   MessageCircle,
-  Mountain,
   Navigation,
   NotebookTabs,
   Plus,
@@ -255,7 +254,7 @@ export default function HomePage() {
       <div className="app-frame">
         <header className="topbar">
           <button className="brand" onClick={() => setTab("home")} aria-label="Về trang chủ">
-            <span className="brand-mark"><Mountain size={21} /></span>
+            <span className="brand-mark"><img src="/icon-192.png" alt="" /></span>
             <span><small>KHÁM PHÁ</small>TÂY NINH</span>
           </button>
         </header>
@@ -274,7 +273,7 @@ export default function HomePage() {
                 </div>
                 <div className="hero-copy">
                   <span className="eyebrow"><Sparkles size={14} /> Hành trình của riêng bạn</span>
-                  <h1>Chạm Tây Ninh,<br />trọn từng khoảnh khắc.</h1>
+                  <h1>Chạm Tây Ninh trong từng khoảnh khắc</h1>
                   <p>Tour địa phương · Vé cáp treo · Thuê xe tiện lợi</p>
                   <button onClick={() => setTab("explore")}>Khám phá ngay <ChevronRight size={17} /></button>
                 </div>
