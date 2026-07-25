@@ -17,13 +17,11 @@ import {
   Heart,
   Home,
   Languages,
-  Map,
   MapPin,
   MessageCircle,
   Mountain,
   Navigation,
   NotebookTabs,
-  Phone,
   Plus,
   ReceiptText,
   Route,
@@ -48,6 +46,11 @@ type RentalDraft = {
   endDate: string;
   quantity: number;
 };
+type PlaceSuggestion = {
+  id: string;
+  label: string;
+  source: "google" | "local";
+};
 
 const destinations = [
   { id: "nui-ba-den", name: "Núi Bà Đen", type: "Tâm linh · Thiên nhiên", image: "/destinations/nui-ba-den.jpg", time: "Cả ngày", rating: "4.9" },
@@ -68,7 +71,6 @@ const quickActions = [
   { label: "Vé cáp treo", icon: Ticket, action: "service" },
   { label: "Tour", icon: Route, action: "service" },
   { label: "Thuê xe", icon: Bike, action: "service" },
-  { label: "Bản đồ", icon: Map, action: "map" },
   { label: "Ẩm thực", icon: Utensils, action: "food" },
   { label: "Hỗ trợ", icon: CircleHelp, action: "support" },
 ];
@@ -119,6 +121,8 @@ export default function HomePage() {
   const [rentalNote, setRentalNote] = useState("");
   const [quoteVisible, setQuoteVisible] = useState(false);
   const [rentalDrafts, setRentalDrafts] = useState<RentalDraft[]>([]);
+  const [placeSuggestions, setPlaceSuggestions] = useState<PlaceSuggestion[]>([]);
+  const [placeSuggestionsOpen, setPlaceSuggestionsOpen] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem("tn-favorites");
@@ -141,6 +145,26 @@ export default function HomePage() {
   useEffect(() => {
     localStorage.setItem("tn-rental-drafts", JSON.stringify(rentalDrafts));
   }, [rentalDrafts]);
+
+  useEffect(() => {
+    if (!placeSuggestionsOpen) return;
+    const controller = new AbortController();
+    const timeout = window.setTimeout(async () => {
+      try {
+        const response = await fetch(`/api/places?input=${encodeURIComponent(pickupPlace)}`, {
+          signal: controller.signal,
+        });
+        const data = await response.json() as { suggestions?: PlaceSuggestion[] };
+        setPlaceSuggestions(data.suggestions || []);
+      } catch {
+        if (!controller.signal.aborted) setPlaceSuggestions([]);
+      }
+    }, 220);
+    return () => {
+      window.clearTimeout(timeout);
+      controller.abort();
+    };
+  }, [pickupPlace, placeSuggestionsOpen]);
 
   const results = useMemo(() => destinations.filter((item) =>
     `${item.name} ${item.type}`.toLowerCase().includes(query.toLowerCase())
@@ -191,6 +215,7 @@ export default function HomePage() {
 
   const openMap = (name = "Tây Ninh") => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name)}`, "_blank");
   const openZalo = () => window.open("https://zalo.me/0584556556", "_blank");
+  const openTicket = () => window.open("https://nuibaden.lnm.vn", "_blank");
   const copyQuote = async () => {
     if (!dateRangeValid) {
       notify("Vui lòng chọn ngày nhận và ngày trả hợp lệ");
@@ -250,7 +275,7 @@ export default function HomePage() {
                 <div className="quick-grid">
                   {quickActions.map(({ label, icon: Icon, action }) => (
                     <button key={label} onClick={() => {
-                      if (action === "map") openMap();
+                      if (label === "Vé cáp treo") openTicket();
                       else if (action === "support") openZalo();
                       else if (action === "food") setTab("food");
                       else if (label === "Thuê xe") setTab("rental");
@@ -276,7 +301,7 @@ export default function HomePage() {
                 <div className="section-title"><div><span>DỄ DÀNG ĐẶT TRƯỚC</span><h2>Dịch vụ du lịch</h2></div></div>
                 <div className="service-list">
                   {services.map(({ id, title, note, image, icon: Icon, color }) => (
-                    <button className="service-card" key={title} onClick={() => id === "rental" ? setTab("rental") : openZalo()}>
+                    <button className="service-card" key={title} onClick={() => id === "rental" ? setTab("rental") : id === "ticket" ? openTicket() : openZalo()}>
                       <img src={image} alt="" />
                       <span className={`service-icon ${color}`}><Icon size={21} /></span>
                       <span className="service-copy"><b>{title}</b><small>{note}</small></span>
@@ -308,7 +333,7 @@ export default function HomePage() {
               <h2 className="subheading">Dịch vụ nổi bật</h2>
               <div className="service-list">
                 {services.map(({ id, title, note, image, icon: Icon, color }) => (
-                  <button className="service-card" key={title} onClick={() => id === "rental" ? setTab("rental") : openZalo()}>
+                  <button className="service-card" key={title} onClick={() => id === "rental" ? setTab("rental") : id === "ticket" ? openTicket() : openZalo()}>
                     <img src={image} alt="" /><span className={`service-icon ${color}`}><Icon size={21} /></span>
                     <span className="service-copy"><b>{title}</b><small>{note}</small></span><ChevronRight size={20} />
                   </button>
@@ -384,7 +409,46 @@ export default function HomePage() {
                   <span><b>Số lượng xe</b><small>Tối thiểu 1 xe</small></span>
                   <div><button onClick={() => setQuantity((value) => Math.max(1, value - 1))}>−</button><b>{quantity}</b><button onClick={() => setQuantity((value) => Math.min(20, value + 1))}><Plus size={16} /></button></div>
                 </div>
-                <label className="text-field"><span>Nơi nhận xe</span><input value={pickupPlace} onChange={(event) => setPickupPlace(event.target.value)} placeholder="Khách sạn, bến xe hoặc địa chỉ..." /></label>
+                <div className="text-field place-field">
+                  <span>Nơi nhận xe</span>
+                  <div className="place-input-wrap">
+                    <MapPin size={18} />
+                    <input
+                      role="combobox"
+                      aria-expanded={placeSuggestionsOpen}
+                      aria-controls="pickup-suggestions"
+                      autoComplete="off"
+                      value={pickupPlace}
+                      onFocus={() => setPlaceSuggestionsOpen(true)}
+                      onChange={(event) => {
+                        setPickupPlace(event.target.value);
+                        setPlaceSuggestionsOpen(true);
+                      }}
+                      placeholder="Gõ khách sạn, bến xe hoặc địa chỉ..."
+                    />
+                    {pickupPlace && <button onClick={() => openMap(`${pickupPlace}, Tây Ninh`)} aria-label="Tìm địa điểm trên Google Maps"><Navigation size={17} /></button>}
+                  </div>
+                  {placeSuggestionsOpen && placeSuggestions.length > 0 && (
+                    <div className="place-suggestions" id="pickup-suggestions" role="listbox">
+                      {placeSuggestions.map((place) => (
+                        <button
+                          key={place.id}
+                          role="option"
+                          onMouseDown={(event) => event.preventDefault()}
+                          onClick={() => {
+                            setPickupPlace(place.label);
+                            setPlaceSuggestionsOpen(false);
+                          }}
+                        >
+                          <span><MapPin size={16} /></span>
+                          <b>{place.label}</b>
+                          <small>{place.source === "google" ? "Google Maps" : "Gợi ý Tây Ninh"}</small>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  <small className="place-help">Gợi ý từ Google Places khi hệ thống có API key; luôn có địa điểm Tây Ninh dự phòng.</small>
+                </div>
               </div>
 
               <div className={`availability-card ${!dateRangeValid ? "waiting" : hasLocalConflict ? "busy" : "available"}`}>
@@ -495,11 +559,6 @@ export default function HomePage() {
           <NavButton active={tab === "plan"} icon={Route} label="Lịch trình" onClick={() => setTab("plan")} />
           <NavButton active={tab === "saved"} icon={Heart} label="Đã lưu" onClick={() => setTab("saved")} />
         </nav>
-
-        <div className="contact-fab">
-          <a href="tel:0584556556" aria-label="Gọi hotline"><Phone size={19} /></a>
-          <button onClick={openZalo} aria-label="Nhắn Zalo"><MessageCircle size={20} /></button>
-        </div>
 
         {searchOpen && (
           <div className="modal-backdrop" onClick={() => setSearchOpen(false)}>
