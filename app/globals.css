@@ -24,19 +24,19 @@ button { cursor: pointer; }
 .brand { border: 0; background: none; display: flex; align-items: center; gap: 9px; padding: 0; color: var(--pine); font-size: clamp(13px, 3.6vw, 15px); font-weight: 900; letter-spacing: .05em; line-height: 1.12; text-align: left; }
 .brand small { display: block; font-size: 10px; letter-spacing: .16em; margin-bottom: 3px; font-weight: 700; }
 .brand-mark { width: 36px; height: 36px; display: grid; place-items: center; background: var(--pine); color: #fff; border-radius: 12px 12px 12px 4px; }
-.top-actions { display: flex; gap: 7px; }
-.top-actions button { width: 38px; height: 38px; border: 1px solid var(--line); background: #fff; border-radius: 50%; color: var(--pine); display: grid; place-items: center; position: relative; }
-.top-actions i { position: absolute; width: 7px; height: 7px; background: #ed6b4d; border-radius: 50%; top: 7px; right: 7px; border: 1px solid #fff; }
 .screen-content { padding-bottom: calc(100px + env(safe-area-inset-bottom)); min-height: calc(100dvh - 68px); }
 
-.hero-card { margin: 12px 14px 0; min-height: 390px; border-radius: 28px; overflow: hidden; position: relative; background: var(--pine); color: #fff; box-shadow: 0 18px 38px rgba(12,62,46,.18); }
+.hero-panel { margin: 12px 14px 0; }
+.hero-card { min-height: 245px; border-radius: 28px; overflow: hidden; position: relative; background: var(--pine); box-shadow: 0 16px 34px rgba(12,62,46,.16); }
 .hero-card > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.hero-shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(5,30,22,.02) 15%, rgba(5,30,22,.88) 95%); }
-.hero-copy { position: absolute; left: 24px; right: 22px; bottom: 24px; }
+.hero-dots { position: absolute; left: 0; right: 0; bottom: 13px; display: flex; justify-content: center; gap: 6px; }
+.hero-dots button { width: 7px; height: 7px; padding: 0; border: 0; border-radius: 99px; background: rgba(255,255,255,.68); box-shadow: 0 1px 5px rgba(0,0,0,.18); transition: width .2s ease, background .2s ease; }
+.hero-dots button.active { width: 22px; background: #fff; }
+.hero-copy { padding: 20px 8px 4px; color: var(--ink); }
 .eyebrow { display: inline-flex; align-items: center; gap: 6px; font-size: clamp(11px, 3vw, 12px); font-weight: 800; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 10px; }
 .hero-copy h1 { font-family: inherit; font-size: clamp(30px, 9.2vw, 42px); line-height: 1.08; letter-spacing: -.03em; margin: 0 0 10px; font-weight: 800; }
-.hero-copy p { font-size: clamp(13px, 3.5vw, 15px); line-height: 1.5; color: rgba(255,255,255,.88); margin: 0 0 18px; }
-.hero-copy button { border: 0; background: #fff; color: var(--pine); font-weight: 800; border-radius: 999px; padding: 12px 17px; display: inline-flex; align-items: center; gap: 8px; }
+.hero-copy p { font-size: clamp(13px, 3.5vw, 15px); line-height: 1.5; color: var(--muted); margin: 0 0 16px; }
+.hero-copy button { border: 0; background: var(--pine); color: #fff; font-weight: 800; border-radius: 999px; padding: 12px 17px; display: inline-flex; align-items: center; gap: 8px; }
 
 .section { padding: 24px 18px 0; }
 .quick-section { margin-top: -2px; }
@@ -117,6 +117,36 @@ button { cursor: pointer; }
 .support-panel b { font-size: 12px; line-height: 1.35; }
 .support-panel small { color: var(--muted); font-size: 11px; line-height: 1.4; margin-top: 3px; }
 .support-panel button { border: 0; background: var(--mint); color: var(--green); font-size: 11px; font-weight: 800; padding: 9px 10px; border-radius: 99px; }
+
+.tour-cover { height: 220px; overflow: hidden; border-radius: 23px; }
+.tour-cover img { width: 100%; height: 100%; object-fit: cover; }
+.tour-overview { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: 11px; }
+.tour-overview > div { min-width: 0; min-height: 72px; padding: 10px 8px; border: 1px solid var(--line); border-radius: 14px; background: #fff; color: var(--green); display: flex; align-items: flex-start; gap: 7px; }
+.tour-overview span { min-width: 0; display: grid; color: var(--ink); }
+.tour-overview small { color: var(--muted); font-size: 9px; line-height: 1.35; }
+.tour-overview b { font-size: 10px; line-height: 1.35; margin-top: 3px; }
+.tour-lead { color: var(--muted); font-size: 12px; line-height: 1.65; margin: 17px 1px; }
+.tour-style-grid { display: flex; gap: 7px; overflow-x: auto; scrollbar-width: none; }
+.tour-style-grid span { padding: 8px 11px; border-radius: 99px; background: var(--mint); color: var(--green); font-size: 10px; font-weight: 800; white-space: nowrap; }
+.tour-itinerary { display: grid; gap: 16px; margin-top: 21px; }
+.tour-day { overflow: hidden; border: 1px solid var(--line); border-radius: 20px; background: #fff; }
+.tour-day-head { height: 105px; position: relative; overflow: hidden; color: #fff; display: flex; align-items: flex-end; padding: 14px; }
+.tour-day-head::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(6,27,20,.05), rgba(6,27,20,.82)); }
+.tour-day-head img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.tour-day-head > div { position: relative; z-index: 1; }
+.tour-day-head span { display: inline-block; padding: 4px 7px; border-radius: 99px; background: rgba(255,255,255,.16); backdrop-filter: blur(5px); font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .09em; }
+.tour-day-head h2 { margin: 5px 0 0; font-size: 18px; line-height: 1.3; }
+.tour-stops { padding: 12px 13px 13px; }
+.tour-stops > div { display: grid; grid-template-columns: 40px 12px 1fr; gap: 8px; align-items: start; min-height: 40px; position: relative; }
+.tour-stops > div:not(:last-child)::after { content: ""; position: absolute; left: 53px; top: 16px; bottom: -2px; width: 1px; background: #d7dfda; }
+.tour-stops time { color: var(--muted); font-size: 10px; padding-top: 1px; }
+.tour-stops i { width: 9px; height: 9px; margin-top: 3px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 3px var(--mint); z-index: 1; }
+.tour-stops b { font-size: 11px; line-height: 1.45; padding-bottom: 10px; }
+.tour-note { display: flex; align-items: flex-start; gap: 10px; margin-top: 16px; padding: 13px; border-radius: 16px; background: #fff1dc; color: #9b611b; }
+.tour-note > div { display: grid; }
+.tour-note b { font-size: 12px; }
+.tour-note p { color: #855c2b; font-size: 10px; line-height: 1.5; margin: 3px 0 0; }
+.tour-zalo { background: #1679db; }
 
 .food-hero { min-height: 224px; position: relative; overflow: hidden; border-radius: 23px; color: #fff; display: flex; align-items: flex-end; padding: 18px; }
 .food-hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(6,27,20,.03), rgba(6,27,20,.9)); }
@@ -222,12 +252,11 @@ button { cursor: pointer; }
 }
 @media (max-width: 355px) {
   .topbar { padding-inline: 12px; }
-  .top-actions { gap: 4px; }
-  .top-actions button { width: 35px; height: 35px; }
   .brand { gap: 7px; }
   .brand-mark { width: 33px; height: 33px; }
-  .hero-card { min-height: 340px; margin-inline: 10px; border-radius: 23px; }
-  .hero-copy { left: 18px; right: 16px; bottom: 19px; }
+  .hero-panel { margin-inline: 10px; }
+  .hero-card { min-height: 210px; border-radius: 23px; }
+  .hero-copy { padding-inline: 4px; }
   .hero-copy h1 { font-size: clamp(28px, 9vw, 32px); }
   .section, .page-section { padding-inline: 13px; }
   .quick-grid { grid-template-columns: repeat(5, 64px); gap: 6px; }
@@ -254,11 +283,13 @@ button { cursor: pointer; }
   .vehicle-options > button.active { padding: 9px; }
   .date-grid { grid-template-columns: 1fr; }
   .rental-actions { grid-template-columns: 1fr; }
+  .tour-overview { grid-template-columns: 1fr; }
+  .tour-overview > div { min-height: 58px; }
 }
 @media (max-width: 320px) {
   .brand small { display: none; }
   .brand { font-size: 12px; }
-  .hero-card { min-height: 325px; }
+  .hero-card { min-height: 190px; }
   .section-title { gap: 8px; }
   .section-title h2, .subheading { font-size: 19px; }
   .search-box span { display: none; }

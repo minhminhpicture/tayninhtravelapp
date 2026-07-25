@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Bell,
   Bike,
   BusFront,
   CalendarDays,
@@ -15,7 +14,6 @@ import {
   Download,
   Heart,
   Home,
-  Languages,
   MapPin,
   MessageCircle,
   Mountain,
@@ -35,7 +33,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
-type Tab = "home" | "explore" | "food" | "rental" | "plan" | "saved";
+type Tab = "home" | "explore" | "tour" | "food" | "rental" | "plan" | "saved";
 type InstallPrompt = Event & { prompt: () => Promise<void> };
 type VehicleType = "motorbike" | "vf3";
 type RentalDraft = {
@@ -67,6 +65,42 @@ const quickActions = [
   { label: "Thuê xe", icon: Bike, action: "service" },
   { label: "Ẩm thực", icon: Utensils, action: "food" },
   { label: "Hỗ trợ", icon: CircleHelp, action: "support" },
+];
+
+const heroSlides = [
+  { image: "/hero.png", alt: "Toàn cảnh du lịch Tây Ninh" },
+  { image: "/destinations/nui-ba-den.jpg", alt: "Núi Bà Đen Tây Ninh" },
+  { image: "/destinations/toa-thanh.webp", alt: "Tòa Thánh Tây Ninh" },
+];
+
+const tourDays = [
+  {
+    day: "Ngày 1",
+    title: "Nội thành Tây Ninh",
+    image: "/destinations/toa-thanh.webp",
+    stops: [
+      { time: "07:30", name: "Đến Tây Ninh, nhận phòng & ăn sáng" },
+      { time: "08:00", name: "Đình Hiệp Ninh" },
+      { time: "09:30", name: "Chùa Giác Ngạn" },
+      { time: "12:00", name: "Tòa Thánh Tây Ninh" },
+      { time: "15:00", name: "Chùa Gò Kén" },
+      { time: "18:00", name: "Ăn tối & nghỉ đêm" },
+    ],
+  },
+  {
+    day: "Ngày 2",
+    title: "Núi Bà Đen & Hồ Dầu Tiếng",
+    image: "/destinations/nui-ba-den.jpg",
+    stops: [
+      { time: "06:00", name: "Trả phòng, ăn sáng gần chân núi" },
+      { time: "07:30", name: "Quần thể tâm linh Núi Bà Đen" },
+      { time: "10:30", name: "Đỉnh Núi Bà Đen & các công trình biểu tượng" },
+      { time: "12:00", name: "Ăn trưa, di chuyển xuống núi" },
+      { time: "13:30", name: "Chùa Khedol" },
+      { time: "14:30", name: "Chùa Thái Sơn – núi Cậu" },
+      { time: "17:00", name: "Dùng bữa bên Hồ Dầu Tiếng" },
+    ],
+  },
 ];
 
 const foodCategories = [
@@ -104,6 +138,7 @@ export default function HomePage() {
   const [installPrompt, setInstallPrompt] = useState<InstallPrompt | null>(null);
   const [installHint, setInstallHint] = useState(false);
   const [toast, setToast] = useState("");
+  const [heroSlide, setHeroSlide] = useState(0);
   const [foodCategory, setFoodCategory] = useState("all");
   const [vehicle, setVehicle] = useState<VehicleType>("motorbike");
   const [startDate, setStartDate] = useState("");
@@ -136,6 +171,13 @@ export default function HomePage() {
   useEffect(() => {
     localStorage.setItem("tn-rental-drafts", JSON.stringify(rentalDrafts));
   }, [rentalDrafts]);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setHeroSlide((current) => (current + 1) % heroSlides.length);
+    }, 4200);
+    return () => window.clearInterval(timer);
+  }, []);
 
   const results = useMemo(() => destinations.filter((item) =>
     `${item.name} ${item.type}`.toLowerCase().includes(query.toLowerCase())
@@ -216,18 +258,20 @@ export default function HomePage() {
             <span className="brand-mark"><Mountain size={21} /></span>
             <span><small>KHÁM PHÁ</small>TÂY NINH</span>
           </button>
-          <div className="top-actions">
-            <button aria-label="Đổi ngôn ngữ" onClick={() => notify("Ứng dụng đang hiển thị Tiếng Việt")}><Languages size={20} /></button>
-            <button aria-label="Thông báo" onClick={() => notify("Bạn chưa có thông báo mới")}><Bell size={20} /><i /></button>
-          </div>
         </header>
 
         <div className="screen-content">
           {tab === "home" && (
             <>
-              <section className="hero-card">
-                <img src="/hero.png" alt="Khám phá du lịch Tây Ninh" />
-                <div className="hero-shade" />
+              <section className="hero-panel">
+                <div className="hero-card">
+                  <img src={heroSlides[heroSlide].image} alt={heroSlides[heroSlide].alt} />
+                  <div className="hero-dots" aria-label="Chọn ảnh">
+                    {heroSlides.map((slide, index) => (
+                      <button key={slide.image} className={heroSlide === index ? "active" : ""} onClick={() => setHeroSlide(index)} aria-label={`Ảnh ${index + 1}`} />
+                    ))}
+                  </div>
+                </div>
                 <div className="hero-copy">
                   <span className="eyebrow"><Sparkles size={14} /> Hành trình của riêng bạn</span>
                   <h1>Chạm Tây Ninh,<br />trọn từng khoảnh khắc.</h1>
@@ -245,6 +289,7 @@ export default function HomePage() {
                       else if (action === "support") openZalo();
                       else if (action === "food") setTab("food");
                       else if (label === "Thuê xe") setTab("rental");
+                      else if (label === "Tour") setTab("tour");
                       else setTab("explore");
                     }}>
                       <span><Icon size={23} strokeWidth={1.8} /></span>
@@ -267,7 +312,7 @@ export default function HomePage() {
                 <div className="section-title"><div><span>DỄ DÀNG ĐẶT TRƯỚC</span><h2>Dịch vụ du lịch</h2></div></div>
                 <div className="service-list">
                   {services.map(({ id, title, note, image, icon: Icon, color }) => (
-                    <button className="service-card" key={title} onClick={() => id === "rental" ? setTab("rental") : id === "ticket" ? openTicket() : openZalo()}>
+                    <button className="service-card" key={title} onClick={() => id === "rental" ? setTab("rental") : id === "ticket" ? openTicket() : setTab("tour")}>
                       <img src={image} alt="" />
                       <span className={`service-icon ${color}`}><Icon size={21} /></span>
                       <span className="service-copy"><b>{title}</b><small>{note}</small></span>
@@ -299,12 +344,56 @@ export default function HomePage() {
               <h2 className="subheading">Dịch vụ nổi bật</h2>
               <div className="service-list">
                 {services.map(({ id, title, note, image, icon: Icon, color }) => (
-                  <button className="service-card" key={title} onClick={() => id === "rental" ? setTab("rental") : id === "ticket" ? openTicket() : openZalo()}>
+                  <button className="service-card" key={title} onClick={() => id === "rental" ? setTab("rental") : id === "ticket" ? openTicket() : setTab("tour")}>
                     <img src={image} alt="" /><span className={`service-icon ${color}`}><Icon size={21} /></span>
                     <span className="service-copy"><b>{title}</b><small>{note}</small></span><ChevronRight size={20} />
                   </button>
                 ))}
               </div>
+            </section>
+          )}
+
+          {tab === "tour" && (
+            <section className="page-section tour-page">
+              <span className="page-kicker">GỢI Ý HÀNH TRÌNH</span>
+              <h1>Tour Tây Ninh 2 ngày 1 đêm</h1>
+              <div className="tour-cover">
+                <img src="/tour.webp" alt="Tour khám phá Tây Ninh 2 ngày 1 đêm" />
+              </div>
+              <div className="tour-overview">
+                <div><CalendarDays size={20} /><span><small>Thời lượng</small><b>2 ngày 1 đêm</b></span></div>
+                <div><BusFront size={20} /><span><small>Khởi hành</small><b>Theo yêu cầu</b></span></div>
+                <div><MapPin size={20} /><span><small>Điểm nổi bật</small><b>8+ điểm đến</b></span></div>
+              </div>
+              <p className="tour-lead">Hành trình kết hợp văn hóa, tâm linh và thiên nhiên: khám phá nội thành Tây Ninh trong ngày đầu, dành ngày hai cho Núi Bà Đen, núi Cậu và Hồ Dầu Tiếng.</p>
+
+              <div className="tour-style-grid">
+                <span>Tâm linh</span><span>Thiên nhiên</span><span>Ẩm thực</span><span>Check-in</span>
+              </div>
+
+              <div className="tour-itinerary">
+                {tourDays.map((day) => (
+                  <article className="tour-day" key={day.day}>
+                    <div className="tour-day-head">
+                      <img src={day.image} alt="" />
+                      <div><span>{day.day}</span><h2>{day.title}</h2></div>
+                    </div>
+                    <div className="tour-stops">
+                      {day.stops.map((stop) => (
+                        <div key={`${day.day}-${stop.time}-${stop.name}`}>
+                          <time>{stop.time}</time><i /><b>{stop.name}</b>
+                        </div>
+                      ))}
+                    </div>
+                  </article>
+                ))}
+              </div>
+
+              <div className="tour-note">
+                <Sparkles size={21} />
+                <div><b>Lịch trình có thể tùy chỉnh</b><p>Thời gian, điểm đón, bữa ăn và điểm tham quan sẽ được tư vấn theo nhóm khách, gia đình hoặc đoàn riêng.</p></div>
+              </div>
+              <button className="primary-wide tour-zalo" onClick={openZalo}><MessageCircle size={19} /> Liên hệ Zalo để tìm hiểu thêm</button>
             </section>
           )}
 
