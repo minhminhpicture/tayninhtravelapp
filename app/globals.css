@@ -153,6 +153,27 @@ button { cursor: pointer; }
 .tour-note p { color: #855c2b; font-size: 10px; line-height: 1.5; margin: 3px 0 0; }
 .tour-zalo { background: #1679db; }
 
+.events-page { display: grid; gap: 14px; }
+.events-page > h1 { margin-bottom: 4px; }
+.event-featured { min-height: 330px; position: relative; overflow: hidden; border-radius: 24px; color: #fff; box-shadow: 0 14px 32px rgba(20,35,30,.14); }
+.event-featured::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(5,24,17,.04) 22%, rgba(5,24,17,.92) 100%); }
+.event-featured > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.event-featured > div { position: absolute; z-index: 1; left: 17px; right: 17px; bottom: 17px; }
+.event-featured span, .event-date { display: inline-flex; align-items: center; gap: 5px; color: #ffe0a8; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; }
+.event-featured h2 { margin: 7px 0 5px; font-size: clamp(22px, 6.2vw, 29px); line-height: 1.2; }
+.event-featured p { margin: 0 0 12px; color: rgba(255,255,255,.82); font-size: 11px; line-height: 1.55; }
+.event-featured button { border: 0; border-radius: 999px; padding: 9px 12px; display: inline-flex; align-items: center; gap: 5px; background: #fff; color: var(--pine); font-size: 10px; font-weight: 800; }
+.event-list { display: grid; gap: 11px; }
+.event-card { display: grid; grid-template-columns: 116px 1fr; overflow: hidden; border: 1px solid var(--line); border-radius: 19px; background: #fff; }
+.event-card > img { width: 116px; height: 100%; min-height: 170px; object-fit: cover; }
+.event-card > div { min-width: 0; padding: 12px; }
+.event-card .event-date { color: #a86516; letter-spacing: .02em; }
+.event-card h2 { margin: 6px 0 5px; font-size: 14px; line-height: 1.35; }
+.event-card small { display: flex; align-items: flex-start; gap: 4px; color: var(--green); font-size: 10px; line-height: 1.4; }
+.event-card small svg { flex: 0 0 auto; margin-top: 1px; }
+.event-card p { margin: 7px 0 9px; color: var(--muted); font-size: 10px; line-height: 1.5; }
+.event-card button { border: 0; padding: 0; display: inline-flex; align-items: center; gap: 4px; background: none; color: var(--green); font-size: 10px; font-weight: 800; }
+
 .food-hero { min-height: 224px; position: relative; overflow: hidden; border-radius: 23px; color: #fff; display: flex; align-items: flex-end; padding: 18px; }
 .food-hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(6,27,20,.03), rgba(6,27,20,.9)); }
 .food-hero > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -292,6 +313,8 @@ button { cursor: pointer; }
   .rental-actions { grid-template-columns: 1fr; }
   .tour-overview { grid-template-columns: 1fr; }
   .tour-overview > div { min-height: 58px; }
+  .event-card { grid-template-columns: 95px 1fr; }
+  .event-card > img { width: 95px; min-height: 190px; }
 }
 @media (max-width: 320px) {
   .brand small { display: none; }

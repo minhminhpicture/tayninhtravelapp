@@ -18,6 +18,7 @@ import {
   MessageCircle,
   Navigation,
   NotebookTabs,
+  PartyPopper,
   Plus,
   ReceiptText,
   Route,
@@ -32,7 +33,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
-type Tab = "home" | "explore" | "tour" | "food" | "rental" | "plan" | "saved";
+type Tab = "home" | "explore" | "tour" | "events" | "food" | "rental" | "plan" | "saved";
 type InstallPrompt = Event & { prompt: () => Promise<void> };
 type VehicleType = "motorbike" | "vf3";
 type RentalDraft = {
@@ -65,6 +66,7 @@ const quickActions = [
   { label: "Tour", icon: Route, action: "service" },
   { label: "Thuê xe", icon: Bike, action: "service" },
   { label: "Ẩm thực", icon: Utensils, action: "food" },
+  { label: "Sự kiện", icon: PartyPopper, action: "events" },
   { label: "Hỗ trợ", icon: CircleHelp, action: "support" },
 ];
 
@@ -101,6 +103,65 @@ const tourDays = [
       { time: "14:30", name: "Chùa Thái Sơn – núi Cậu" },
       { time: "17:00", name: "Dùng bữa bên Hồ Dầu Tiếng" },
     ],
+  },
+];
+
+const events = [
+  {
+    name: "Lễ hội xuân Núi Bà Đen",
+    schedule: "Dịp Tết Nguyên đán",
+    location: "Khu du lịch Núi Bà Đen",
+    image: "/events/xuan-nui-ba-den.jpg",
+    note: "Không khí đầu xuân linh thiêng với nghi thức Phật giáo, dâng hương, cầu bình an và các hoạt động văn hóa dân gian.",
+    mapQuery: "Khu du lịch Núi Bà Đen, Tây Ninh",
+  },
+  {
+    name: "Lễ Vía Bà Linh Sơn Thánh Mẫu",
+    schedule: "Mùng 5 tháng 5 âm lịch",
+    location: "Núi Bà Đen",
+    image: "/events/via-ba-linh-son.jpg",
+    note: "Một trong những sự kiện tâm linh quan trọng với nghi thức Trình thập cúng, thu hút đông đảo khách hành hương.",
+    mapQuery: "Linh Sơn Tiên Thạch Tự, Tây Ninh",
+  },
+  {
+    name: "Lễ hội truyền thống động Kim Quang",
+    schedule: "Tổ chức hằng năm",
+    location: "Động Kim Quang",
+    image: "/events/dong-kim-quang.jpg",
+    note: "Lễ rước kiệu, dâng hương và biểu diễn văn nghệ dân gian gắn với lịch sử, tín ngưỡng địa phương.",
+    mapQuery: "Động Kim Quang, Tây Ninh",
+  },
+  {
+    name: "Lễ hội Yến Diêu Trì Cung",
+    schedule: "Rằm tháng 8 âm lịch",
+    location: "Tòa Thánh Tây Ninh",
+    image: "/events/yen-dieu-tri-cung.jpg",
+    note: "Đại lễ quan trọng của đạo Cao Đài với nghi thức trang trọng, múa rồng, múa lân và diễn hành xe hoa.",
+    mapQuery: "Tòa Thánh Tây Ninh",
+  },
+  {
+    name: "Lễ giỗ Quan Lớn Trà Vong",
+    schedule: "Ngày 15 tháng 10 âm lịch",
+    location: "Đền Trà Vong, Trảng Bàng",
+    image: "/events/quan-lon-tra-vong.jpg",
+    note: "Dịp tưởng nhớ vị tướng có công bảo vệ vùng đất, kết hợp hát bội, diễn tuồng và hội chợ ẩm thực.",
+    mapQuery: "Đền thờ Quan Lớn Trà Vong, Tây Ninh",
+  },
+  {
+    name: "Lễ hội Kỳ Yên",
+    schedule: "Theo lịch các đình làng",
+    location: "Các đình làng Tây Ninh",
+    image: "/events/ky-yen.jpg",
+    note: "Lễ hội đậm nét Nam Bộ với rước sắc thần, tế thần nông và nhiều trò chơi dân gian cộng đồng.",
+    mapQuery: "Đình Hiệp Ninh, Tây Ninh",
+  },
+  {
+    name: "Lễ hội bánh tráng Trảng Bàng",
+    schedule: "Theo lịch tổ chức từng năm",
+    location: "Trảng Bàng, Tây Ninh",
+    image: "/events/banh-trang-trang-bang.jpg",
+    note: "Không gian tôn vinh nghề làm bánh tráng, trình diễn thủ công, giao lưu văn hóa và thưởng thức đặc sản.",
+    mapQuery: "Trảng Bàng, Tây Ninh",
   },
 ];
 
@@ -293,6 +354,7 @@ export default function HomePage() {
                       if (label === "Vé cáp treo") openTicket();
                       else if (action === "support") openZalo();
                       else if (action === "food") setTab("food");
+                      else if (action === "events") setTab("events");
                       else if (label === "Thuê xe") setTab("rental");
                       else if (label === "Tour") setTab("tour");
                       else setTab("explore");
@@ -437,6 +499,36 @@ export default function HomePage() {
                     </article>
                   );
                 })}
+              </div>
+            </section>
+          )}
+
+          {tab === "events" && (
+            <section className="page-section events-page">
+              <span className="page-kicker">SẮC MÀU VĂN HÓA</span>
+              <h1>Sự kiện Tây Ninh</h1>
+              <article className="event-featured">
+                <img src={events[0].image} alt={events[0].name} />
+                <div>
+                  <span><PartyPopper size={15} /> Lễ hội nổi bật</span>
+                  <h2>{events[0].name}</h2>
+                  <p>{events[0].note}</p>
+                  <button onClick={() => openMap(events[0].mapQuery)}><MapPin size={15} /> Xem địa điểm</button>
+                </div>
+              </article>
+              <div className="event-list">
+                {events.slice(1).map((event) => (
+                  <article className="event-card" key={event.name}>
+                    <img src={event.image} alt={event.name} loading="lazy" />
+                    <div>
+                      <span className="event-date"><CalendarDays size={13} /> {event.schedule}</span>
+                      <h2>{event.name}</h2>
+                      <small><MapPin size={12} /> {event.location}</small>
+                      <p>{event.note}</p>
+                      <button onClick={() => openMap(event.mapQuery)}>Chỉ đường <Navigation size={14} /></button>
+                    </div>
+                  </article>
+                ))}
               </div>
             </section>
           )}
