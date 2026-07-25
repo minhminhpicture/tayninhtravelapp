@@ -48,12 +48,14 @@ button { cursor: pointer; }
 .section-title h2, .subheading { font-family: inherit; font-size: clamp(20px, 5.8vw, 25px); line-height: 1.25; letter-spacing: -.025em; margin: 0; color: var(--ink); font-weight: 800; }
 .section-title span, .page-kicker { display: block; color: var(--green); font-size: 11px; font-weight: 900; letter-spacing: .12em; margin-bottom: 5px; }
 .section-title button { border: 0; background: none; color: var(--green); font-size: 12px; font-weight: 800; padding: 7px 0; }
-.quick-grid { display: grid; grid-template-columns: repeat(5, minmax(68px, 1fr)); gap: 10px; overflow-x: auto; padding: 2px 1px 6px; scrollbar-width: none; }
-.quick-grid button { min-width: 68px; border: 0; background: none; padding: 0; color: var(--ink); }
-.quick-grid button span { width: 54px; height: 54px; margin: 0 auto 7px; border-radius: 18px; display: grid; place-items: center; background: #edf5f1; color: var(--green); box-shadow: inset 0 0 0 1px rgba(20,108,81,.05); }
+.quick-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; overflow: hidden; padding: 2px 0 6px; }
+.quick-grid button { width: 100%; min-width: 0; border: 0; background: none; padding: 0; color: var(--ink); text-align: center; }
+.quick-grid button span { width: clamp(40px, 10.5vw, 50px); height: clamp(40px, 10.5vw, 50px); margin: 0 auto 6px; border-radius: 16px; display: grid; place-items: center; background: #edf5f1; color: var(--green); box-shadow: inset 0 0 0 1px rgba(20,108,81,.05); transition: transform .15s ease; }
+.quick-grid button:active span { transform: scale(.92); }
+.quick-grid button span svg { width: clamp(18px, 4.8vw, 23px); height: clamp(18px, 4.8vw, 23px); }
 .quick-grid button:nth-child(2n) span { background: #fff1dc; color: #a86516; }
 .quick-grid button:nth-child(3n) span { background: #e8f0f7; color: #315f84; }
-.quick-grid b { font-size: 11px; line-height: 1.35; white-space: nowrap; }
+.quick-grid b { display: block; font-size: clamp(9px, 2.6vw, 11px); line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 700; }
 .card-scroll { display: grid; grid-auto-flow: column; grid-auto-columns: 70%; gap: 13px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 1px 1px 10px; scrollbar-width: none; }
 .destination-card { scroll-snap-align: start; min-width: 0; background: #fff; border-radius: 20px; box-shadow: 0 8px 24px rgba(20,35,30,.07); overflow: hidden; border: 1px solid #edf0ec; }
 .destination-image { height: 154px; position: relative; overflow: hidden; }
@@ -319,9 +321,9 @@ button { cursor: pointer; }
   .hero-copy { padding-inline: 4px; }
   .hero-copy h1 { font-size: clamp(28px, 9vw, 32px); }
   .section, .page-section { padding-inline: 13px; }
-  .quick-grid { grid-template-columns: repeat(5, 64px); gap: 6px; }
-  .quick-grid button { min-width: 64px; }
-  .quick-grid button span { width: 50px; height: 50px; border-radius: 16px; }
+  .quick-grid { grid-template-columns: repeat(6, 1fr); gap: 2px; }
+  .quick-grid button { min-width: 0; }
+  .quick-grid button span { width: 38px; height: 38px; border-radius: 13px; }
   .card-scroll { grid-auto-columns: 82%; }
   .destination-grid { grid-template-columns: 1fr; }
   .destination-grid .destination-image { height: 160px; }
