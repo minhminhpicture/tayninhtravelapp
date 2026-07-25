@@ -10,7 +10,6 @@ import {
   Check,
   ChevronRight,
   CircleHelp,
-  ClipboardCheck,
   Compass,
   Copy,
   Download,
@@ -45,11 +44,6 @@ type RentalDraft = {
   startDate: string;
   endDate: string;
   quantity: number;
-};
-type PlaceSuggestion = {
-  id: string;
-  label: string;
-  source: "google" | "local";
 };
 
 const destinations = [
@@ -115,14 +109,11 @@ export default function HomePage() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [quantity, setQuantity] = useState(1);
-  const [pickupPlace, setPickupPlace] = useState("");
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [rentalNote, setRentalNote] = useState("");
   const [quoteVisible, setQuoteVisible] = useState(false);
   const [rentalDrafts, setRentalDrafts] = useState<RentalDraft[]>([]);
-  const [placeSuggestions, setPlaceSuggestions] = useState<PlaceSuggestion[]>([]);
-  const [placeSuggestionsOpen, setPlaceSuggestionsOpen] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem("tn-favorites");
@@ -146,26 +137,6 @@ export default function HomePage() {
     localStorage.setItem("tn-rental-drafts", JSON.stringify(rentalDrafts));
   }, [rentalDrafts]);
 
-  useEffect(() => {
-    if (!placeSuggestionsOpen) return;
-    const controller = new AbortController();
-    const timeout = window.setTimeout(async () => {
-      try {
-        const response = await fetch(`/api/places?input=${encodeURIComponent(pickupPlace)}`, {
-          signal: controller.signal,
-        });
-        const data = await response.json() as { suggestions?: PlaceSuggestion[] };
-        setPlaceSuggestions(data.suggestions || []);
-      } catch {
-        if (!controller.signal.aborted) setPlaceSuggestions([]);
-      }
-    }, 220);
-    return () => {
-      window.clearTimeout(timeout);
-      controller.abort();
-    };
-  }, [pickupPlace, placeSuggestionsOpen]);
-
   const results = useMemo(() => destinations.filter((item) =>
     `${item.name} ${item.type}`.toLowerCase().includes(query.toLowerCase())
   ), [query]);
@@ -176,10 +147,6 @@ export default function HomePage() {
   );
 
   const dateRangeValid = Boolean(startDate && endDate && startDate <= endDate);
-  const hasLocalConflict = dateRangeValid && rentalDrafts.some((draft) =>
-    draft.vehicle === vehicle && startDate <= draft.endDate && endDate >= draft.startDate
-  );
-
   const vehicleLabel = vehicle === "motorbike" ? "Xe máy" : "VinFast VF3";
   const quoteText = [
     "YÊU CẦU KIỂM TRA & BÁO GIÁ THUÊ XE TÂY NINH",
@@ -187,11 +154,10 @@ export default function HomePage() {
     `Ngày nhận: ${startDate || "Chưa chọn"}`,
     `Ngày trả: ${endDate || "Chưa chọn"}`,
     `Số lượng: ${quantity}`,
-    `Nơi nhận xe: ${pickupPlace || "Sẽ trao đổi"}`,
     `Khách hàng: ${customerName || "Chưa cung cấp"}`,
     `Số điện thoại: ${customerPhone || "Chưa cung cấp"}`,
     `Ghi chú: ${rentalNote || "Không có"}`,
-    "Vui lòng kiểm tra xe còn trống và gửi báo giá giúp tôi.",
+    "Tôi muốn trao đổi thêm và nhận báo giá thuê xe qua Zalo.",
   ].join("\n");
 
   const notify = (message: string) => {
@@ -414,54 +380,6 @@ export default function HomePage() {
                   <span><b>Số lượng xe</b><small>Tối thiểu 1 xe</small></span>
                   <div><button onClick={() => setQuantity((value) => Math.max(1, value - 1))}>−</button><b>{quantity}</b><button onClick={() => setQuantity((value) => Math.min(20, value + 1))}><Plus size={16} /></button></div>
                 </div>
-                <div className="text-field place-field">
-                  <span>Nơi nhận xe</span>
-                  <div className="place-input-wrap">
-                    <MapPin size={18} />
-                    <input
-                      role="combobox"
-                      aria-expanded={placeSuggestionsOpen}
-                      aria-controls="pickup-suggestions"
-                      autoComplete="off"
-                      value={pickupPlace}
-                      onFocus={() => setPlaceSuggestionsOpen(true)}
-                      onChange={(event) => {
-                        setPickupPlace(event.target.value);
-                        setPlaceSuggestionsOpen(true);
-                      }}
-                      placeholder="Gõ khách sạn, bến xe hoặc địa chỉ..."
-                    />
-                    {pickupPlace && <button onClick={() => openMap(`${pickupPlace}, Tây Ninh`)} aria-label="Tìm địa điểm trên Google Maps"><Navigation size={17} /></button>}
-                  </div>
-                  {placeSuggestionsOpen && placeSuggestions.length > 0 && (
-                    <div className="place-suggestions" id="pickup-suggestions" role="listbox">
-                      {placeSuggestions.map((place) => (
-                        <button
-                          key={place.id}
-                          role="option"
-                          onMouseDown={(event) => event.preventDefault()}
-                          onClick={() => {
-                            setPickupPlace(place.label);
-                            setPlaceSuggestionsOpen(false);
-                          }}
-                        >
-                          <span><MapPin size={16} /></span>
-                          <b>{place.label}</b>
-                          <small>{place.source === "google" ? "Google Maps" : "Gợi ý Tây Ninh"}</small>
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                  <small className="place-help">Gợi ý từ Google Places khi hệ thống có API key; luôn có địa điểm Tây Ninh dự phòng.</small>
-                </div>
-              </div>
-
-              <div className={`availability-card ${!dateRangeValid ? "waiting" : hasLocalConflict ? "busy" : "available"}`}>
-                {!dateRangeValid ? <CalendarDays size={22} /> : hasLocalConflict ? <CircleHelp size={22} /> : <ClipboardCheck size={22} />}
-                <span>
-                  <b>{!dateRangeValid ? "Chọn ngày để kiểm tra" : hasLocalConflict ? "Có lịch tạm trùng thời gian" : "Chưa ghi nhận lịch trùng trên thiết bị"}</b>
-                  <small>Tình trạng xe thực tế sẽ được nhân viên xác nhận qua Zalo.</small>
-                </span>
               </div>
 
               <div className="form-section">
@@ -488,7 +406,6 @@ export default function HomePage() {
                     <div><dt>Loại xe</dt><dd>{vehicleLabel}</dd></div>
                     <div><dt>Thời gian</dt><dd>{startDate} → {endDate}</dd></div>
                     <div><dt>Số lượng</dt><dd>{quantity} xe</dd></div>
-                    <div><dt>Nhận xe</dt><dd>{pickupPlace || "Trao đổi sau"}</dd></div>
                   </dl>
                   <button onClick={copyQuote}><Copy size={18} /> Sao chép nội dung</button>
                   <button className="zalo-action" onClick={sendQuoteToZalo}><Send size={18} /> Sao chép & mở Zalo</button>
