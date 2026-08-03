@@ -35,7 +35,7 @@ import {
   Video,
   X,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { type PointerEvent as ReactPointerEvent, useEffect, useMemo, useRef, useState } from "react";
 
 type Tab = "home" | "explore" | "tour" | "events" | "food" | "rental" | "plan" | "saved";
 type InstallPrompt = Event & {
@@ -51,6 +51,8 @@ type RentalDraft = {
   endDate: string;
   quantity: number;
 };
+type AssistantPosition = { x: number; y: number };
+type AssistantDrag = { pointerX: number; pointerY: number; x: number; y: number };
 
 const destinations = [
   { id: "nui-ba-den", name: "Núi Bà Đen", type: "Tâm linh · Thiên nhiên", image: "/destinations/mia-nui-ba-den.jpg", time: "Cả ngày", rating: "4.9", address: "Xã Thạnh Tân, Tây Ninh", mapQuery: "Núi Bà Đen, Tây Ninh" },
@@ -330,6 +332,9 @@ export default function HomePage() {
   const [isInstalled, setIsInstalled] = useState(false);
   const [toast, setToast] = useState("");
   const [assistantOpen, setAssistantOpen] = useState(false);
+  const [assistantPosition, setAssistantPosition] = useState<AssistantPosition | null>(null);
+  const [assistantDragging, setAssistantDragging] = useState(false);
+  const [assistantHintVisible, setAssistantHintVisible] = useState(true);
   const [heroSlide, setHeroSlide] = useState(0);
   const [foodCategory, setFoodCategory] = useState("all");
   const [vehicle, setVehicle] = useState<VehicleType>("motorbike");
@@ -341,6 +346,9 @@ export default function HomePage() {
   const [rentalNote, setRentalNote] = useState("");
   const [quoteVisible, setQuoteVisible] = useState(false);
   const [rentalDrafts, setRentalDrafts] = useState<RentalDraft[]>([]);
+  const assistantRef = useRef<HTMLElement | null>(null);
+  const assistantDragRef = useRef<AssistantDrag | null>(null);
+  const assistantDidDragRef = useRef(false);
 
   useEffect(() => {
     const saved = localStorage.getItem("tn-favorites");
@@ -376,6 +384,33 @@ export default function HomePage() {
       window.removeEventListener("beforeinstallprompt", onInstall);
       window.removeEventListener("appinstalled", onInstalled);
     };
+  }, []);
+
+  useEffect(() => {
+    const hintTimer = window.setTimeout(() => setAssistantHintVisible(false), 4200);
+    const content = document.querySelector<HTMLElement>(".screen-content");
+    const hideHint = () => setAssistantHintVisible(false);
+    content?.addEventListener("scroll", hideHint, { passive: true, once: true });
+    window.addEventListener("scroll", hideHint, { passive: true, once: true });
+    return () => {
+      window.clearTimeout(hintTimer);
+      content?.removeEventListener("scroll", hideHint);
+      window.removeEventListener("scroll", hideHint);
+    };
+  }, []);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("tn-assistant-position");
+    if (!saved) return;
+    try {
+      const position = JSON.parse(saved) as AssistantPosition;
+      if (Number.isFinite(position.x) && Number.isFinite(position.y)) {
+        setAssistantPosition(position);
+        setAssistantHintVisible(false);
+      }
+    } catch {
+      localStorage.removeItem("tn-assistant-position");
+    }
   }, []);
 
   useEffect(() => {
@@ -425,6 +460,64 @@ export default function HomePage() {
   const notify = (message: string) => {
     setToast(message);
     window.setTimeout(() => setToast(""), 2600);
+  };
+
+  const clampAssistantPosition = (x: number, y: number) => {
+    const assistant = assistantRef.current;
+    const frame = assistant?.closest<HTMLElement>(".app-frame");
+    const frameRect = frame?.getBoundingClientRect();
+    const width = assistant?.offsetWidth || 78;
+    const height = assistant?.offsetHeight || 76;
+    const minX = Math.max(8, (frameRect?.left || 0) + 8);
+    const maxX = Math.max(minX, Math.min(window.innerWidth - 8, frameRect?.right || window.innerWidth) - width - 8);
+    const minY = Math.max(76, (frameRect?.top || 0) + 76);
+    const maxY = Math.max(minY, Math.min(window.innerHeight, frameRect?.bottom || window.innerHeight) - height - 88);
+    return { x: Math.min(maxX, Math.max(minX, x)), y: Math.min(maxY, Math.max(minY, y)) };
+  };
+
+  const startAssistantDrag = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    if (assistantOpen) return;
+    const rect = assistantRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    assistantDragRef.current = { pointerX: event.clientX, pointerY: event.clientY, x: rect.left, y: rect.top };
+    assistantDidDragRef.current = false;
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+
+  const moveAssistant = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    const start = assistantDragRef.current;
+    if (!start) return;
+    const deltaX = event.clientX - start.pointerX;
+    const deltaY = event.clientY - start.pointerY;
+    if (!assistantDidDragRef.current && Math.hypot(deltaX, deltaY) < 6) return;
+    assistantDidDragRef.current = true;
+    setAssistantDragging(true);
+    setAssistantHintVisible(false);
+    setAssistantPosition(clampAssistantPosition(start.x + deltaX, start.y + deltaY));
+  };
+
+  const finishAssistantDrag = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    const start = assistantDragRef.current;
+    if (!start) return;
+    assistantDragRef.current = null;
+    setAssistantDragging(false);
+    if (!assistantDidDragRef.current) return;
+    const currentPosition = clampAssistantPosition(
+      start.x + event.clientX - start.pointerX,
+      start.y + event.clientY - start.pointerY,
+    );
+    const assistant = assistantRef.current;
+    const frameRect = assistant?.closest<HTMLElement>(".app-frame")?.getBoundingClientRect();
+    const width = assistant?.offsetWidth || 78;
+    const leftEdge = Math.max(8, (frameRect?.left || 0) + 8);
+    const rightEdge = Math.min(window.innerWidth - 8, frameRect?.right || window.innerWidth) - width - 8;
+    const snapped = clampAssistantPosition(
+      currentPosition.x + width / 2 < ((frameRect?.left || 0) + (frameRect?.right || window.innerWidth)) / 2 ? leftEdge : rightEdge,
+      currentPosition.y,
+    );
+    setAssistantPosition(snapped);
+    localStorage.setItem("tn-assistant-position", JSON.stringify(snapped));
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
   };
 
   const toggleFavorite = (id: string) => {
@@ -828,7 +921,12 @@ export default function HomePage() {
           )}
         </div>
 
-        <aside className={`travel-assistant ${assistantOpen ? "open" : ""}`} aria-label="Trợ lý du lịch Tây Ninh">
+        <aside
+          ref={assistantRef}
+          className={`travel-assistant ${assistantOpen ? "open" : ""} ${assistantDragging ? "dragging" : ""} ${assistantPosition ? "moved" : ""}`}
+          style={!assistantOpen && assistantPosition ? { left: assistantPosition.x, top: assistantPosition.y, right: "auto", bottom: "auto" } : undefined}
+          aria-label="Trợ lý du lịch Tây Ninh"
+        >
           {assistantOpen && (
             <section className="assistant-panel" role="dialog" aria-label="Tôi có thể giúp gì cho bạn?">
               <div className="assistant-head">
@@ -846,8 +944,23 @@ export default function HomePage() {
               <button className="assistant-zalo" onClick={openZalo}><MessageCircle size={18} /> Hỏi trực tiếp qua Zalo</button>
             </section>
           )}
-          <button className="assistant-trigger" onClick={() => setAssistantOpen((value) => !value)} aria-expanded={assistantOpen} aria-label={assistantOpen ? "Đóng trợ lý Tây Ninh" : "Mở trợ lý Tây Ninh"}>
-            {!assistantOpen && <span>Cần tôi giúp?</span>}
+          <button
+            className="assistant-trigger"
+            onPointerDown={startAssistantDrag}
+            onPointerMove={moveAssistant}
+            onPointerUp={finishAssistantDrag}
+            onPointerCancel={finishAssistantDrag}
+            onClick={() => {
+              if (assistantDidDragRef.current) {
+                assistantDidDragRef.current = false;
+                return;
+              }
+              setAssistantOpen((value) => !value);
+            }}
+            aria-expanded={assistantOpen}
+            aria-label={assistantOpen ? "Đóng trợ lý Tây Ninh" : "Mở trợ lý Tây Ninh; có thể kéo để di chuyển"}
+          >
+            {!assistantOpen && assistantHintVisible && <span>Giữ và kéo tôi</span>}
             <img src="/assistant-mascot.png" alt="Trợ lý Tây Ninh" />
           </button>
         </aside>
