@@ -356,8 +356,9 @@ export default function HomePage() {
     const drafts = localStorage.getItem("tn-rental-drafts");
     if (drafts) setRentalDrafts(JSON.parse(drafts));
     const userAgent = navigator.userAgent;
-    const inAppBrowser = /Zalo|FBAN|FBAV|Instagram|Line\//i.test(userAgent);
-    const isiOS = /iPad|iPhone|iPod/i.test(userAgent);
+    const inAppBrowser = /Zalo|FBAN|FBAV|FB_IAB|Instagram|Line\/|Messenger|TikTok/i.test(userAgent);
+    const isiOS = /iPad|iPhone|iPod/i.test(userAgent)
+      || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
     const isAndroid = /Android/i.test(userAgent);
     setInstallPlatform(inAppBrowser ? "in-app" : isiOS ? "ios" : isAndroid ? "android" : "desktop");
     setIsInstalled(
@@ -992,30 +993,46 @@ export default function HomePage() {
 
         {installHint && (
           <div className="modal-backdrop" onClick={() => setInstallHint(false)}>
-            <section className="install-modal" onClick={(event) => event.stopPropagation()}>
+            <section className="install-modal" role="dialog" aria-modal="true" aria-label="Hướng dẫn cài ứng dụng" onClick={(event) => event.stopPropagation()}>
               <button className="modal-close" onClick={() => setInstallHint(false)}><X size={21} /></button>
               <span className="install-visual"><Share2 size={29} /></span>
               <h2>Thêm vào màn hình chính</h2>
               {installPlatform === "in-app" && (
                 <>
-                  <p>Bạn đang mở ứng dụng trong Zalo hoặc Facebook. Hãy nhấn menu <b>⋯</b>, chọn <b>Mở bằng Safari/Chrome</b>, rồi nhấn lại nút <b>Cài app</b>.</p>
+                  <span className="install-platform">Zalo · Facebook · TikTok</span>
+                  <ol className="install-steps">
+                    <li><b>1</b><span>Nhấn menu <strong>⋯</strong> của trình duyệt hiện tại.</span></li>
+                    <li><b>2</b><span>Chọn <strong>Mở bằng Safari</strong> trên iPhone hoặc <strong>Mở bằng Chrome</strong> trên Android.</span></li>
+                    <li><b>3</b><span>Quay lại nhấn <strong>Cài app</strong> và làm theo hướng dẫn.</span></li>
+                  </ol>
                   <button className="primary-wide" onClick={copyAppLink}><Copy size={18} /> Sao chép đường dẫn</button>
                 </>
               )}
               {installPlatform === "ios" && (
                 <>
-                  <p>Trong Safari, nhấn nút <b>Chia sẻ</b> ở thanh công cụ, kéo xuống và chọn <b>Thêm vào Màn hình chính</b>, sau đó nhấn <b>Thêm</b>.</p>
+                  <span className="install-platform">iPhone · iPad</span>
+                  <ol className="install-steps">
+                    <li><b>1</b><span>Mở trang này bằng <strong>Safari</strong>.</span></li>
+                    <li><b>2</b><span>Nhấn nút <strong>Chia sẻ</strong> ở thanh công cụ.</span></li>
+                    <li><b>3</b><span>Chọn <strong>Thêm vào Màn hình chính</strong>, sau đó nhấn <strong>Thêm</strong>.</span></li>
+                  </ol>
                   <button className="primary-wide" onClick={() => setInstallHint(false)}>Đã hiểu</button>
                 </>
               )}
               {installPlatform === "android" && (
                 <>
-                  <p>Trong Chrome, nhấn menu <b>⋮</b> rồi chọn <b>Cài đặt ứng dụng</b> hoặc <b>Thêm vào màn hình chính</b>. Nếu vừa mở trang, hãy chờ vài giây và thử lại.</p>
+                  <span className="install-platform">Điện thoại Android</span>
+                  <ol className="install-steps">
+                    <li><b>1</b><span>Mở trang này bằng <strong>Chrome</strong>.</span></li>
+                    <li><b>2</b><span>Nhấn menu <strong>⋮</strong> ở góc trên bên phải.</span></li>
+                    <li><b>3</b><span>Chọn <strong>Cài đặt ứng dụng</strong> hoặc <strong>Thêm vào màn hình chính</strong>.</span></li>
+                  </ol>
                   <button className="primary-wide" onClick={() => setInstallHint(false)}>Đã hiểu</button>
                 </>
               )}
               {installPlatform === "desktop" && (
                 <>
+                  <span className="install-platform">Máy tính</span>
                   <p>Trong Chrome hoặc Edge, nhấn biểu tượng cài đặt ở cuối thanh địa chỉ, hoặc mở menu trình duyệt và chọn <b>Cài đặt Khám Phá Tây Ninh</b>.</p>
                   <button className="primary-wide" onClick={() => setInstallHint(false)}>Đã hiểu</button>
                 </>
