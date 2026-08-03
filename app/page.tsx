@@ -960,7 +960,7 @@ export default function HomePage() {
             aria-expanded={assistantOpen}
             aria-label={assistantOpen ? "Đóng trợ lý Tây Ninh" : "Mở trợ lý Tây Ninh; có thể kéo để di chuyển"}
           >
-            {!assistantOpen && assistantHintVisible && <span>Giữ và kéo tôi</span>}
+            {!assistantOpen && assistantHintVisible && <span>Bà con cần hỗ trợ?</span>}
             <img src="/assistant-mascot.png" alt="Trợ lý Tây Ninh" />
           </button>
         </aside>
