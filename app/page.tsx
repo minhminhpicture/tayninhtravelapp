@@ -302,6 +302,7 @@ export default function HomePage() {
   const [installPlatform, setInstallPlatform] = useState<InstallPlatform>("desktop");
   const [isInstalled, setIsInstalled] = useState(false);
   const [toast, setToast] = useState("");
+  const [assistantOpen, setAssistantOpen] = useState(false);
   const [heroSlide, setHeroSlide] = useState(0);
   const [foodCategory, setFoodCategory] = useState("all");
   const [vehicle, setVehicle] = useState<VehicleType>("motorbike");
@@ -475,17 +476,18 @@ export default function HomePage() {
               <section className="hero-panel">
                 <div className="hero-card">
                   <img src={heroSlides[heroSlide].image} alt={heroSlides[heroSlide].alt} />
+                  <div className="hero-shade" />
+                  <div className="hero-copy">
+                    <span className="eyebrow"><Sparkles size={14} /> Hành trình của riêng bạn</span>
+                    <h1>Chạm Tây Ninh trong từng khoảnh khắc</h1>
+                    <p>Tour địa phương · Vé cáp treo · Thuê xe tiện lợi</p>
+                    <button onClick={() => setTab("explore")}>Khám phá ngay <ChevronRight size={17} /></button>
+                  </div>
                   <div className="hero-dots" aria-label="Chọn ảnh">
                     {heroSlides.map((slide, index) => (
                       <button key={slide.image} className={heroSlide === index ? "active" : ""} onClick={() => setHeroSlide(index)} aria-label={`Ảnh ${index + 1}`} />
                     ))}
                   </div>
-                </div>
-                <div className="hero-copy">
-                  <span className="eyebrow"><Sparkles size={14} /> Hành trình của riêng bạn</span>
-                  <h1>Chạm Tây Ninh trong từng khoảnh khắc</h1>
-                  <p>Tour địa phương · Vé cáp treo · Thuê xe tiện lợi</p>
-                  <button onClick={() => setTab("explore")}>Khám phá ngay <ChevronRight size={17} /></button>
                 </div>
               </section>
 
@@ -509,8 +511,6 @@ export default function HomePage() {
                 </div>
               </section>
 
-              <HomeEventsSection events={allEvents} onViewAll={() => setTab("events")} onMap={openMap} />
-
               <section className="section">
                 <div className="section-title"><div><span>GỢI Ý CHO BẠN</span><h2>Điểm đến nổi bật</h2></div><button onClick={() => setTab("explore")}>Xem thêm</button></div>
                 <div className="card-scroll">
@@ -533,6 +533,8 @@ export default function HomePage() {
                   ))}
                 </div>
               </section>
+
+              <HomeEventsSection events={allEvents} onViewAll={() => setTab("events")} onMap={openMap} />
 
               {!isInstalled && (
                 <section className="install-card">
@@ -786,10 +788,34 @@ export default function HomePage() {
           )}
         </div>
 
+        <aside className={`travel-assistant ${assistantOpen ? "open" : ""}`} aria-label="Trợ lý du lịch Tây Ninh">
+          {assistantOpen && (
+            <section className="assistant-panel" role="dialog" aria-label="Tôi có thể giúp gì cho bạn?">
+              <div className="assistant-head">
+                <span><img src="/assistant-mascot.png" alt="" /></span>
+                <div><small>TRỢ LÝ TÂY NINH</small><b>Tôi có thể giúp gì?</b></div>
+                <button onClick={() => setAssistantOpen(false)} aria-label="Đóng trợ lý"><X size={18} /></button>
+              </div>
+              <p>Chọn nhu cầu, tôi sẽ đưa bạn đến đúng chỗ ngay.</p>
+              <div className="assistant-actions">
+                <button onClick={() => { setTab("tour"); setAssistantOpen(false); }}><Route size={18} /><span><b>Xem tour</b><small>Lịch trình gợi ý</small></span></button>
+                <button onClick={() => { setTab("food"); setAssistantOpen(false); }}><ShoppingBag size={18} /><span><b>Mua đặc sản</b><small>Đặt qua Zalo OA</small></span></button>
+                <button onClick={() => { setTab("rental"); setAssistantOpen(false); }}><Bike size={18} /><span><b>Thuê xe</b><small>Kiểm tra lịch xe</small></span></button>
+                <button onClick={() => { setSearchOpen(true); setAssistantOpen(false); }}><Search size={18} /><span><b>Tìm địa điểm</b><small>Tra cứu nhanh</small></span></button>
+              </div>
+              <button className="assistant-zalo" onClick={openZalo}><MessageCircle size={18} /> Hỏi trực tiếp qua Zalo</button>
+            </section>
+          )}
+          <button className="assistant-trigger" onClick={() => setAssistantOpen((value) => !value)} aria-expanded={assistantOpen} aria-label={assistantOpen ? "Đóng trợ lý Tây Ninh" : "Mở trợ lý Tây Ninh"}>
+            {!assistantOpen && <span>Cần tôi giúp?</span>}
+            <img src="/assistant-mascot.png" alt="Trợ lý Tây Ninh" />
+          </button>
+        </aside>
+
         <nav className="bottom-nav" aria-label="Điều hướng chính">
           <NavButton active={tab === "home"} icon={Home} label="Trang chủ" onClick={() => setTab("home")} />
           <NavButton active={tab === "explore"} icon={Compass} label="Khám phá" onClick={() => setTab("explore")} />
-          <button className="nav-main" onClick={openZalo} aria-label="Liên hệ qua Zalo"><MessageCircle size={23} /><span>Zalo</span></button>
+          <button className="nav-main" onClick={() => setAssistantOpen(true)} aria-label="Mở trợ lý đặt dịch vụ"><MessageCircle size={23} /><span>Đặt ngay</span></button>
           <NavButton active={tab === "tour"} icon={Route} label="Tour" onClick={() => setTab("tour")} />
           <NavButton active={tab === "food"} icon={ShoppingBag} label="Đặc sản" onClick={() => setTab("food")} />
         </nav>
