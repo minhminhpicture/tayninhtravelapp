@@ -25,6 +25,7 @@ import {
   Search,
   Send,
   Share2,
+  ShoppingBag,
   Sparkles,
   Star,
   Ticket,
@@ -70,7 +71,7 @@ const quickActions = [
   { label: "Tour", icon: Route, action: "service" },
   { label: "Thuê xe", icon: Bike, action: "service" },
   { label: "Ẩm thực", icon: Utensils, action: "food" },
-  { label: "Lễ hội", icon: PartyPopper, action: "events" },
+  { label: "Đặc sản", icon: ShoppingBag, action: "food" },
   { label: "Hỗ trợ", icon: CircleHelp, action: "support" },
 ];
 
@@ -243,16 +244,6 @@ const allEvents: EventItem[] = [
     note: "Lễ hội đậm nét Nam Bộ với rước sắc thần, tế thần nông và nhiều trò chơi dân gian cộng đồng.",
     mapQuery: "Đình Hiệp Ninh, Tây Ninh",
   },
-  {
-    name: "Lễ hội bánh tráng Trảng Bàng",
-    lunarDate: "Theo lịch tổ chức từng năm",
-    startDate: "2026-03-01",
-    endDate: "2026-12-31",
-    location: "Trảng Bàng, Tây Ninh",
-    image: "/events/banh-trang-trang-bang.jpg",
-    note: "Không gian tôn vinh nghề làm bánh tráng, trình diễn thủ công, giao lưu văn hóa và thưởng thức đặc sản.",
-    mapQuery: "Trảng Bàng, Tây Ninh",
-  },
 ];
 
 function getEventStatus(event: EventItem, now: Date): "happening" | "upcoming" | "past" {
@@ -293,7 +284,7 @@ const foods = [
   { name: "Bánh tráng cuốn", category: "ricepaper", image: "/foods/banh-trang-cuon.jpg", note: "Nhiều vị mặn, ngọt, cay, chua; thường cuốn cùng tép hành, bơ hoặc muối." },
   { name: "Bánh tráng nướng", category: "ricepaper", image: "/foods/banh-trang-nuong.jpg", note: "Món ăn vặt giòn thơm, dễ mua khi khám phá Tây Ninh." },
   { name: "Muối Tây Ninh", category: "gift", image: "/foods/muoi-tay-ninh.jpg", note: "Có cả loại chay và mặn; phù hợp dùng tại chỗ hoặc mua về làm quà." },
-  { name: "Mãng cầu Núi Bà", category: "gift", image: "/foods/mang-cau.jpg", note: "Trái cây nổi bật của vùng chân núi Bà Đen, thơm và vị ngọt thanh.", url: "https://app.nabaden.vn" },
+  { name: "Mãng cầu Núi Bà", category: "gift", image: "/foods/mang-cau.jpg", note: "Trái cây nổi bật của vùng chân núi Bà Đen, thơm và vị ngọt thanh.", url: "https://zalo.me/2227000692046430780" },
   { name: "Nem bưởi", category: "vegetarian", image: "/foods/nem-buoi.jpg", note: "Món chay đặc trưng, có vị chua ngọt và kết cấu dai nhẹ." },
   { name: "Bánh canh chay", category: "vegetarian", image: "/foods/banh-canh-chay.jpg", note: "Lựa chọn thanh nhẹ, phù hợp hành trình tham quan vùng đất Thánh." },
   { name: "Kẹo thèo lèo", category: "sweet", image: "/foods/keo-theo-leo.jpg", note: "Món ngọt giòn thơm từ đậu phộng và mạch nha, tiện mua làm quà." },
@@ -373,6 +364,12 @@ export default function HomePage() {
     }, 4200);
     return () => window.clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    const content = document.querySelector<HTMLElement>(".screen-content");
+    content?.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [tab]);
 
   const results = useMemo(() => destinations.filter((item) =>
     `${item.name} ${item.type}`.toLowerCase().includes(query.toLowerCase())
@@ -617,7 +614,7 @@ export default function HomePage() {
           {tab === "food" && (
             <section className="page-section food-page">
               <span className="page-kicker">HƯƠNG VỊ ĐẤT THÁNH</span>
-              <h1>Ẩm thực Tây Ninh</h1>
+              <h1>Ẩm thực & đặc sản Tây Ninh</h1>
               <div className="food-hero">
                 <img src="/foods/banh-canh-trang-bang.jpg" alt="Đặc sản ẩm thực Tây Ninh" />
                 <div>
@@ -626,6 +623,11 @@ export default function HomePage() {
                   <p>Từ bánh canh Trảng Bàng, bò tơ đến bánh tráng phơi sương và các món quà địa phương.</p>
                 </div>
               </div>
+              <button className="specialty-cta" onClick={() => window.open("https://zalo.me/2227000692046430780", "_blank")}>
+                <span><ShoppingBag size={19} /><b>Đặt mua đặc sản</b></span>
+                <small>Tư vấn nhanh qua Zalo OA</small>
+                <ChevronRight size={19} />
+              </button>
               <div className="food-filters" aria-label="Lọc món ăn">
                 {foodCategories.map((category) => (
                   <button key={category.id} className={foodCategory === category.id ? "active" : ""} onClick={() => setFoodCategory(category.id)}>
@@ -787,9 +789,9 @@ export default function HomePage() {
         <nav className="bottom-nav" aria-label="Điều hướng chính">
           <NavButton active={tab === "home"} icon={Home} label="Trang chủ" onClick={() => setTab("home")} />
           <NavButton active={tab === "explore"} icon={Compass} label="Khám phá" onClick={() => setTab("explore")} />
-          <button className="nav-main" onClick={() => setSearchOpen(true)} aria-label="Tìm kiếm"><Search size={24} /></button>
-          <NavButton active={tab === "plan"} icon={Route} label="Lịch trình" onClick={() => setTab("plan")} />
-          <NavButton active={tab === "saved"} icon={Heart} label="Đã lưu" onClick={() => setTab("saved")} />
+          <button className="nav-main" onClick={openZalo} aria-label="Liên hệ qua Zalo"><MessageCircle size={23} /><span>Zalo</span></button>
+          <NavButton active={tab === "tour"} icon={Route} label="Tour" onClick={() => setTab("tour")} />
+          <NavButton active={tab === "food"} icon={ShoppingBag} label="Đặc sản" onClick={() => setTab("food")} />
         </nav>
 
         {searchOpen && (
@@ -867,7 +869,7 @@ function DestinationCard({ item, favorite, onFavorite, onMap }: { item: typeof d
 }
 
 function NavButton({ active, icon: Icon, label, onClick }: { active: boolean; icon: typeof Home; label: string; onClick: () => void }) {
-  return <button className={active ? "active" : ""} onClick={onClick}><Icon size={21} strokeWidth={active ? 2.4 : 1.8} /><span>{label}</span></button>;
+  return <button className={active ? "active" : ""} onClick={onClick} aria-current={active ? "page" : undefined}><Icon size={21} strokeWidth={active ? 2.4 : 1.8} /><span>{label}</span></button>;
 }
 
 function HomeEventsSection({ events, onViewAll, onMap }: { events: EventItem[]; onViewAll: () => void; onMap: (q: string) => void }) {

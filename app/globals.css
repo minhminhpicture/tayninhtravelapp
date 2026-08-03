@@ -28,7 +28,7 @@ button { cursor: pointer; }
 .install-top { min-height: 38px; border: 0; border-radius: 999px; padding: 9px 13px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: var(--pine); color: #fff; font-size: 11px; font-weight: 800; box-shadow: 0 7px 18px rgba(11,59,46,.18); transition: transform .15s ease, box-shadow .15s ease; }
 .install-top:active { transform: scale(.93); box-shadow: 0 3px 10px rgba(11,59,46,.12); }
 .install-top:hover { box-shadow: 0 10px 24px rgba(11,59,46,.24); }
-.screen-content { padding-bottom: calc(100px + env(safe-area-inset-bottom)); min-height: calc(100dvh - 68px); }
+.screen-content { padding-bottom: calc(112px + env(safe-area-inset-bottom)); min-height: calc(100dvh - 68px); }
 
 .hero-panel { margin: 12px 14px 0; }
 .hero-card { min-height: 245px; border-radius: 28px; overflow: hidden; position: relative; background: var(--pine); box-shadow: 0 16px 34px rgba(12,62,46,.16); }
@@ -215,6 +215,12 @@ button { cursor: pointer; }
 .food-hero span { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
 .food-hero h2 { font-size: clamp(22px, 6.5vw, 29px); line-height: 1.2; margin: 8px 0 5px; }
 .food-hero p { font-size: 12px; line-height: 1.55; color: rgba(255,255,255,.84); margin: 0; max-width: 370px; }
+.specialty-cta { width: 100%; min-height: 62px; margin-top: 12px; padding: 10px 12px; border: 1px solid #dcebe4; border-radius: 18px; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 2px 10px; color: var(--pine); background: linear-gradient(135deg, #eff8f4, #fffaf0); text-align: left; box-shadow: 0 8px 22px rgba(20, 108, 81, .08); }
+.specialty-cta span { display: flex; align-items: center; gap: 8px; }
+.specialty-cta span svg { color: var(--green); }
+.specialty-cta b { font-size: 13px; }
+.specialty-cta small { grid-column: 1; padding-left: 27px; color: var(--muted); font-size: 10px; }
+.specialty-cta > svg { grid-column: 2; grid-row: 1 / span 2; color: var(--green); }
 .food-filters { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 16px 0; padding-bottom: 2px; }
 .food-filters button { border: 1px solid var(--line); color: var(--muted); background: #fff; padding: 9px 13px; border-radius: 99px; font-size: 11px; font-weight: 700; white-space: nowrap; }
 .food-filters button.active { background: var(--pine); border-color: var(--pine); color: #fff; }
@@ -278,10 +284,12 @@ button { cursor: pointer; }
 .draft-row small { color: var(--muted); font-size: 10px; margin-top: 3px; }
 .draft-row button { width: 34px; height: 34px; border: 0; border-radius: 11px; display: grid; place-items: center; background: #f4f4f2; color: var(--muted); }
 
-.bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: min(100%, 480px); z-index: 50; height: calc(72px + env(safe-area-inset-bottom)); padding: 7px 10px max(7px, env(safe-area-inset-bottom)); background: rgba(255,255,255,.96); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); border-top: 1px solid var(--line); box-shadow: 0 -10px 26px rgba(20,35,30,.08); display: grid; grid-template-columns: 1fr 1fr 60px 1fr 1fr; align-items: center; }
-.bottom-nav > button { border: 0; background: none; color: #79877f; display: grid; justify-items: center; gap: 4px; font-size: clamp(9px, 2.7vw, 11px); line-height: 1.2; padding: 5px 1px; }
-.bottom-nav > button.active { color: var(--green); font-weight: 800; }
-.bottom-nav .nav-main { width: 52px; height: 52px; border-radius: 18px; place-self: end center; margin-bottom: 14px; display: grid; place-items: center; color: #fff; background: var(--pine); box-shadow: 0 8px 20px rgba(11,59,46,.28); }
+.bottom-nav { position: fixed; bottom: max(8px, env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); width: min(calc(100% - 20px), 460px); z-index: 50; height: 70px; padding: 7px 9px; background: rgba(255,255,255,.94); -webkit-backdrop-filter: blur(22px); backdrop-filter: blur(22px); border: 1px solid rgba(220, 229, 223, .92); border-radius: 22px; box-shadow: 0 14px 34px rgba(20,35,30,.18); display: grid; grid-template-columns: 1fr 1fr 60px 1fr 1fr; align-items: center; }
+.bottom-nav > button { min-height: 50px; border: 0; border-radius: 14px; background: none; color: #79877f; display: grid; justify-items: center; align-content: center; gap: 4px; font-size: clamp(9px, 2.7vw, 11px); line-height: 1.2; padding: 5px 1px; transition: color .18s ease, background .18s ease, transform .15s ease; }
+.bottom-nav > button:active { transform: scale(.92); }
+.bottom-nav > button.active { color: var(--green); background: var(--mint); font-weight: 800; }
+.bottom-nav .nav-main { width: 54px; height: 54px; min-height: 54px; border-radius: 19px; place-self: end center; margin-bottom: 13px; display: grid; place-items: center; align-content: center; gap: 1px; color: #fff; background: linear-gradient(145deg, #1689dd, #0968ba); box-shadow: 0 10px 24px rgba(9,104,186,.34); }
+.bottom-nav .nav-main span { font-size: 9px; font-weight: 800; }
 .modal-backdrop { position: absolute; inset: 0; z-index: 60; background: rgba(4,25,18,.54); display: flex; align-items: flex-end; backdrop-filter: blur(4px); }
 .search-modal, .install-modal { width: 100%; max-height: 83%; overflow: auto; background: #fbfcf9; border-radius: 28px 28px 0 0; padding: 10px 18px calc(22px + env(safe-area-inset-bottom)); animation: slideUp .28s ease-out; }
 .modal-handle { width: 38px; height: 4px; border-radius: 99px; background: #d1d9d4; margin: 0 auto 14px; }
@@ -310,7 +318,7 @@ button { cursor: pointer; }
 @media (min-width: 481px) {
   .app-frame { min-height: 880px; height: min(900px, calc(100dvh - 28px)); margin: 14px 0; border-radius: 34px; }
   .screen-content { height: calc(100% - 68px); overflow-y: auto; }
-  .bottom-nav { bottom: 14px; border-radius: 0 0 34px 34px; }
+  .bottom-nav { bottom: 22px; }
 }
 @media (max-width: 355px) {
   .topbar { padding-inline: 12px; }
