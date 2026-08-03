@@ -275,6 +275,7 @@ const foodCategories = [
 ];
 
 const foods = [
+  { name: "Mãng Cầu Bà Đen", category: "gift", image: "/foods/mang-cau.jpg", note: "Đặc sản nổi bật của vùng chân Núi Bà Đen, thơm và có vị ngọt thanh.", url: "https://zalo.me/2227000692046430780" },
   { name: "Bánh canh Trảng Bàng", category: "savory", image: "/foods/banh-canh-trang-bang.jpg", note: "Sợi bánh canh mềm dai, nước dùng xương ngọt thanh, thường dùng kèm thịt heo và rau." },
   { name: "Bò tơ Tây Ninh", category: "savory", image: "/foods/bo-to.jpg", note: "Thịt mềm, ngọt vừa; phổ biến với các món nướng, lẩu, nhúng giấm." },
   { name: "Ốc núi Bà Đen", category: "savory", image: "/foods/oc-nui.jpg", note: "Ốc sống trong hang đá, có vị thảo mộc; thường hấp, luộc hoặc xào." },
@@ -284,7 +285,6 @@ const foods = [
   { name: "Bánh tráng cuốn", category: "ricepaper", image: "/foods/banh-trang-cuon.jpg", note: "Nhiều vị mặn, ngọt, cay, chua; thường cuốn cùng tép hành, bơ hoặc muối." },
   { name: "Bánh tráng nướng", category: "ricepaper", image: "/foods/banh-trang-nuong.jpg", note: "Món ăn vặt giòn thơm, dễ mua khi khám phá Tây Ninh." },
   { name: "Muối Tây Ninh", category: "gift", image: "/foods/muoi-tay-ninh.jpg", note: "Có cả loại chay và mặn; phù hợp dùng tại chỗ hoặc mua về làm quà." },
-  { name: "Mãng cầu Núi Bà", category: "gift", image: "/foods/mang-cau.jpg", note: "Trái cây nổi bật của vùng chân núi Bà Đen, thơm và vị ngọt thanh.", url: "https://zalo.me/2227000692046430780" },
   { name: "Nem bưởi", category: "vegetarian", image: "/foods/nem-buoi.jpg", note: "Món chay đặc trưng, có vị chua ngọt và kết cấu dai nhẹ." },
   { name: "Bánh canh chay", category: "vegetarian", image: "/foods/banh-canh-chay.jpg", note: "Lựa chọn thanh nhẹ, phù hợp hành trình tham quan vùng đất Thánh." },
   { name: "Kẹo thèo lèo", category: "sweet", image: "/foods/keo-theo-leo.jpg", note: "Món ngọt giòn thơm từ đậu phộng và mạch nha, tiện mua làm quà." },

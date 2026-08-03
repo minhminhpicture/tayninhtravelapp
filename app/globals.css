@@ -285,7 +285,7 @@ button { cursor: pointer; }
 .draft-row small { color: var(--muted); font-size: 10px; margin-top: 3px; }
 .draft-row button { width: 34px; height: 34px; border: 0; border-radius: 11px; display: grid; place-items: center; background: #f4f4f2; color: var(--muted); }
 
-.travel-assistant { position: fixed; z-index: 49; right: max(12px, calc((100vw - 480px) / 2 + 12px)); bottom: calc(max(8px, env(safe-area-inset-bottom)) + 78px); display: grid; justify-items: end; pointer-events: none; }
+.travel-assistant { position: fixed; z-index: 49; right: max(12px, calc((100vw - 480px) / 2 + 12px)); bottom: calc(78px + env(safe-area-inset-bottom)); display: grid; justify-items: end; pointer-events: none; }
 .assistant-trigger { width: 104px; height: 86px; padding: 0; border: 0; display: flex; align-items: flex-end; justify-content: flex-end; background: none; position: relative; pointer-events: auto; filter: drop-shadow(0 9px 10px rgba(11,59,46,.22)); transition: transform .18s ease; }
 .assistant-trigger:active { transform: scale(.94); }
 .assistant-trigger img { width: 78px; height: 84px; object-fit: contain; object-position: right bottom; }
@@ -310,7 +310,7 @@ button { cursor: pointer; }
 .travel-assistant.open .assistant-trigger img { width: 58px; height: 62px; }
 @keyframes assistantIn { from { opacity: 0; transform: translateY(12px) scale(.97); } }
 
-.bottom-nav { position: fixed; bottom: max(8px, env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); width: min(calc(100% - 20px), 460px); z-index: 50; height: 70px; padding: 7px 9px; background: rgba(255,255,255,.94); -webkit-backdrop-filter: blur(22px); backdrop-filter: blur(22px); border: 1px solid rgba(220, 229, 223, .92); border-radius: 22px; box-shadow: 0 14px 34px rgba(20,35,30,.18); display: grid; grid-template-columns: 1fr 1fr 60px 1fr 1fr; align-items: center; }
+.bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: min(100%, 480px); z-index: 50; height: calc(76px + env(safe-area-inset-bottom)); padding: 7px 10px max(7px, env(safe-area-inset-bottom)); background: rgba(255,255,255,.97); -webkit-backdrop-filter: blur(22px); backdrop-filter: blur(22px); border: 1px solid rgba(220, 229, 223, .92); border-bottom: 0; border-radius: 22px 22px 0 0; box-shadow: 0 -10px 30px rgba(20,35,30,.12); display: grid; grid-template-columns: 1fr 1fr 60px 1fr 1fr; align-items: center; }
 .bottom-nav > button { min-height: 50px; border: 0; border-radius: 14px; background: none; color: #79877f; display: grid; justify-items: center; align-content: center; gap: 4px; font-size: clamp(9px, 2.7vw, 11px); line-height: 1.2; padding: 5px 1px; transition: color .18s ease, background .18s ease, transform .15s ease; }
 .bottom-nav > button:active { transform: scale(.92); }
 .bottom-nav > button.active { color: var(--green); background: var(--mint); font-weight: 800; }
@@ -344,7 +344,8 @@ button { cursor: pointer; }
 @media (min-width: 481px) {
   .app-frame { min-height: 880px; height: min(900px, calc(100dvh - 28px)); margin: 14px 0; border-radius: 34px; }
   .screen-content { height: calc(100% - 68px); overflow-y: auto; }
-  .bottom-nav { bottom: 22px; }
+  .bottom-nav { bottom: 14px; height: 76px; padding-bottom: 7px; border-radius: 0 0 34px 34px; }
+  .travel-assistant { bottom: 92px; }
 }
 @media (max-width: 355px) {
   .topbar { padding-inline: 12px; }
