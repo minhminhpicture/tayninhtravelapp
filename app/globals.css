@@ -87,6 +87,19 @@ button { cursor: pointer; }
 .install-card small { color: rgba(255,255,255,.78); font-size: 11px; line-height: 1.45; margin-top: 3px; }
 .install-card button { border: 0; background: #fff; color: var(--pine); border-radius: 99px; font-weight: 800; font-size: 11px; padding: 10px 12px; }
 
+.social-section { padding-top: 26px; }
+.social-list { display: grid; gap: 9px; }
+.social-card { min-height: 70px; display: flex; align-items: center; gap: 12px; padding: 11px 13px; color: var(--ink); text-decoration: none; border: 1px solid var(--line); border-radius: 18px; background: #fff; box-shadow: 0 6px 18px rgba(20,35,30,.045); transition: transform .15s ease, box-shadow .15s ease; }
+.social-card:active { transform: scale(.98); box-shadow: 0 3px 10px rgba(20,35,30,.04); }
+.social-icon { width: 44px; height: 44px; flex: 0 0 44px; display: grid; place-items: center; border-radius: 14px; color: #fff; background: var(--pine); }
+.social-card.tiktok .social-icon { background: #17181b; }
+.social-card.facebook .social-icon { background: #1877f2; }
+.social-card.group .social-icon { background: #315f84; }
+.social-copy { min-width: 0; flex: 1; display: grid; }
+.social-copy b { font-size: 13px; line-height: 1.35; }
+.social-copy small { margin-top: 3px; color: var(--muted); font-size: 10px; line-height: 1.4; }
+.social-card > svg { flex: 0 0 auto; color: #96a39c; }
+
 .home-events { padding-top: 8px; }
 .month-event-card { display: grid; grid-template-columns: 42% 1fr; min-height: 252px; overflow: hidden; border-radius: 23px; background: var(--pine); color: #fff; box-shadow: 0 14px 30px rgba(11,59,46,.16); }
 .month-event-card > img { width: 100%; height: 100%; min-height: 252px; object-fit: cover; object-position: center top; background: #eef7f2; }

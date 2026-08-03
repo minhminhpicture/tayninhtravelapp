@@ -12,6 +12,7 @@ import {
   Compass,
   Copy,
   Download,
+  ExternalLink,
   Heart,
   Home,
   MapPin,
@@ -30,6 +31,8 @@ import {
   Star,
   Ticket,
   Utensils,
+  UsersRound,
+  Video,
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
@@ -79,6 +82,30 @@ const heroSlides = [
   { image: "/hero.png", alt: "Toàn cảnh du lịch Tây Ninh" },
   { image: "/destinations/mia-nui-ba-den.jpg", alt: "Núi Bà Đen Tây Ninh" },
   { image: "/destinations/mia-toa-thanh.jpg", alt: "Tòa Thánh Tây Ninh" },
+];
+
+const socialChannels = [
+  {
+    label: "TikTok Tây Ninh Trips",
+    note: "Video ngắn và trải nghiệm thực tế",
+    url: "https://www.tiktok.com/@tayninhtrips",
+    icon: Video,
+    tone: "tiktok",
+  },
+  {
+    label: "Facebook Tây Ninh Trip",
+    note: "Tin mới và gợi ý hành trình",
+    url: "https://www.facebook.com/tayninhtrip",
+    icon: MessageCircle,
+    tone: "facebook",
+  },
+  {
+    label: "Cộng đồng Tây Ninh",
+    note: "Chia sẻ kinh nghiệm cùng thành viên",
+    url: "https://www.facebook.com/groups/253074593088919",
+    icon: UsersRound,
+    tone: "group",
+  },
 ];
 
 const tourDays = [
@@ -535,6 +562,19 @@ export default function HomePage() {
               </section>
 
               <HomeEventsSection events={allEvents} onViewAll={() => setTab("events")} onMap={openMap} />
+
+              <section className="section social-section">
+                <div className="section-title"><div><span>KẾT NỐI CỘNG ĐỒNG</span><h2>Theo dõi Tây Ninh Trips</h2></div></div>
+                <div className="social-list">
+                  {socialChannels.map(({ label, note, url, icon: Icon, tone }) => (
+                    <a className={`social-card ${tone}`} href={url} target="_blank" rel="me noopener noreferrer" key={url}>
+                      <span className="social-icon"><Icon size={21} /></span>
+                      <span className="social-copy"><b>{label}</b><small>{note}</small></span>
+                      <ExternalLink size={17} aria-hidden="true" />
+                    </a>
+                  ))}
+                </div>
+              </section>
 
               {!isInstalled && (
                 <section className="install-card">

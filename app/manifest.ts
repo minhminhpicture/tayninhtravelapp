@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Khám Phá Tây Ninh",
     short_name: "Tây Ninh",
-    description: "Điểm đến, tour, vé cáp treo và thuê xe tại Tây Ninh.",
+    description: "Khám phá điểm đến, tour, vé cáp treo, thuê xe và đặc sản Tây Ninh.",
     id: "/",
     start_url: "/",
     scope: "/",
