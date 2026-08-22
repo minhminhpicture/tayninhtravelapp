@@ -231,7 +231,7 @@ const annualEvents: AnnualEvent[] = [
     lunarDate: "Rằm tháng 7 âm lịch",
     lunarStart: { day: 15, month: 7 },
     location: "Các chùa Tây Ninh",
-    image: "/events/dong-kim-quang.jpg",
+    image: "/events/vu-lan-hoa-dang.jpg",
     note: "Mùa Vu Lan báo hiếu, các chùa tổ chức lễ cầu siêu, bông hồng cài áo và thả đèn hoa đăng trên sông.",
     mapQuery: "Núi Bà Đen, Tây Ninh",
   },
