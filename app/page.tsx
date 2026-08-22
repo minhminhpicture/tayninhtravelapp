@@ -36,6 +36,7 @@ import {
   X,
 } from "lucide-react";
 import { type PointerEvent as ReactPointerEvent, useEffect, useMemo, useRef, useState } from "react";
+import { addDays, lunarToSolar, toISODate, vietnamTodayISO } from "@/lib/vietnamese-lunar";
 
 type Tab = "home" | "explore" | "tour" | "events" | "food" | "rental" | "plan" | "saved";
 type InstallPrompt = Event & {
@@ -152,12 +153,17 @@ type EventItem = {
   url?: string;
 };
 
-const allEvents: EventItem[] = [
+type AnnualEvent = Omit<EventItem, "startDate" | "endDate"> & {
+  lunarStart: { day: number; month: number };
+  lunarEnd?: { day: number; month: number };
+  throughLunarMonthEnd?: boolean;
+};
+
+const annualEvents: AnnualEvent[] = [
   {
     name: "Lễ vía Đức Phật Di Lặc",
     lunarDate: "Mùng 1 tháng Giêng",
-    startDate: "2026-01-17",
-    endDate: "2026-01-17",
+    lunarStart: { day: 1, month: 1 },
     location: "Núi Bà Đen",
     image: "/events/xuan-nui-ba-den.jpg",
     note: "Nghi lễ cầu an đầu năm, dâng hương và chiêm bái tượng Phật lớn trên đỉnh núi.",
@@ -166,8 +172,8 @@ const allEvents: EventItem[] = [
   {
     name: "Hội Xuân Núi Bà Đen",
     lunarDate: "Mùng 4 – hết tháng Giêng",
-    startDate: "2026-01-21",
-    endDate: "2026-02-17",
+    lunarStart: { day: 4, month: 1 },
+    throughLunarMonthEnd: true,
     location: "Khu du lịch Núi Bà Đen",
     image: "/events/xuan-nui-ba-den.jpg",
     note: "Sự kiện lớn nhất đầu năm với nghi thức Phật giáo, dâng hương, cầu bình an, văn hóa dân gian và biểu diễn nghệ thuật.",
@@ -176,8 +182,8 @@ const allEvents: EventItem[] = [
   {
     name: "Đại lễ vía Đức Chí Tôn",
     lunarDate: "Mùng 9 tháng Giêng",
-    startDate: "2026-02-24",
-    endDate: "2026-02-25",
+    lunarStart: { day: 9, month: 1 },
+    lunarEnd: { day: 10, month: 1 },
     location: "Tòa Thánh Tây Ninh",
     image: "/events/yen-dieu-tri-cung.jpg",
     note: "Đại lễ quan trọng nhất của đạo Cao Đài, tín đồ khắp nơi quy tụ về Tòa Thánh với nghi thức trang trọng.",
@@ -186,8 +192,7 @@ const allEvents: EventItem[] = [
   {
     name: "Lễ hội truyền thống Động Kim Quang",
     lunarDate: "14 tháng Giêng",
-    startDate: "2026-03-02",
-    endDate: "2026-03-02",
+    lunarStart: { day: 14, month: 1 },
     location: "Động Kim Quang, Núi Bà Đen",
     image: "/events/dong-kim-quang.jpg",
     note: "Lễ rước kiệu, dâng hương và biểu diễn văn nghệ dân gian gắn với lịch sử, tín ngưỡng địa phương.",
@@ -196,8 +201,7 @@ const allEvents: EventItem[] = [
   {
     name: "Lễ vía Quán Thế Âm Bồ Tát",
     lunarDate: "19 tháng 2 âm lịch",
-    startDate: "2026-04-07",
-    endDate: "2026-04-07",
+    lunarStart: { day: 19, month: 2 },
     location: "Núi Bà Đen",
     image: "/events/xuan-nui-ba-den.jpg",
     note: "Đại lễ tôn kính Quán Thế Âm Bồ Tát với hàng ngàn phật tử dâng hương, tụng kinh và phóng sinh.",
@@ -206,8 +210,7 @@ const allEvents: EventItem[] = [
   {
     name: "Đại lễ Phật Đản",
     lunarDate: "Rằm tháng 4 âm lịch",
-    startDate: "2026-05-31",
-    endDate: "2026-05-31",
+    lunarStart: { day: 15, month: 4 },
     location: "Các chùa & Tòa Thánh Tây Ninh",
     image: "/events/dong-kim-quang.jpg",
     note: "Kỷ niệm ngày Đức Phật Thích Ca đản sinh, các chùa tổ chức lễ tắm Phật, thả đèn hoa đăng trang trọng.",
@@ -216,8 +219,8 @@ const allEvents: EventItem[] = [
   {
     name: "Lễ vía Bà Linh Sơn Thánh Mẫu",
     lunarDate: "Mùng 4–6 tháng 5 âm lịch",
-    startDate: "2026-06-18",
-    endDate: "2026-06-20",
+    lunarStart: { day: 4, month: 5 },
+    lunarEnd: { day: 6, month: 5 },
     location: "Núi Bà Đen",
     image: "/events/via-ba-linh-son.jpg",
     note: "Lễ hội tâm linh lớn nhất miền Nam với nghi thức Trình thập cúng, thu hút hàng triệu khách hành hương.",
@@ -226,8 +229,7 @@ const allEvents: EventItem[] = [
   {
     name: "Lễ Vu Lan – Báo hiếu",
     lunarDate: "Rằm tháng 7 âm lịch",
-    startDate: "2026-08-27",
-    endDate: "2026-08-27",
+    lunarStart: { day: 15, month: 7 },
     location: "Các chùa Tây Ninh",
     image: "/events/dong-kim-quang.jpg",
     note: "Mùa Vu Lan báo hiếu, các chùa tổ chức lễ cầu siêu, bông hồng cài áo và thả đèn hoa đăng trên sông.",
@@ -236,8 +238,7 @@ const allEvents: EventItem[] = [
   {
     name: "Đại lễ Hội yến Diêu Trì Cung",
     lunarDate: "Rằm tháng 8 âm lịch",
-    startDate: "2026-09-25",
-    endDate: "2026-09-25",
+    lunarStart: { day: 15, month: 8 },
     location: "Tòa Thánh Tây Ninh",
     image: "/events/yen-dieu-tri-cung.jpg",
     note: "Đại lễ quan trọng của đạo Cao Đài với nghi thức trang trọng, múa rồng, múa lân và diễn hành xe hoa.",
@@ -246,8 +247,7 @@ const allEvents: EventItem[] = [
   {
     name: "Lễ kỷ niệm Đức Quyền Giáo Tông",
     lunarDate: "12 tháng 10 âm lịch",
-    startDate: "2026-11-01",
-    endDate: "2026-11-01",
+    lunarStart: { day: 12, month: 10 },
     location: "Tòa Thánh Tây Ninh",
     image: "/events/yen-dieu-tri-cung.jpg",
     note: "Lễ tưởng niệm Đức Quyền Giáo Tông, tín đồ Cao Đài khắp nơi hội tụ dâng hương và tế lễ long trọng.",
@@ -256,30 +256,35 @@ const allEvents: EventItem[] = [
   {
     name: "Lễ giỗ Quan Lớn Trà Vong",
     lunarDate: "15 tháng 10 âm lịch",
-    startDate: "2026-11-04",
-    endDate: "2026-11-04",
+    lunarStart: { day: 15, month: 10 },
     location: "Đền Trà Vong, Trảng Bàng",
     image: "/events/quan-lon-tra-vong.jpg",
     note: "Dịp tưởng nhớ vị tướng có công bảo vệ vùng đất, kết hợp hát bội, diễn tuồng và hội chợ ẩm thực.",
     mapQuery: "Đền thờ Quan Lớn Trà Vong, Tây Ninh",
   },
-  {
-    name: "Lễ hội Kỳ Yên",
-    lunarDate: "Theo lịch các đình làng",
-    startDate: "2026-02-01",
-    endDate: "2026-12-31",
-    location: "Các đình làng Tây Ninh",
-    image: "/events/ky-yen.jpg",
-    note: "Lễ hội đậm nét Nam Bộ với rước sắc thần, tế thần nông và nhiều trò chơi dân gian cộng đồng.",
-    mapQuery: "Đình Hiệp Ninh, Tây Ninh",
-  },
 ];
 
-function getEventStatus(event: EventItem, now: Date): "happening" | "upcoming" | "past" {
-  const start = new Date(event.startDate + "T00:00:00");
-  const end = new Date(event.endDate + "T23:59:59");
-  if (now >= start && now <= end) return "happening";
-  if (now < start) return "upcoming";
+function resolveAnnualEvents(lunarYear: number): EventItem[] {
+  return annualEvents.map(({ lunarStart, lunarEnd, throughLunarMonthEnd, ...event }) => {
+    const startDate = toISODate(lunarToSolar(lunarStart.day, lunarStart.month, lunarYear));
+    let endDate = startDate;
+    if (lunarEnd) endDate = toISODate(lunarToSolar(lunarEnd.day, lunarEnd.month, lunarYear));
+    if (throughLunarMonthEnd) {
+      const nextMonthStart = toISODate(lunarToSolar(1, lunarStart.month + 1, lunarYear));
+      endDate = addDays(nextMonthStart, -1);
+    }
+    return { ...event, startDate, endDate };
+  });
+}
+
+function eventsAroundToday(today: string): EventItem[] {
+  const year = Number(today.slice(0, 4));
+  return [...resolveAnnualEvents(year), ...resolveAnnualEvents(year + 1)];
+}
+
+function getEventStatus(event: EventItem, today: string): "happening" | "upcoming" | "past" {
+  if (today >= event.startDate && today <= event.endDate) return "happening";
+  if (today < event.startDate) return "upcoming";
   return "past";
 }
 
@@ -289,7 +294,7 @@ function getMonthLabel(monthIndex: number): string {
 }
 
 function formatDateRange(startDate: string, endDate: string): string {
-  const fmt = (d: string) => { const p = d.split("-"); return `${p[2]}/${p[1]}`; };
+  const fmt = (d: string) => { const p = d.split("-"); return `${p[2]}/${p[1]}/${p[0]}`; };
   if (startDate === endDate) return fmt(startDate);
   return `${fmt(startDate)} \u2013 ${fmt(endDate)}`;
 }
@@ -321,6 +326,8 @@ const foods = [
 ];
 
 export default function HomePage() {
+  const today = useMemo(() => vietnamTodayISO(), []);
+  const allEvents = useMemo(() => eventsAroundToday(today), [today]);
   const [tab, setTab] = useState<Tab>("home");
   const [favorites, setFavorites] = useState<string[]>([]);
   const [selectedPlan, setSelectedPlan] = useState<string[]>(["nui-ba-den", "toa-thanh"]);
@@ -1069,12 +1076,11 @@ function NavButton({ active, icon: Icon, label, onClick }: { active: boolean; ic
 }
 
 function HomeEventsSection({ events, onViewAll, onMap }: { events: EventItem[]; onViewAll: () => void; onMap: (q: string) => void }) {
-  const now = new Date();
-  const monthLabel = getMonthLabel(now.getMonth());
+  const today = vietnamTodayISO();
 
-  const happeningEvents = events.filter((e) => getEventStatus(e, now) === "happening");
+  const happeningEvents = events.filter((e) => getEventStatus(e, today) === "happening");
   const upcomingEvents = events
-    .filter((e) => getEventStatus(e, now) === "upcoming")
+    .filter((e) => getEventStatus(e, today) === "upcoming")
     .sort((a, b) => a.startDate.localeCompare(b.startDate))
     .slice(0, 5);
 
@@ -1083,13 +1089,14 @@ function HomeEventsSection({ events, onViewAll, onMap }: { events: EventItem[]; 
 
   if (!featuredEvent) return null;
 
-  const featuredStatus = getEventStatus(featuredEvent, now);
+  const featuredStatus = getEventStatus(featuredEvent, today);
+  const monthLabel = getMonthLabel(Number(featuredEvent.startDate.slice(5, 7)) - 1);
 
   return (
     <section className="section home-events">
       <div className="section-title">
         <div>
-          <span>{featuredStatus === "happening" ? "ĐANG DIỄN RA" : "LỄ HỘI TRUYỀN THỐNG"} · {monthLabel.toUpperCase()}</span>
+          <span>{featuredStatus === "happening" ? "ĐANG DIỄN RA" : "LỊCH ÂM VIỆT NAM"} · {monthLabel.toUpperCase()}</span>
           <h2>Lễ hội văn hóa Tây Ninh</h2>
         </div>
         <button onClick={onViewAll}>Tất cả lễ hội</button>
@@ -1116,14 +1123,14 @@ function HomeEventsSection({ events, onViewAll, onMap }: { events: EventItem[]; 
       {scrollEvents.length > 0 && (
         <div className="events-scroll">
           {scrollEvents.map((event) => {
-            const status = getEventStatus(event, now);
+            const status = getEventStatus(event, today);
             return (
               <article className="event-scroll-card" key={event.name}>
                 <img src={event.image} alt={event.name} loading="lazy" />
                 <div>
-                  <span className={`event-status ${status}`}>{status === "happening" ? "Đang diễn ra" : "Hằng năm"}</span>
+                  <span className={`event-status ${status}`}>{status === "happening" ? "Đang diễn ra" : "Sắp diễn ra"}</span>
                   <h4>{event.name}</h4>
-                  <small><CalendarDays size={11} /> {event.lunarDate}</small>
+                  <small><CalendarDays size={11} /> {event.lunarDate} · DL: {formatDateRange(event.startDate, event.endDate)}</small>
                   <small><MapPin size={11} /> {event.location}</small>
                 </div>
                 <button onClick={() => onMap(event.mapQuery)} aria-label={`Chỉ đường đến ${event.name}`}><Navigation size={14} /></button>
@@ -1137,23 +1144,24 @@ function HomeEventsSection({ events, onViewAll, onMap }: { events: EventItem[]; 
 }
 
 function EventsPage({ events, onMap }: { events: EventItem[]; onMap: (q: string) => void }) {
-  const now = new Date();
-  const happening = events.filter((e) => getEventStatus(e, now) === "happening");
-  const upcoming = events.filter((e) => getEventStatus(e, now) === "upcoming").sort((a, b) => a.startDate.localeCompare(b.startDate));
-  const past = events.filter((e) => getEventStatus(e, now) === "past").sort((a, b) => b.startDate.localeCompare(a.startDate));
+  const today = vietnamTodayISO();
+  const currentYear = today.slice(0, 4);
+  const happening = events.filter((e) => getEventStatus(e, today) === "happening");
+  const upcoming = events.filter((e) => getEventStatus(e, today) === "upcoming").sort((a, b) => a.startDate.localeCompare(b.startDate));
+  const past = events.filter((e) => getEventStatus(e, today) === "past" && e.startDate.startsWith(currentYear)).sort((a, b) => b.startDate.localeCompare(a.startDate));
   const featured = happening[0] || upcoming[0];
-  const monthLabel = getMonthLabel(now.getMonth());
+  const monthLabel = featured ? getMonthLabel(Number(featured.startDate.slice(5, 7)) - 1) : "";
 
   return (
     <section className="page-section events-page">
-      <span className="page-kicker">LỄ HỘI TRUYỀN THỐNG HẰNG NĂM</span>
+      <span className="page-kicker">TỰ ĐỘNG CẬP NHẬT THEO LỊCH ÂM VIỆT NAM</span>
       <h1>Lễ hội văn hóa Tây Ninh</h1>
 
       {featured && (
         <article className="event-featured">
           <img src={featured.image} alt={featured.name} />
           <div>
-            <span><PartyPopper size={15} /> {getEventStatus(featured, now) === "happening" ? "Đang diễn ra" : "Sắp tới"} · {monthLabel}</span>
+            <span><PartyPopper size={15} /> {getEventStatus(featured, today) === "happening" ? "Đang diễn ra" : "Sắp tới"} · {monthLabel}</span>
             <h2>{featured.name}</h2>
             <p>{featured.note}</p>
             {featured.url ? (
