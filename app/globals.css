@@ -433,3 +433,118 @@ button { cursor: pointer; }
 }
 @media (display-mode: standalone) { .install-top { display: none; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+/* Accessible mobile typography: readable for older users without relying on zoom. */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body { font-size: clamp(16px, 4.1vw, 18px); line-height: 1.55; }
+:root { --muted: #5f6f67; }
+button, a, input, textarea { line-height: 1.4; }
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid rgba(20,108,81,.32); outline-offset: 3px; }
+
+.brand { font-size: clamp(15px, 4vw, 17px); }
+.brand small { font-size: 11px; }
+.install-top { min-height: 42px; font-size: 13px; }
+.eyebrow { font-size: clamp(12px, 3.3vw, 13px); }
+.hero-copy p { font-size: clamp(14px, 3.7vw, 15px); line-height: 1.55; color: rgba(255,255,255,.9); }
+.hero-copy button { min-height: 46px; font-size: 14px; }
+.section-title span, .page-kicker { font-size: 12px; line-height: 1.45; }
+.section-title button { min-height: 42px; font-size: 13px; }
+.quick-grid b { font-size: 12px; }
+.destination-image > span { font-size: 12px; }
+.destination-info small, .destination-info .destination-address, .destination-info button { font-size: 12px; }
+.destination-info button { min-height: 40px; }
+.service-copy b { font-size: clamp(15px, 4vw, 17px); }
+.service-copy small { font-size: 12px; }
+.install-card b, .social-copy b { font-size: 15px; }
+.install-card small, .social-copy small { font-size: 12px; }
+.install-card button { min-height: 42px; font-size: 13px; }
+
+.month-event-card { min-height: 320px; }
+.month-event-card > img { min-height: 320px; }
+.month-event-copy > span { font-size: 11px; }
+.month-event-copy h3 { font-size: clamp(19px, 5.1vw, 23px); }
+.month-event-copy p { font-size: 12px; line-height: 1.65; color: rgba(255,255,255,.9); }
+.month-event-copy > small { font-size: 11px; line-height: 1.5; }
+.month-event-copy button { min-height: 42px; font-size: 12px; }
+.month-event-copy button + button { width: 42px; }
+
+.search-box, .filter-row button { font-size: 14px; }
+.search-box { min-height: 48px; }
+.search-box span { font-size: 12px; }
+.plan-summary small, .time, .timeline-item small { font-size: 12px; }
+.plan-summary b, .timeline-item b { font-size: 15px; }
+.plan-summary button, .primary-wide { min-height: 46px; font-size: 14px; }
+.empty-state p { font-size: 15px; }
+.empty-state button, .support-panel button { min-height: 44px; font-size: 13px; }
+.support-panel b { font-size: 14px; }
+.support-panel small { font-size: 12px; }
+
+.tour-overview { grid-template-columns: 1fr; }
+.tour-overview > div { min-height: 64px; padding: 11px 12px; align-items: center; }
+.tour-overview small { font-size: 12px; }
+.tour-overview b { font-size: 14px; }
+.tour-lead { font-size: 14px; }
+.tour-style-grid span { font-size: 12px; }
+.tour-day-head span { font-size: 11px; }
+.tour-day-head h2 { font-size: 20px; }
+.tour-stops time { font-size: 12px; }
+.tour-stops b { font-size: 14px; }
+.tour-note b { font-size: 14px; }
+.tour-note p { font-size: 12px; }
+
+.event-featured span, .event-date { font-size: 12px; line-height: 1.5; }
+.event-featured p { font-size: 14px; line-height: 1.6; color: rgba(255,255,255,.92); }
+.event-featured button { min-height: 42px; font-size: 13px; }
+.event-card h2 { font-size: 17px; }
+.event-card small, .event-card p, .event-card button { font-size: 12px; }
+.event-card button { min-height: 38px; }
+.events-group-title { font-size: 19px; }
+.event-scroll-card { grid-template-columns: 64px minmax(0, 1fr) 42px; }
+.event-scroll-card h4 { font-size: 15px; white-space: normal; }
+.event-scroll-card small { font-size: 12px; }
+.event-status { font-size: 11px; }
+
+.food-hero span { font-size: 12px; }
+.food-hero p { font-size: 14px; }
+.specialty-cta b, .food-card h3, .rental-intro b, .field-label, .vehicle-options b { font-size: 15px; }
+.specialty-cta small, .food-card p, .rental-intro span, .vehicle-options small { font-size: 12px; }
+.food-filters button { min-height: 42px; font-size: 13px; }
+.date-grid label span, .text-field span, .quantity-field > span small { font-size: 12px; }
+.date-grid input, .text-field input, .text-field textarea { min-height: 46px; font-size: 14px; }
+.quantity-field > span b, .rental-actions button, .draft-row b { font-size: 14px; }
+.rental-actions button { min-height: 48px; }
+.quote-head b { font-size: 16px; }
+.quote-head small, .quote-card dl > div, .quote-card > button, .draft-row small { font-size: 12px; }
+.quote-card > button { min-height: 46px; }
+
+.assistant-trigger span { font-size: 12px; }
+.assistant-head small { font-size: 10px; }
+.assistant-head b { font-size: 17px; }
+.assistant-panel > p { font-size: 13px; }
+.assistant-actions b { font-size: 13px; }
+.assistant-actions small { font-size: 11px; }
+.assistant-zalo { min-height: 46px; font-size: 13px; }
+.bottom-nav { height: calc(82px + env(safe-area-inset-bottom)); }
+.bottom-nav > button { min-height: 54px; font-size: clamp(11px, 3vw, 12px); }
+.bottom-nav .nav-main span { font-size: 11px; }
+.screen-content { padding-bottom: calc(120px + env(safe-area-inset-bottom)); }
+.travel-assistant { bottom: calc(94px + env(safe-area-inset-bottom)); }
+
+.search-modal input { font-size: 16px; }
+.search-results b { font-size: 15px; }
+.search-results small { font-size: 12px; }
+.install-modal p { font-size: 15px; }
+.install-platform { font-size: 12px; }
+.install-steps li { min-height: 54px; font-size: 13px; }
+.install-steps li > b { font-size: 13px; }
+.toast { font-size: 13px; }
+
+@media (max-width: 355px) {
+  .hero-card { min-height: 320px; }
+  .month-event-card { grid-template-columns: 1fr; }
+  .month-event-card > img { height: 210px; min-height: 210px; }
+  .month-event-copy { min-height: 300px; }
+  .event-card { grid-template-columns: 92px 1fr; }
+  .event-card > img { width: 92px; }
+  .bottom-nav > button { font-size: 10.5px; }
+}
