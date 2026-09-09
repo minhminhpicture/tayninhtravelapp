@@ -943,31 +943,10 @@ export default function HomePage() {
           )}
         </div>
 
-        {assistantOpen && (
-          <div className="modal-backdrop" onClick={() => setAssistantOpen(false)}>
-            <section className="search-modal assistant-modal" onClick={(event) => event.stopPropagation()} role="dialog" aria-label="Trợ lý Tây Ninh">
-              <div className="modal-handle" />
-              <div className="assistant-head">
-                <span className="assistant-head-icon"><MessageCircle size={22} /></span>
-                <div><small>TRỢ LÝ TÂY NINH</small><b>Tôi có thể giúp gì?</b></div>
-                <button onClick={() => setAssistantOpen(false)} aria-label="Đóng trợ lý"><X size={18} /></button>
-              </div>
-              <p>Chọn nhu cầu, tôi sẽ đưa bạn đến đúng chỗ ngay.</p>
-              <div className="assistant-actions">
-                <button onClick={() => { setTab("guide"); setAssistantOpen(false); }}><NotebookTabs size={18} /><span><b>Cẩm nang</b><small>Bí kíp du lịch</small></span></button>
-                <button onClick={() => { setTab("tour"); setAssistantOpen(false); }}><Route size={18} /><span><b>Xem tour</b><small>Lịch trình gợi ý</small></span></button>
-                <button onClick={() => { setTab("rental"); setAssistantOpen(false); }}><Bike size={18} /><span><b>Thuê xe</b><small>Kiểm tra lịch xe</small></span></button>
-                <button onClick={() => { setSearchOpen(true); setAssistantOpen(false); }}><Search size={18} /><span><b>Tìm địa điểm</b><small>Tra cứu nhanh</small></span></button>
-              </div>
-              <button className="assistant-zalo" onClick={openZalo}><MessageCircle size={18} /> Hỏi trực tiếp qua Zalo</button>
-            </section>
-          </div>
-        )}
-
         <nav className="bottom-nav" aria-label="Điều hướng chính">
           <NavButton active={tab === "home"} icon={Home} label="Trang chủ" onClick={() => setTab("home")} />
           <NavButton active={tab === "guide"} icon={NotebookTabs} label="Cẩm nang" onClick={() => setTab("guide")} />
-          <button className="nav-main" onClick={() => setAssistantOpen(true)} aria-label="Mở trợ lý đặt dịch vụ"><MessageCircle size={20} /><span>Trợ lý</span></button>
+          <button className="nav-main" onClick={openZalo} aria-label="Liên hệ Zalo hỗ trợ du lịch 0584 556 556"><MessageCircle size={20} /><span>Hỗ trợ</span></button>
           <NavButton active={tab === "explore"} icon={Compass} label="Khám phá" onClick={() => setTab("explore")} />
           <NavButton active={tab === "tour"} icon={Route} label="Tour" onClick={() => setTab("tour")} />
         </nav>
