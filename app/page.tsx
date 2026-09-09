@@ -1342,7 +1342,12 @@ const guideArticles: GuideArticle[] = [
     category: "food",
     title: "Thưởng thức ẩm thực Buffet Vân Sơn & Đặc sản Tây Ninh đỉnh núi",
     badge: "Ẩm thực phong phú",
-    image: "/destinations/am-thuc.jpg",
+    image: "/guide/buffet-van-son-dinh-nui.jpg",
+    images: [
+      { url: "/guide/buffet-van-son-dinh-nui.jpg", caption: "Không gian nhà hàng Buffet Vân Sơn trên đỉnh Núi Bà Đen" },
+      { url: "/foods/banh-canh-trang-bang.jpg", caption: "Bánh canh Trảng Bàng đặc sản Tây Ninh" },
+      { url: "/foods/bo-to.jpg", caption: "Bò tơ Tây Ninh nướng thơm lừng" },
+    ],
     summary: "Trải nghiệm nhà hàng Buffet Vân Sơn với hơn 80 món ăn mặn/chay đặc sắc cùng ẩm thực Tây Ninh truyền thống.",
     highlights: [
       "Hơn 80 món ăn đa dạng từ ẩm thực Á - Âu đến đặc sản 3 miền",
