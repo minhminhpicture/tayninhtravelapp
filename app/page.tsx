@@ -943,16 +943,12 @@ export default function HomePage() {
           )}
         </div>
 
-        <aside
-          ref={assistantRef}
-          className={`travel-assistant ${assistantOpen ? "open" : ""} ${assistantDragging ? "dragging" : ""} ${assistantPosition ? "moved" : ""}`}
-          style={!assistantOpen && assistantPosition ? { left: assistantPosition.x, top: assistantPosition.y, right: "auto", bottom: "auto" } : undefined}
-          aria-label="Trợ lý du lịch Tây Ninh"
-        >
-          {assistantOpen && (
-            <section className="assistant-panel" role="dialog" aria-label="Tôi có thể giúp gì cho bạn?">
+        {assistantOpen && (
+          <div className="modal-backdrop" onClick={() => setAssistantOpen(false)}>
+            <section className="search-modal assistant-modal" onClick={(event) => event.stopPropagation()} role="dialog" aria-label="Trợ lý Tây Ninh">
+              <div className="modal-handle" />
               <div className="assistant-head">
-                <span><img src="/assistant-mascot.png" alt="" /></span>
+                <span className="assistant-head-icon"><MessageCircle size={22} /></span>
                 <div><small>TRỢ LÝ TÂY NINH</small><b>Tôi có thể giúp gì?</b></div>
                 <button onClick={() => setAssistantOpen(false)} aria-label="Đóng trợ lý"><X size={18} /></button>
               </div>
@@ -965,27 +961,8 @@ export default function HomePage() {
               </div>
               <button className="assistant-zalo" onClick={openZalo}><MessageCircle size={18} /> Hỏi trực tiếp qua Zalo</button>
             </section>
-          )}
-          <button
-            className="assistant-trigger"
-            onPointerDown={startAssistantDrag}
-            onPointerMove={moveAssistant}
-            onPointerUp={finishAssistantDrag}
-            onPointerCancel={finishAssistantDrag}
-            onClick={() => {
-              if (assistantDidDragRef.current) {
-                assistantDidDragRef.current = false;
-                return;
-              }
-              setAssistantOpen((value) => !value);
-            }}
-            aria-expanded={assistantOpen}
-            aria-label={assistantOpen ? "Đóng trợ lý Tây Ninh" : "Mở trợ lý Tây Ninh; có thể kéo để di chuyển"}
-          >
-            {!assistantOpen && assistantHintVisible && <span>Bà con cần hỗ trợ?</span>}
-            <img src="/assistant-mascot.png" alt="Trợ lý Tây Ninh" />
-          </button>
-        </aside>
+          </div>
+        )}
 
         <nav className="bottom-nav" aria-label="Điều hướng chính">
           <NavButton active={tab === "home"} icon={Home} label="Trang chủ" onClick={() => setTab("home")} />
