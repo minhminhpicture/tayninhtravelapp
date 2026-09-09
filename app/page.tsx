@@ -1238,11 +1238,11 @@ const guideArticles: GuideArticle[] = [
     category: "cable",
     title: "Tuyến cáp Vân Sơn – Hành trình chinh phục Nóc nhà Nam Bộ 986m",
     badge: "Sun World Ba Den",
-    image: "/guide/nui-ba-den-toan-canh-that.webp",
+    image: "/guide/tuong-phat-ba-chieu-toi.webp",
     images: [
-      { url: "/guide/nui-ba-den-toan-canh-that.webp", caption: "Toàn cảnh Đỉnh Núi Bà Đen & Tượng Phật Bà 72m từ trên cao" },
-      { url: "/guide/nhac-nuoc-di-lac-that.jpg", caption: "Show Nhạc Nước bên Tượng Bồ Tát Di Lặc sa thạch về đêm" },
-      { url: "/guide/chua-ba-chieu-toi.webp", caption: "Linh Sơn Tiên Thạch Tự (Chùa Bà) lung linh chiều tối" },
+      { url: "/guide/tuong-phat-ba-chieu-toi.webp", caption: "Tượng Phật Bà Tây Bổ Đà Sơn 72m lung linh ánh vàng hoàng hôn" },
+      { url: "/guide/quang-truong-dinh-nui.webp", caption: "Quảng trường đỉnh núi & Vườn hoa Sun World" },
+      { url: "/guide/nui-ba-den-toan-canh-that.webp", caption: "Toàn cảnh Núi Bà Đen từ trên cao" },
     ],
     summary: "Tuyến cáp treo đưa du khách từ chân núi lên thẳng đỉnh Núi Bà Đen, chiêm bái Tượng Phật Bà Tây Bổ Đà Sơn và Tượng Bồ Tát Di Lặc sa thạch.",
     highlights: [
@@ -1293,6 +1293,10 @@ const guideArticles: GuideArticle[] = [
     title: "Cách di chuyển từ TP.HCM & các tỉnh đến Tây Ninh tiện lợi nhất",
     badge: "Cẩm nang di chuyển",
     image: "/destinations/trang-ta-not-upload.png",
+    images: [
+      { url: "/destinations/trang-ta-not-upload.png", caption: "Cung đường xanh rợp bóng mát du lịch Tây Ninh" },
+      { url: "/guide/nui-ba-den-toan-canh-that.webp", caption: "Hướng nhìn toàn cảnh Núi Bà Đen từ xa" },
+    ],
     summary: "Tổng hợp các phương tiện di chuyển nhanh chóng: Xe khách, Limousine, xe máy và ô tô cá nhân đến Tây Ninh.",
     highlights: [
       "Xe khách/Limousine: Chạy thẳng từ TP.HCM đến chân núi Bà Đen (1.5 - 2 tiếng)",
@@ -1313,11 +1317,11 @@ const guideArticles: GuideArticle[] = [
     category: "attraction",
     title: "Top 5 điểm check-in không thể bỏ lỡ tại Sun World Ba Den Mountain",
     badge: "Check-in & Trải nghiệm",
-    image: "/guide/nui-ba-den-toan-canh-that.webp",
+    image: "/guide/quang-truong-dinh-nui.webp",
     images: [
-      { url: "/guide/nui-ba-den-toan-canh-that.webp", caption: "Toàn cảnh Đỉnh Núi Bà Đen từ trên cao" },
-      { url: "/guide/nhac-nuoc-di-lac-that.jpg", caption: "Show Nhạc Nước Di Lặc lung linh về đêm" },
-      { url: "/guide/phat-tu-dang-huong-chua-ba.webp", caption: "Khu vực chiêm bái Chùa Bà Núi Bà Đen" },
+      { url: "/guide/quang-truong-dinh-nui.webp", caption: "Quảng trường & Vườn hoa Sun World trên đỉnh núi" },
+      { url: "/guide/tuong-phat-ba-chieu-toi.webp", caption: "Chiêm bái Tượng Phật Bà 72m lúc chiều tà" },
+      { url: "/guide/nhac-nuoc-di-lac-that.jpg", caption: "Show Nhạc Nước bên Tượng Di Lặc sa thạch" },
     ],
     summary: "Khám phá các công trình biểu tượng tâm linh và kiến trúc đỉnh cao trên nóc nhà Nam Bộ.",
     highlights: [
@@ -1344,7 +1348,7 @@ const guideArticles: GuideArticle[] = [
     badge: "Ẩm thực phong phú",
     image: "/guide/buffet-van-son-dinh-nui.jpg",
     images: [
-      { url: "/guide/buffet-van-son-dinh-nui.jpg", caption: "Không gian nhà hàng Buffet Vân Sơn trên đỉnh Núi Bà Đen" },
+      { url: "/guide/buffet-van-son-dinh-nui.jpg", caption: "Nhà hàng Buffet Vân Sơn trên đỉnh Núi Bà Đen" },
       { url: "/foods/banh-canh-trang-bang.jpg", caption: "Bánh canh Trảng Bàng đặc sản Tây Ninh" },
       { url: "/foods/bo-to.jpg", caption: "Bò tơ Tây Ninh nướng thơm lừng" },
     ],
@@ -1372,7 +1376,7 @@ const guideArticles: GuideArticle[] = [
     image: "/guide/nui-ba-den-toan-canh-that.webp",
     images: [
       { url: "/guide/nui-ba-den-toan-canh-that.webp", caption: "Biển mây trắng xóa phủ tràn đỉnh núi" },
-      { url: "/guide/nhac-nuoc-di-lac-that.jpg", caption: "Cảnh sắc lung linh đỉnh núi khi chiều tối" },
+      { url: "/guide/quang-truong-dinh-nui.webp", caption: "Không gian thoáng đãng săn mây tại quảng trường" },
     ],
     summary: "Thời điểm vàng để bắt trọn hiện tượng biển mây bồng bềnh và hướng dẫn chuẩn bị trang phục phù hợp.",
     highlights: [
@@ -1416,8 +1420,9 @@ const guideArticles: GuideArticle[] = [
     badge: "Lễ hội tâm linh",
     image: "/events/via-ba-linh-son.jpg",
     images: [
-      { url: "/guide/phat-tu-dang-huong-chua-ba.webp", caption: "Không khí dâng hương trang nghiêm dịp lễ hội" },
-      { url: "/guide/chua-ba-chieu-toi.webp", caption: "Điện Quan Âm Chùa Bà lung linh ánh đèn" },
+      { url: "/events/via-ba-linh-son.jpg", caption: "Không khí Lễ Vía Bà Linh Sơn Thánh Mẫu" },
+      { url: "/guide/phat-tu-dang-huong-chua-ba.webp", caption: "Nghi thức dâng hương cầu an trang nghiêm" },
+      { url: "/guide/nhac-nuoc-di-lac-that.jpg", caption: "Biểu diễn nghệ thuật & nhạc nước về đêm" },
     ],
     summary: "Khám phá không gian lễ hội tâm linh lớn bậc nhất miền Nam: Hội xuân Núi Bà, Lễ vía Bà Linh Sơn Thánh Mẫu, Lễ vía Di Lặc và Lễ dâng đèn.",
     highlights: [
@@ -1440,11 +1445,11 @@ const guideArticles: GuideArticle[] = [
     category: "itinerary",
     title: "Hướng dẫn trọn gói: Lịch trình 1 ngày (Chùa Bà trước -> Đỉnh Núi Bà Đen sau)",
     badge: "Lịch trình truyền thống",
-    image: "/guide/nui-ba-den-toan-canh-that.webp",
+    image: "/guide/chua-ba-chieu-toi.webp",
     images: [
-      { url: "/guide/phat-tu-dang-huong-chua-ba.webp", caption: "Sáng: Dâng hương chiêm bái Chùa Bà" },
-      { url: "/guide/nui-ba-den-toan-canh-that.webp", caption: "Trưa: Nối cáp Tâm An lên Đỉnh Núi 986m" },
-      { url: "/guide/nhac-nuoc-di-lac-that.jpg", caption: "Chiều tối: Thưởng thức Show Nhạc Nước Di Lặc" },
+      { url: "/guide/phat-tu-dang-huong-chua-ba.webp", caption: "Sáng: Viếng Linh Sơn Tiên Thạch Tự (Chùa Bà)" },
+      { url: "/guide/quang-truong-dinh-nui.webp", caption: "Trưa: Nối cáp Tâm An tham quan Quảng trường Đỉnh" },
+      { url: "/guide/tuong-phat-ba-chieu-toi.webp", caption: "Chiều: Chiêm bái Tượng Phật Bà Tây Bổ Đà Sơn" },
     ],
     summary: "Lịch trình chuẩn hành hương & trải nghiệm: Sáng viếng Chùa Bà 300 năm linh thiêng -> Trưa & chiều lên Đỉnh 986m chiêm bái Tượng Phật Bà, Tượng Di Lặc & ăn Buffet Vân Sơn.",
     highlights: [
@@ -1474,8 +1479,8 @@ const guideArticles: GuideArticle[] = [
     image: "/guide/nhac-nuoc-di-lac-that.jpg",
     images: [
       { url: "/guide/nhac-nuoc-di-lac-that.jpg", caption: "Show Nhạc Nước bên Tượng Bồ Tát Di Lặc sa thạch 36m" },
-      { url: "/guide/nui-ba-den-toan-canh-that.webp", caption: "Toàn cảnh Đỉnh Núi Bà Đen & Tượng Phật Bà 72m" },
-      { url: "/guide/phat-tu-dang-huong-chua-ba.webp", caption: "Không khí dâng hương trang nghiêm Núi Bà" },
+      { url: "/guide/tuong-phat-ba-chieu-toi.webp", caption: "Đại tượng Phật Bà Tây Bổ Đà Sơn rực rỡ ánh đèn" },
+      { url: "/guide/quang-truong-dinh-nui.webp", caption: "Quảng trường đỉnh núi nơi diễn ra Lễ Dâng Đèn" },
     ],
     summary: "Chiêm bái Tượng Phật Bà Tây Bổ Đà Sơn (72m), thưởng thức Show Nhạc Nước Di Lặc từ 17h00 và Lễ Dâng Đèn lung linh tối Thứ 7.",
     highlights: [
