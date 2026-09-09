@@ -990,7 +990,7 @@ export default function HomePage() {
         <nav className="bottom-nav" aria-label="Điều hướng chính">
           <NavButton active={tab === "home"} icon={Home} label="Trang chủ" onClick={() => setTab("home")} />
           <NavButton active={tab === "guide"} icon={NotebookTabs} label="Cẩm nang" onClick={() => setTab("guide")} />
-          <button className="nav-main" onClick={() => setAssistantOpen(true)} aria-label="Mở trợ lý đặt dịch vụ"><MessageCircle size={23} /><span>Đặt ngay</span></button>
+          <button className="nav-main" onClick={() => setAssistantOpen(true)} aria-label="Mở trợ lý đặt dịch vụ"><MessageCircle size={20} /><span>Trợ lý</span></button>
           <NavButton active={tab === "explore"} icon={Compass} label="Khám phá" onClick={() => setTab("explore")} />
           <NavButton active={tab === "tour"} icon={Route} label="Tour" onClick={() => setTab("tour")} />
         </nav>
