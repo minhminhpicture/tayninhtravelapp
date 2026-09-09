@@ -1205,6 +1205,7 @@ interface GuideArticle {
   title: string;
   badge: string;
   image: string;
+  images?: { url: string; caption: string }[];
   summary: string;
   highlights: string[];
   content: string[];
@@ -1237,7 +1238,12 @@ const guideArticles: GuideArticle[] = [
     category: "cable",
     title: "Tuyến cáp Vân Sơn – Hành trình chinh phục Nóc nhà Nam Bộ 986m",
     badge: "Sun World Ba Den",
-    image: "/cable-car.jpg",
+    image: "/guide/tuong-phat-tay-bo-da-son.jpg",
+    images: [
+      { url: "/guide/tuong-phat-tay-bo-da-son.jpg", caption: "Tượng Phật Bà Tây Bổ Đà Sơn 72m" },
+      { url: "/guide/dinh-nui-ba-den-toan-canh.webp", caption: "Toàn cảnh đỉnh núi Sun World Ba Den" },
+      { url: "/guide/trien-lam-phat-giao-dinh-nui.jpg", caption: "Vòm kính giếng trời Triển lãm Phật giáo" },
+    ],
     summary: "Tuyến cáp treo đưa du khách từ chân núi lên thẳng đỉnh Núi Bà Đen, chiêm bái Tượng Phật Bà Tây Bổ Đà Sơn và Tượng Bồ Tát Di Lặc sa thạch.",
     highlights: [
       "Chiêm bái Tượng Phật Bà Bằng Đồng cao nhất Châu Á (72m)",
@@ -1260,7 +1266,11 @@ const guideArticles: GuideArticle[] = [
     category: "cable",
     title: "Tuyến cáp Chùa Hang – Hành hương Quần thể Chùa Bà hơn 300 năm",
     badge: "Tâm linh linh thiêng",
-    image: "/destinations/chua-go-ken-upload.webp",
+    image: "/guide/phat-tu-dang-huong-chua-ba.webp",
+    images: [
+      { url: "/guide/phat-tu-dang-huong-chua-ba.webp", caption: "Phật tử dâng hương chiêm bái Chùa Bà" },
+      { url: "/guide/chua-ba-chieu-toi.webp", caption: "Linh Sơn Tiên Thạch Tự lung linh chiều tối" },
+    ],
     summary: "Tuyến cáp đưa du khách lên khu vực Chùa Bà (Linh Sơn Tiên Thạch Tự), trung tâm hành hương tâm linh lớn bậc nhất miền Nam.",
     highlights: [
       "Chiêm bái Linh Sơn Tiên Thạch Tự (Chùa Bà) hơn 300 năm",
@@ -1303,7 +1313,12 @@ const guideArticles: GuideArticle[] = [
     category: "attraction",
     title: "Top 5 điểm check-in không thể bỏ lỡ tại Sun World Ba Den Mountain",
     badge: "Check-in & Trải nghiệm",
-    image: "/destinations/mia-nui-ba-den.jpg",
+    image: "/guide/dinh-nui-ba-den-toan-canh.webp",
+    images: [
+      { url: "/guide/dinh-nui-ba-den-toan-canh.webp", caption: "Toàn cảnh Đỉnh Núi Bà Đen từ trên cao" },
+      { url: "/guide/tuong-phat-tay-bo-da-son.jpg", caption: "Tượng Phật Bà Tây Bổ Đà Sơn 72m" },
+      { url: "/guide/trien-lam-phat-giao-dinh-nui.jpg", caption: "Vòm kính giếng trời Triển lãm Phật giáo" },
+    ],
     summary: "Khám phá các công trình biểu tượng tâm linh và kiến trúc đỉnh cao trên nóc nhà Nam Bộ.",
     highlights: [
       "Tượng Phật Bà Tây Bổ Đà Sơn đúc bằng 170 tấn đồng đỏ",
@@ -1350,6 +1365,10 @@ const guideArticles: GuideArticle[] = [
     title: "Bí kíp săn mây đỉnh núi & Trang phục chuẩn mực khi du lịch Tây Ninh",
     badge: "Kinh nghiệm du khách",
     image: "/events/xuan-nui-ba-den.jpg",
+    images: [
+      { url: "/guide/dinh-nui-ba-den-toan-canh.webp", caption: "Biển mây trắng xóa phủ tràn đỉnh núi" },
+      { url: "/guide/tuong-phat-tay-bo-da-son.jpg", caption: "Tượng Phật Bà uy nghiêm trong biển mây" },
+    ],
     summary: "Thời điểm vàng để bắt trọn hiện tượng biển mây bồng bềnh và hướng dẫn chuẩn bị trang phục phù hợp.",
     highlights: [
       "Săn mây: Từ 06h00 – 08h00 sáng các ngày mùa khô hoặc ngay sau cơn mưa rào",
@@ -1391,6 +1410,10 @@ const guideArticles: GuideArticle[] = [
     title: "Lễ hội & Văn hóa truyền thống đặc sắc tại Núi Bà Đen",
     badge: "Lễ hội tâm linh",
     image: "/events/via-ba-linh-son.jpg",
+    images: [
+      { url: "/guide/phat-tu-dang-huong-chua-ba.webp", caption: "Không khí dâng hương trang nghiêm dịp lễ hội" },
+      { url: "/guide/chua-ba-chieu-toi.webp", caption: "Điện Quan Âm Chùa Bà lung linh ánh đèn" },
+    ],
     summary: "Khám phá không gian lễ hội tâm linh lớn bậc nhất miền Nam: Hội xuân Núi Bà, Lễ vía Bà Linh Sơn Thánh Mẫu, Lễ vía Di Lặc và Lễ dâng đèn.",
     highlights: [
       "Hội Xuân Núi Bà Đen (Mùng 4 - hết tháng Giêng): Mở đầu năm mới với hàng triệu lượt khách hành hương cầu an, chương trình nghệ thuật dân gian & bắn pháo hoa",
@@ -1412,7 +1435,12 @@ const guideArticles: GuideArticle[] = [
     category: "itinerary",
     title: "Hướng dẫn trọn gói: Lịch trình 1 ngày (Chùa Bà trước -> Đỉnh Núi Bà Đen sau)",
     badge: "Lịch trình truyền thống",
-    image: "/cable-car.jpg",
+    image: "/guide/chua-ba-chieu-toi.webp",
+    images: [
+      { url: "/guide/phat-tu-dang-huong-chua-ba.webp", caption: "Sáng: Dâng hương chiêm bái Chùa Bà" },
+      { url: "/guide/dinh-nui-ba-den-toan-canh.webp", caption: "Trưa: Nối cáp Tâm An lên Đỉnh Núi 986m" },
+      { url: "/guide/tuong-phat-tay-bo-da-son.jpg", caption: "Chiều: Chiêm bái Tượng Phật Bà 72m" },
+    ],
     summary: "Lịch trình chuẩn hành hương & trải nghiệm: Sáng viếng Chùa Bà 300 năm linh thiêng -> Trưa & chiều lên Đỉnh 986m chiêm bái Tượng Phật Bà, Tượng Di Lặc & ăn Buffet Vân Sơn.",
     highlights: [
       "07:30 - 08:10: Đến chân núi & Đi cáp Chùa Hang lên Quần thể Chùa Bà (5 phút)",
@@ -1438,7 +1466,12 @@ const guideArticles: GuideArticle[] = [
     category: "attraction",
     title: "Show Nhạc Nước Di Lặc, Lễ Dâng Đăng & Tượng Phật Bà Tây Bổ Đà Sơn",
     badge: "Show diễn & Tâm linh đỉnh cao",
-    image: "/destinations/mia-nui-ba-den.jpg",
+    image: "/guide/tuong-phat-tay-bo-da-son.jpg",
+    images: [
+      { url: "/guide/tuong-phat-tay-bo-da-son.jpg", caption: "Tượng Phật Bà Tây Bổ Đà Sơn 72m" },
+      { url: "/guide/trien-lam-phat-giao-dinh-nui.jpg", caption: "Trung tâm Triển lãm Phật giáo giếng trời vòm kính" },
+      { url: "/guide/dinh-nui-ba-den-toan-canh.webp", caption: "Đại đĩa bối & quảng trường đỉnh núi" },
+    ],
     summary: "Chiêm bái Tượng Phật Bà Tây Bổ Đà Sơn (72m), thưởng thức Show Nhạc Nước Di Lặc từ 17h00 và Lễ Dâng Đèn lung linh tối Thứ 7.",
     highlights: [
       "Tượng Phật Bà Tây Bổ Đà Sơn (72m): Đúc bằng 170 tấn đồng đỏ, Kỷ lục Tượng Phật bằng đồng cao nhất Châu Á trên đỉnh núi",
@@ -1663,6 +1696,20 @@ function GuidePage({
                         <p key={i}>{p}</p>
                       ))}
                     </div>
+
+                    {article.images && article.images.length > 0 && (
+                      <div className="guide-gallery">
+                        <h4>Hình ảnh thực tế công trình & di tích:</h4>
+                        <div className="guide-gallery-grid">
+                          {article.images.map((imgItem, i) => (
+                            <div key={i} className="guide-gallery-item">
+                              <img src={imgItem.url} alt={imgItem.caption} loading="lazy" />
+                              <div className="guide-gallery-caption">{imgItem.caption}</div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
 
                     {article.tips && <div className="guide-tip-box">{article.tips}</div>}
 
