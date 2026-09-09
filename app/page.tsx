@@ -946,7 +946,7 @@ export default function HomePage() {
         <nav className="bottom-nav" aria-label="Điều hướng chính">
           <NavButton active={tab === "home"} icon={Home} label="Trang chủ" onClick={() => setTab("home")} />
           <NavButton active={tab === "guide"} icon={NotebookTabs} label="Cẩm nang" onClick={() => setTab("guide")} />
-          <button className="nav-main" onClick={openZalo} aria-label="Liên hệ Zalo hỗ trợ du lịch 0584 556 556"><MessageCircle size={20} /><span>Hỗ trợ</span></button>
+          <button className="nav-main" onClick={openZalo} aria-label="Liên hệ Zalo hỗ trợ du lịch 0584 556 556"><MessageCircle size={22} /></button>
           <NavButton active={tab === "explore"} icon={Compass} label="Khám phá" onClick={() => setTab("explore")} />
           <NavButton active={tab === "tour"} icon={Route} label="Tour" onClick={() => setTab("tour")} />
         </nav>
