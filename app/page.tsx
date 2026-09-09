@@ -7,6 +7,8 @@ import {
   CableCar,
   CarFront,
   Check,
+  CheckCircle2,
+  ChevronDown,
   ChevronRight,
   CircleHelp,
   Compass,
@@ -38,7 +40,7 @@ import {
 import { type PointerEvent as ReactPointerEvent, useEffect, useMemo, useRef, useState } from "react";
 import { addDays, lunarToSolar, toISODate, vietnamTodayISO } from "@/lib/vietnamese-lunar";
 
-type Tab = "home" | "explore" | "tour" | "events" | "food" | "rental" | "plan" | "saved";
+type Tab = "home" | "explore" | "tour" | "events" | "food" | "rental" | "plan" | "saved" | "guide";
 type InstallPrompt = Event & {
   prompt: () => Promise<void>;
   userChoice: Promise<{ outcome: "accepted" | "dismissed"; platform: string }>;
@@ -67,18 +69,19 @@ const destinations = [
 ];
 
 const services = [
+  { id: "guide", title: "Cẩm nang du lịch", note: "Bí kíp Sun World & Tra cứu du khách", image: "/destinations/mia-nui-ba-den.jpg", icon: NotebookTabs, color: "purple" },
   { id: "tour", title: "Tour Tây Ninh", note: "1 ngày · 2 ngày 1 đêm", image: "/tour.webp", icon: BusFront, color: "mint" },
   { id: "ticket", title: "Vé cáp treo", note: "Đặt online · Nhận vé nhanh", image: "/cable-car.jpg", icon: CableCar, color: "amber" },
   { id: "rental", title: "Thuê xe", note: "Kiểm tra lịch xe máy · VinFast VF3", image: "/vehicle.png", icon: CarFront, color: "blue" },
 ];
 
 const quickActions = [
+  { label: "Cẩm nang", icon: NotebookTabs, action: "guide" },
   { label: "Vé cáp treo", icon: Ticket, action: "service" },
   { label: "Tour", icon: Route, action: "service" },
   { label: "Thuê xe", icon: Bike, action: "service" },
   { label: "Ẩm thực", icon: Utensils, action: "food" },
   { label: "Đặc sản", icon: ShoppingBag, action: "food" },
-  { label: "Hỗ trợ", icon: CircleHelp, action: "support" },
 ];
 
 const heroSlides = [
@@ -624,7 +627,8 @@ export default function HomePage() {
                 <div className="quick-grid">
                   {quickActions.map(({ label, icon: Icon, action }) => (
                     <button key={label} onClick={() => {
-                      if (label === "Vé cáp treo") openTicket();
+                      if (label === "Cẩm nang" || action === "guide") setTab("guide");
+                      else if (label === "Vé cáp treo") openTicket();
                       else if (action === "support") openZalo();
                       else if (action === "food") setTab("food");
                       else if (action === "events") setTab("events");
@@ -652,7 +656,7 @@ export default function HomePage() {
                 <div className="section-title"><div><span>DỄ DÀNG ĐẶT TRƯỚC</span><h2>Dịch vụ du lịch</h2></div></div>
                 <div className="service-list">
                   {services.map(({ id, title, note, image, icon: Icon, color }) => (
-                    <button className="service-card" key={title} onClick={() => id === "rental" ? setTab("rental") : id === "ticket" ? openTicket() : setTab("tour")}>
+                    <button className="service-card" key={title} onClick={() => id === "guide" ? setTab("guide") : id === "rental" ? setTab("rental") : id === "ticket" ? openTicket() : setTab("tour")}>
                       <img src={image} alt="" />
                       <span className={`service-icon ${color}`}><Icon size={21} /></span>
                       <span className="service-copy"><b>{title}</b><small>{note}</small></span>
@@ -701,7 +705,7 @@ export default function HomePage() {
               <h2 className="subheading">Dịch vụ nổi bật</h2>
               <div className="service-list">
                 {services.map(({ id, title, note, image, icon: Icon, color }) => (
-                  <button className="service-card" key={title} onClick={() => id === "rental" ? setTab("rental") : id === "ticket" ? openTicket() : setTab("tour")}>
+                  <button className="service-card" key={title} onClick={() => id === "guide" ? setTab("guide") : id === "rental" ? setTab("rental") : id === "ticket" ? openTicket() : setTab("tour")}>
                     <img src={image} alt="" /><span className={`service-icon ${color}`}><Icon size={21} /></span>
                     <span className="service-copy"><b>{title}</b><small>{note}</small></span><ChevronRight size={20} />
                   </button>
@@ -927,6 +931,16 @@ export default function HomePage() {
               </div>
             </section>
           )}
+
+          {tab === "guide" && (
+            <GuidePage
+              onMap={openMap}
+              onTicket={openTicket}
+              onZalo={openZalo}
+              onTour={() => setTab("tour")}
+              onRental={() => setTab("rental")}
+            />
+          )}
         </div>
 
         <aside
@@ -944,8 +958,8 @@ export default function HomePage() {
               </div>
               <p>Chọn nhu cầu, tôi sẽ đưa bạn đến đúng chỗ ngay.</p>
               <div className="assistant-actions">
+                <button onClick={() => { setTab("guide"); setAssistantOpen(false); }}><NotebookTabs size={18} /><span><b>Cẩm nang</b><small>Bí kíp du lịch</small></span></button>
                 <button onClick={() => { setTab("tour"); setAssistantOpen(false); }}><Route size={18} /><span><b>Xem tour</b><small>Lịch trình gợi ý</small></span></button>
-                <button onClick={() => { setTab("food"); setAssistantOpen(false); }}><ShoppingBag size={18} /><span><b>Mua đặc sản</b><small>Đặt qua Zalo OA</small></span></button>
                 <button onClick={() => { setTab("rental"); setAssistantOpen(false); }}><Bike size={18} /><span><b>Thuê xe</b><small>Kiểm tra lịch xe</small></span></button>
                 <button onClick={() => { setSearchOpen(true); setAssistantOpen(false); }}><Search size={18} /><span><b>Tìm địa điểm</b><small>Tra cứu nhanh</small></span></button>
               </div>
@@ -975,10 +989,10 @@ export default function HomePage() {
 
         <nav className="bottom-nav" aria-label="Điều hướng chính">
           <NavButton active={tab === "home"} icon={Home} label="Trang chủ" onClick={() => setTab("home")} />
-          <NavButton active={tab === "explore"} icon={Compass} label="Khám phá" onClick={() => setTab("explore")} />
+          <NavButton active={tab === "guide"} icon={NotebookTabs} label="Cẩm nang" onClick={() => setTab("guide")} />
           <button className="nav-main" onClick={() => setAssistantOpen(true)} aria-label="Mở trợ lý đặt dịch vụ"><MessageCircle size={23} /><span>Đặt ngay</span></button>
+          <NavButton active={tab === "explore"} icon={Compass} label="Khám phá" onClick={() => setTab("explore")} />
           <NavButton active={tab === "tour"} icon={Route} label="Tour" onClick={() => setTab("tour")} />
-          <NavButton active={tab === "food"} icon={ShoppingBag} label="Đặc sản" onClick={() => setTab("food")} />
         </nav>
 
         {searchOpen && (
@@ -1224,5 +1238,538 @@ function EventCard({ event, onMap, status }: { event: EventItem; onMap: (q: stri
         </div>
       </div>
     </article>
+  );
+}
+
+type GuideCategory = "all" | "cable" | "attraction" | "transport" | "food" | "tips" | "itinerary";
+
+interface GuideArticle {
+  id: string;
+  category: GuideCategory;
+  title: string;
+  badge: string;
+  image: string;
+  summary: string;
+  highlights: string[];
+  content: string[];
+  tips?: string;
+  mapQuery?: string;
+  actionText?: string;
+  actionType?: "map" | "ticket" | "zalo" | "tour" | "rental";
+}
+
+interface GuideFaq {
+  id: string;
+  question: string;
+  answer: string;
+  category: GuideCategory;
+}
+
+const guideCategories: { id: GuideCategory; label: string }[] = [
+  { id: "all", label: "Tất cả" },
+  { id: "cable", label: "Cáp treo & Vé" },
+  { id: "attraction", label: "Điểm đến" },
+  { id: "transport", label: "Di chuyển" },
+  { id: "food", label: "Ẩm thực" },
+  { id: "tips", label: "Mẹo & Lưu ý" },
+  { id: "itinerary", label: "Lịch trình" },
+];
+
+const guideArticles: GuideArticle[] = [
+  {
+    id: "tuyen-cap-van-son",
+    category: "cable",
+    title: "Tuyến cáp Vân Sơn – Hành trình chinh phục Nóc nhà Nam Bộ 986m",
+    badge: "Sun World Ba Den",
+    image: "/cable-car.jpg",
+    summary: "Tuyến cáp treo đưa du khách từ chân núi lên thẳng đỉnh Núi Bà Đen, chiêm bái Tượng Phật Bà Tây Bổ Đà Sơn và Tượng Bồ Tát Di Lặc sa thạch.",
+    highlights: [
+      "Chiêm bái Tượng Phật Bà Bằng Đồng cao nhất Châu Á (72m)",
+      "Đại tượng Phật Bồ Tát Di Lặc sa thạch lớn bậc nhất thế giới (36m)",
+      "Trung tâm triển lãm Phật giáo công nghệ 3D Mapping & Hologram",
+      "Bách hoa quán & Cảnh quan mây ngàn đỉnh núi"
+    ],
+    content: [
+      "Tuyến cáp Vân Sơn sở hữu chiều dài 1.847m, rút ngắn thời gian di chuyển lên đỉnh Núi Bà Đen chỉ còn khoảng 8 phút.",
+      "Giá vé khứ hồi tham khảo 2026: 450.000 VNĐ (Người lớn), 350.000 VNĐ (Trẻ em 1m-1m4). Miễn phí cho trẻ em dưới 1m.",
+      "Du khách nên kết hợp mua Vé Combo Cáp treo + Buffet Vân Sơn để tiết kiệm chi phí và thưởng thức hơn 80 món ăn đặc sắc tại đỉnh núi."
+    ],
+    tips: "💡 Mẹo: Du khách nên đặt vé trước trực tuyến để có mã QR code, quét mã vào thẳng cổng cáp treo mà không cần xếp hàng mua vé giấy.",
+    mapQuery: "Đỉnh Núi Bà Đen, Tây Ninh",
+    actionText: "Đặt vé cáp treo online",
+    actionType: "ticket"
+  },
+  {
+    id: "tuyen-cap-chua-hang",
+    category: "cable",
+    title: "Tuyến cáp Chùa Hang – Hành hương Quần thể Chùa Bà hơn 300 năm",
+    badge: "Tâm linh linh thiêng",
+    image: "/destinations/chua-go-ken-upload.webp",
+    summary: "Tuyến cáp đưa du khách lên khu vực Chùa Bà (Linh Sơn Tiên Thạch Tự), trung tâm hành hương tâm linh lớn bậc nhất miền Nam.",
+    highlights: [
+      "Chiêm bái Linh Sơn Tiên Thạch Tự (Chùa Bà) hơn 300 năm",
+      "Khám phá Hang Cậu, Hang Gió, Chùa Hang linh thiêng",
+      "Ngắm toàn cảnh thung lũng núi Bà Đen từ lưng chừng núi"
+    ],
+    content: [
+      "Tuyến cáp Chùa Hang có chiều dài 1.246m, đưa du khách cập bến Ga Chùa Hang trang nghiêm chỉ sau 5 phút.",
+      "Giá vé khứ hồi tham khảo: 250.000 VNĐ (Người lớn), 150.000 VNĐ (Trẻ em 1m-1m4).",
+      "Du khách có thể lựa chọn Tuyến cáp Tâm An để di chuyển nối tiếp từ Chùa Bà lên thẳng đỉnh núi nếu muốn tham quan cả hai phân khu."
+    ],
+    tips: "💡 Lưu ý: Khi đến chiêm bái Chùa Bà, du khách lưu ý ăn mặc lịch sự, trang nghiêm, kín đáo.",
+    mapQuery: "Linh Sơn Tiên Thạch Tự, Tây Ninh",
+    actionText: "Chỉ đường Chùa Bà",
+    actionType: "map"
+  },
+  {
+    id: "huong-dan-di-chuyen",
+    category: "transport",
+    title: "Cách di chuyển từ TP.HCM & các tỉnh đến Tây Ninh tiện lợi nhất",
+    badge: "Cẩm nang di chuyển",
+    image: "/destinations/trang-ta-not-upload.png",
+    summary: "Tổng hợp các phương tiện di chuyển nhanh chóng: Xe khách, Limousine, xe máy và ô tô cá nhân đến Tây Ninh.",
+    highlights: [
+      "Xe khách/Limousine: Chạy thẳng từ TP.HCM đến chân núi Bà Đen (1.5 - 2 tiếng)",
+      "Xe cá nhân (Ô tô/Xe máy): Di chuyển lộ trình QL22 -> Cầu vượt Gò Dầu -> Đ. Bời Lời",
+      "Di chuyển tại Tây Ninh: Thuê xe máy dạo phố hoặc VinFast VF3 có điều hòa mát mẻ"
+    ],
+    content: [
+      "Khoảng cách từ trung tâm TP.HCM đến Núi Bà Đen khoảng 95km. Xe khách và limousine đưa đón tận nơi chạy liên tục các chuyến từ 4h00 sáng.",
+      "Nếu đi bằng xe máy hoặc ô tô cá nhân, du khách chạy theo Quốc lộ 22 đến ngã ba Trảng Bàng, rẽ về hướng TP. Tây Ninh và theo đường Bời Lời đi thẳng đến khu du lịch Sun World.",
+      "Để chủ động tham quan các điểm phụ như Tòa Thánh, Hồ Dầu Tiếng, Tháp Bình Thạnh, du khách có thể đặt thuê xe máy hoặc xe VinFast VF3 ngay trên ứng dụng."
+    ],
+    tips: "💡 Gợi ý: Nếu đi cùng gia đình hoặc nhóm bạn, thuê xe VinFast VF3 là lựa chọn lý tưởng vừa mát mẻ vừa dễ di chuyển trong nội thành.",
+    actionText: "Kiểm tra lịch thuê xe",
+    actionType: "rental"
+  },
+  {
+    id: "checkin-dinh-nui",
+    category: "attraction",
+    title: "Top 5 điểm check-in không thể bỏ lỡ tại Sun World Ba Den Mountain",
+    badge: "Check-in & Trải nghiệm",
+    image: "/destinations/mia-nui-ba-den.jpg",
+    summary: "Khám phá các công trình biểu tượng tâm linh và kiến trúc đỉnh cao trên nóc nhà Nam Bộ.",
+    highlights: [
+      "Tượng Phật Bà Tây Bổ Đà Sơn đúc bằng 170 tấn đồng đỏ",
+      "Tượng Bồ Tát Di Lặc sa thạch với nụ cười hoan hỉ trên đại đĩa bối",
+      "Màn chiếu phim Phật giáo 3D Mapping tại tâm đỉnh núi",
+      "Cột mốc tọa độ 986m & Trảng hoa ngàn sắc nở quanh năm",
+      "Lễ dâng đèn hoa đăng lung linh vào tối Thứ 7 hàng tuần"
+    ],
+    content: [
+      "Đỉnh Núi Bà Đen không chỉ là di tích tâm linh linh thiêng mà còn là thiên đường thưởng ngoạn cảnh sắc thiên nhiên.",
+      "Tại trung tâm triển lãm Phật giáo dưới chân tượng Phật Bà, du khách được khám phá những bí ẩn vũ trụ và di sản Phật giáo thế giới qua công nghệ Hologram và 3D Mapping hiện đại.",
+      "Vào lúc chiều muộn và buổi tối, đỉnh núi khoác lên mình không gian lung linh huyền ảo với hàng ngàn ngọn đèn hoa đăng tỏa sáng."
+    ],
+    tips: "💡 Thời gian: Nên có mặt trên đỉnh núi trước 17h00 để ngắm trọn vẹn khoảnh khắc hoàng hôn tuyệt đẹp và tham gia lễ dâng đèn hoa đăng.",
+    mapQuery: "Núi Bà Đen, Tây Ninh",
+    actionText: "Xem trên Google Maps",
+    actionType: "map"
+  },
+  {
+    id: "am-thuc-buffet-van-son",
+    category: "food",
+    title: "Thưởng thức ẩm thực Buffet Vân Sơn & Đặc sản Tây Ninh đỉnh núi",
+    badge: "Ẩm thực phong phú",
+    image: "/destinations/am-thuc.jpg",
+    summary: "Trải nghiệm nhà hàng Buffet Vân Sơn với hơn 80 món ăn mặn/chay đặc sắc cùng ẩm thực Tây Ninh truyền thống.",
+    highlights: [
+      "Hơn 80 món ăn đa dạng từ ẩm thực Á - Âu đến đặc sản 3 miền",
+      "Khu ẩm thực Chay phong phú chuẩn phong vị hành hương",
+      "Không gian nhà hàng sang trọng kính tràn viễn cảnh ngắm mây núi",
+      "Đặc sản mang về: Mãng cầu Bà Đen, Muối ớt Tây Ninh, Bánh tráng phơi sương"
+    ],
+    content: [
+      "Nhà hàng Buffet Vân Sơn trên đỉnh núi là điểm dừng chân ẩm thực lý tưởng sau hành trình chiêm bái.",
+      "Thực đơn buffet được thay đổi theo mùa, chuẩn bị công phu từ nguồn nguyên liệu tươi ngon nhất.",
+      "Ngoài ra du khách còn có thể thưởng thức các món ăn vặt nổi tiếng như Bánh canh Trảng Bàng, Bò tơ Tây Ninh, Ốc núi và Mãng cầu ngọt thanh tại thị xã Tây Ninh."
+    ],
+    tips: "💡 Tiết kiệm: Đặt Combo Vé Cáp + Buffet Vân Sơn giúp bạn tiết kiệm đến 15% so với mua lẻ từng dịch vụ.",
+    actionText: "Xem chi tiết Tour",
+    actionType: "tour"
+  },
+  {
+    id: "meo-san-may-trang-phuc",
+    category: "tips",
+    title: "Bí kíp săn mây đỉnh núi & Trang phục chuẩn mực khi du lịch Tây Ninh",
+    badge: "Kinh nghiệm du khách",
+    image: "/events/xuan-nui-ba-den.jpg",
+    summary: "Thời điểm vàng để bắt trọn hiện tượng biển mây bồng bềnh và hướng dẫn chuẩn bị trang phục phù hợp.",
+    highlights: [
+      "Săn mây: Từ 06h00 – 08h00 sáng các ngày mùa khô hoặc ngay sau cơn mưa rào",
+      "Nhiệt độ đỉnh núi: Luôn thấp hơn chân núi từ 8 – 10°C, không khí mát lạnh quanh năm",
+      "Trang phục: Kín đáo trang nghiêm khi đi chùa/chiêm bái; áo khoác mỏng, nón, giày thể thao mềm",
+      "Văn hóa: Giữ yên tĩnh tại khu vực chiêm bái, giữ gìn vệ sinh môi trường cảnh quan"
+    ],
+    content: [
+      "Núi Bà Đen nổi tiếng với các hiện tượng mây hiếm gặp như mây đĩa bay (mây nón), mây phượng hoàng và biển mây trắng xóa phủ tràn đỉnh núi.",
+      "Để săn mây thành công, bạn nên đi chuyến cáp treo sớm nhất lúc 5h30 - 6h00 sáng.",
+      "Nên chuẩn bị sẵn giày thể thao ôm chân để thoải mái di chuyển qua các bậc thang chiêm bái và mang theo áo khoác nhẹ vì đỉnh núi gió nhiều và se lạnh về chiều tối."
+    ],
+    tips: "💡 Lưu ý quan trọng: Chuẩn bị sạc dự phòng vì cảnh đẹp đỉnh núi sẽ khiến bạn chụp ảnh liên tục đấy!"
+  },
+  {
+    id: "lich-trinh-goi-y-1-2-ngay",
+    category: "itinerary",
+    title: "Lịch trình gợi ý: Khám phá trọn vẹn Tây Ninh 1 ngày & 2 ngày 1 đêm",
+    badge: "Lịch trình tối ưu",
+    image: "/tour.webp",
+    summary: "Thiết kế hành trình phù hợp cho cả đi trong ngày và nghỉ đêm khám phá Tây Ninh.",
+    highlights: [
+      "Lịch trình 1 ngày: Chinh phục Đỉnh Núi Bà Đen -> Viếng Chùa Bà -> Tòa Thánh Tây Ninh -> Thưởng thức Bánh canh Trảng Bàng",
+      "Lịch trình 2 ngày 1 đêm: Ngày 1 (Nội thành, Tòa Thánh, Chùa Gò Kén, chợ đêm) - Ngày 2 (Núi Bà Đen, Hồ Dầu Tiếng, Tháp Bình Thạnh)",
+      "Kết hợp ngắm hoàng hôn Hồ Dầu Tiếng & săn mây đỉnh núi Bà Đen"
+    ],
+    content: [
+      "Dù bạn chỉ có 1 ngày rảnh rỗi hay dành trọn vẹn cuối tuần 2 ngày 1 đêm, Tây Ninh luôn mang đến những trải nghiệm phong phú.",
+      "Lịch trình gợi ý trên ứng dụng giúp bạn sắp xếp thời gian di chuyển hợp lý giữa các điểm, không bị gấp gáp.",
+      "Bạn cũng có thể xem chi tiết tab Tour để tham khảo các mốc thời gian cụ thể."
+    ],
+    tips: "💡 Đăng ký tư vấn: Bạn có thể nhấn nút Nhờ tư vấn Zalo để được gợi ý lịch trình riêng theo nhu cầu gia đình.",
+    actionText: "Xem chi tiết Tour",
+    actionType: "tour"
+  },
+  {
+    id: "le-hoi-van-hoa-nui-ba-den",
+    category: "attraction",
+    title: "Lễ hội & Văn hóa truyền thống đặc sắc tại Núi Bà Đen",
+    badge: "Lễ hội tâm linh",
+    image: "/events/via-ba-linh-son.jpg",
+    summary: "Khám phá không gian lễ hội tâm linh lớn bậc nhất miền Nam: Hội xuân Núi Bà, Lễ vía Bà Linh Sơn Thánh Mẫu, Lễ vía Di Lặc và Lễ dâng đèn.",
+    highlights: [
+      "Hội Xuân Núi Bà Đen (Mùng 4 - hết tháng Giêng): Mở đầu năm mới với hàng triệu lượt khách hành hương cầu an, chương trình nghệ thuật dân gian & bắn pháo hoa",
+      "Lễ Vía Bà Linh Sơn Thánh Mẫu (Mùng 4-6 tháng 5 Âm lịch): Di sản văn hóa phi vật thể quốc gia với các nghi thức Trình thập cúng, Lễ tắm Bà, múa lân sư rồng",
+      "Lễ Vía Đức Phật Di Lặc (Mùng 1 tháng Giêng): Cầu bình an, hỷ lạc đầu năm tại đại tượng Di Lặc sa thạch",
+      "Nghi thức Dâng đèn hoa đăng Thứ 7 hàng tuần: Thắp sáng hàng ngàn ngọn hoa đăng lung linh cầu nguyện quốc thái dân an"
+    ],
+    content: [
+      "Núi Bà Đen được mệnh danh là trung tâm hành hương tâm linh bậc nhất Nam Bộ, gắn liền với huyền thoại Linh Sơn Thánh Mẫu.",
+      "Hàng năm, Khu du lịch Sun World diễn ra nhiều lễ hội quy mô lớn kết hợp nghi thức tôn giáo trang nghiêm cùng các hoạt động văn hóa nghệ thuật hiện đại.",
+      "Du khách đến Núi Bà vào các dịp lễ hội không chỉ để cầu nguyện bình an, tài lộc mà còn được hòa mình vào không gian di sản văn hóa đặc sắc của vùng đất Thánh."
+    ],
+    tips: "💡 Khuyên dùng: Nếu tham gia các ngày chính lễ, du khách nên đi cáp treo từ sớm (5h30 sáng) để có trải nghiệm thoải mái nhất.",
+    actionText: "Xem Lịch Lễ hội",
+    actionType: "map"
+  },
+  {
+    id: "huong-dan-1-ngay-nui-ba-den",
+    category: "itinerary",
+    title: "Hướng dẫn trọn gói: Lịch trình 1 ngày (Chùa Bà trước -> Đỉnh Núi Bà Đen sau)",
+    badge: "Lịch trình truyền thống",
+    image: "/cable-car.jpg",
+    summary: "Lịch trình chuẩn hành hương & trải nghiệm: Sáng viếng Chùa Bà 300 năm linh thiêng -> Trưa & chiều lên Đỉnh 986m chiêm bái Tượng Phật Bà, Tượng Di Lặc & ăn Buffet Vân Sơn.",
+    highlights: [
+      "07:30 - 08:10: Đến chân núi & Đi cáp Chùa Hang lên Quần thể Chùa Bà (5 phút)",
+      "08:10 - 10:30: Viếng Linh Sơn Tiên Thạch Tự (Chùa Bà hơn 300 năm), dâng hương cầu an, viếng Hang Cậu & Chùa Hang",
+      "10:30 - 10:45: Đi tuyến cáp Tâm An từ Chùa Bà nối thẳng lên Đỉnh Núi Bà Đen 986m",
+      "10:45 - 11:45: Chiêm bái Tượng Phật Bà Tây Bổ Đà Sơn (72m) & Xem triển lãm Phật giáo 3D Mapping",
+      "11:45 - 13:15: Thưởng thức Buffet Vân Sơn đỉnh núi (>80 món mặn/chay phong phú)",
+      "13:15 - 15:30: Chiêm bái Đại tượng Phật Di Lặc sa thạch (36m), check-in mốc 986m, dạo Vườn Bách Hoa",
+      "15:30 - 17:00: Ngắm mây núi / hoàng hôn, đi cáp Vân Sơn từ đỉnh thẳng xuống chân núi (8 phút). (Tối Thứ 7 ở lại dâng đèn hoa đăng)"
+    ],
+    content: [
+      "Lịch trình đi Chùa Bà trước - Đỉnh núi sau là lựa chọn hành hương truyền thống được đông đảo du khách yêu thích. Buổi sáng sớm không khí Chùa Bà rất tĩnh mịch, mát mẻ và trang nghiêm để dâng hương cầu bình an.",
+      "Điểm đặc biệt là du khách sử dụng Tuyến cáp Tâm An nối thẳng từ Chùa Bà lên Đỉnh Núi mà không cần phải đi xuống lại chân núi rồi mới đi lên.",
+      "Du khách nên mua Gói Combo Cáp treo + Buffet Vân Sơn để vừa tối ưu chi phí vừa quét mã QR đi thẳng cổng nhanh chóng."
+    ],
+    tips: "💡 Mẹo di chuyển: Đi cáp Chùa Hang (Lên Chùa) -> Cáp Tâm An (Nối lên Đỉnh) -> Cáp Vân Sơn (Trực tiếp xuống chân núi) là tuyến di chuyển 1 chiều cực kỳ mượt mà!",
+    mapQuery: "Núi Bà Đen, Tây Ninh",
+    actionText: "Đặt vé cáp treo QR",
+    actionType: "ticket"
+  },
+  {
+    id: "show-nhac-nuoc-dang-den-tay-bo-da-son",
+    category: "attraction",
+    title: "Show Nhạc Nước Di Lặc, Lễ Dâng Đăng & Tượng Phật Bà Tây Bổ Đà Sơn",
+    badge: "Show diễn & Tâm linh đỉnh cao",
+    image: "/destinations/mia-nui-ba-den.jpg",
+    summary: "Chiêm bái Tượng Phật Bà Tây Bổ Đà Sơn (72m), thưởng thức Show Nhạc Nước Di Lặc từ 17h00 và Lễ Dâng Đèn lung linh tối Thứ 7.",
+    highlights: [
+      "Tượng Phật Bà Tây Bổ Đà Sơn (72m): Đúc bằng 170 tấn đồng đỏ, Kỷ lục Tượng Phật bằng đồng cao nhất Châu Á trên đỉnh núi",
+      "Show Nhạc Nước Tượng Di Lặc (Từ 17h00 hàng ngày): Trình diễn ánh sáng laser, âm thanh & công nghệ vòi phun 3D hiện đại quanh tượng Di Lặc sa thạch (36m) và thác nước 35m",
+      "Nghi thức Dâng Đèn Hoa Đăng (Tối Thứ 7 hàng tuần): Diễn ra tại quảng trường dưới chân Tượng Phật Bà, du khách tự tay viết lời nguyện ước & thả đèn lung linh",
+      "Khung giờ show nhạc nước: Mỗi suất diễn kéo dài 5 phút, giãn cách 15 phút giữa các suất"
+    ],
+    content: [
+      "Đỉnh Núi Bà Đen hội tụ những kiệt tác tâm linh kỳ vĩ cùng các show trình diễn nghệ thuật đẳng cấp thế giới.",
+      "Tượng Phật Bà Tây Bổ Đà Sơn đứng uy nghiêm giữa biển mây ngàn là biểu tượng tâm linh cầu bình an và may mắn.",
+      "Vào cuối chiều từ 17h00, du khách được thưởng thức Show Nhạc Nước bên tượng Phật Di Lặc với sự kết hợp ảo diệu giữa ánh sáng laser, nước và âm nhạc.",
+      "Đặc biệt vào mỗi tối Thứ 7, hàng ngàn ngọn hoa đăng tỏa sáng dưới chân đại tượng Phật Bà tạo nên không gian chữa lành thiêng liêng."
+    ],
+    tips: "💡 Gợi ý trải nghiệm cuối tuần: Nên chọn chuyến đi chiều (15h30 lên đỉnh), chiêm bái Tượng Phật Bà -> xem Show Nhạc Nước 17h00 -> tham gia Lễ Dâng Đăng tối Thứ 7!",
+    mapQuery: "Đỉnh Núi Bà Đen, Tây Ninh",
+    actionText: "Xem trên Google Maps",
+    actionType: "map"
+  }
+];
+
+const guideFaqs: GuideFaq[] = [
+  {
+    id: "faq-ve-tre-em",
+    category: "cable",
+    question: "Vé cáp treo dành cho trẻ em tính theo độ cao hay tuổi?",
+    answer: "Vé cáp treo Sun World Ba Den Mountain được tính theo độ cao: Trẻ em dưới 1m00 được miễn phí hoàn toàn. Trẻ em từ 1m00 đến 1m40 áp dụng giá vé trẻ em. Trẻ em trên 1m40 tính giá vé người lớn."
+  },
+  {
+    id: "faq-ve-online",
+    category: "cable",
+    question: "Mua vé cáp treo online có lợi ích gì và sử dụng thế nào?",
+    answer: "Khi đặt vé online, bạn sẽ nhận được mã QR code trên điện thoại. Khi đến khu du lịch, bạn đi thẳng đến cổng soát vé cáp treo và quét mã QR để vào, không cần xếp hàng chờ đợi mua vé giấy tại quầy."
+  },
+  {
+    id: "faq-gio-mo-cua",
+    category: "cable",
+    question: "Cáp treo Sun World Núi Bà Đen hoạt động đến mấy giờ?",
+    answer: "Vào ngày thường (Thứ 2 - Thứ 6), cáp treo hoạt động từ 06h00 đến 20h00. Vào cuối tuần (Thứ 7 & Chủ Nhật) và các ngày Lễ/Tết, tuyến cáp hoạt động từ 05h30 đến 21h00."
+  },
+  {
+    id: "faq-do-an-len-nui",
+    category: "tips",
+    question: "Có được phép mang đồ ăn, nước uống lên đỉnh núi không?",
+    answer: "Du khách được mang theo nước uống cá nhân và đồ ăn nhẹ. Tuy nhiên hãy giữ gìn vệ sinh chung, bỏ rác đúng nơi quy định. Trên đỉnh núi có sẵn nhà hàng Buffet Vân Sơn và các kiosk ẩm thực phục vụ du khách."
+  },
+  {
+    id: "faq-trang-phuc-dieu-kien",
+    category: "tips",
+    question: "Nên mặc trang phục gì khi tham quan chiêm bái Núi Bà Đen?",
+    answer: "Khi vào khu vực Chùa Bà và chiêm bái các công trình Phật giáo, du khách nên mặc trang phục lịch sự, kín đáo (áo có tay, quần/váy qua đầu gối). Nên đi giày thể thao mềm và mang theo áo khoác nhẹ vì đỉnh núi lộng gió và mát lạnh."
+  },
+  {
+    id: "faq-dang-den-hoa-dang",
+    category: "attraction",
+    question: "Lễ dâng đèn hoa đăng trên đỉnh núi diễn ra khi nào?",
+    answer: "Lễ dâng đèn hoa đăng thiêng liêng diễn ra định kỳ vào buổi tối Thứ 7 hàng tuần và các ngày lễ lớn trong năm trên đỉnh Núi Bà Đen. Du khách có thể tự tay viết lời nguyện ước và thả hoa đăng tại quảng trường đỉnh núi."
+  }
+];
+
+function GuidePage({
+  onMap,
+  onTicket,
+  onZalo,
+  onTour,
+  onRental,
+}: {
+  onMap: (q: string) => void;
+  onTicket: () => void;
+  onZalo: () => void;
+  onTour: () => void;
+  onRental: () => void;
+}) {
+  const [selectedCategory, setSelectedCategory] = useState<GuideCategory>("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [openArticleId, setOpenArticleId] = useState<string | null>(null);
+  const [openFaqId, setOpenFaqId] = useState<string | null>("faq-ve-online");
+
+  const filteredArticles = useMemo(() => {
+    return guideArticles.filter((article) => {
+      const matchCat = selectedCategory === "all" || article.category === selectedCategory;
+      const q = searchQuery.trim().toLowerCase();
+      if (!q) return matchCat;
+      const text = `${article.title} ${article.summary} ${article.badge} ${article.highlights.join(" ")}`.toLowerCase();
+      return matchCat && text.includes(q);
+    });
+  }, [selectedCategory, searchQuery]);
+
+  const filteredFaqs = useMemo(() => {
+    return guideFaqs.filter((faq) => {
+      const matchCat = selectedCategory === "all" || faq.category === selectedCategory;
+      const q = searchQuery.trim().toLowerCase();
+      if (!q) return matchCat;
+      const text = `${faq.question} ${faq.answer}`.toLowerCase();
+      return matchCat && text.includes(q);
+    });
+  }, [selectedCategory, searchQuery]);
+
+  const handleAction = (article: GuideArticle) => {
+    if (article.actionType === "ticket") onTicket();
+    else if (article.actionType === "rental") onRental();
+    else if (article.actionType === "tour") onTour();
+    else if (article.actionType === "zalo") onZalo();
+    else if (article.mapQuery) onMap(article.mapQuery);
+    else onMap("Núi Bà Đen, Tây Ninh");
+  };
+
+  return (
+    <section className="page-section guide-page">
+      <span className="page-kicker">CẨM NANG TRA CỨU DU KHÁCH</span>
+      <h1>Cẩm nang du lịch Tây Ninh</h1>
+
+      <div className="guide-hero-card">
+        <img src="/cable-car.jpg" alt="Cẩm nang du lịch Sun World Ba Den Mountain" />
+        <div className="guide-hero-overlay" />
+        <div className="guide-hero-content">
+          <span className="eyebrow"><Sparkles size={14} /> Sun World Ba Den Mountain</span>
+          <h2>Trọn bộ bí kíp khám phá Nóc nhà Nam Bộ</h2>
+          <p>Tra cứu giá vé cáp treo, thời điểm săn mây, địa điểm chiêm bái & mẹo du lịch Tây Ninh từ A-Z</p>
+          <div className="guide-hero-buttons">
+            <button className="primary-btn" onClick={onTicket}>
+              <Ticket size={16} /> Mua vé cáp treo QR
+            </button>
+            <button className="secondary-btn" onClick={onZalo}>
+              <MessageCircle size={16} /> Hỏi hỗ trợ Zalo
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="guide-price-widget">
+        <div className="price-widget-head">
+          <CableCar size={20} />
+          <div>
+            <b>Bảng giá vé cáp treo Sun World 2026 (Tham khảo)</b>
+            <small>Đặt vé online quét mã QR đi thẳng cổng</small>
+          </div>
+        </div>
+        <div className="price-grid">
+          <div className="price-card">
+            <span className="price-badge">Tuyến Vân Sơn (Đỉnh)</span>
+            <div className="price-row">
+              <span>Người lớn:</span> <b>450.000đ</b>
+            </div>
+            <div className="price-row">
+              <span>Trẻ em (1m-1m4):</span> <b>350.000đ</b>
+            </div>
+            <small>Rút ngắn 8 phút lên Đỉnh 986m</small>
+          </div>
+          <div className="price-card">
+            <span className="price-badge alt">Tuyến Chùa Hang (Chùa Bà)</span>
+            <div className="price-row">
+              <span>Người lớn:</span> <b>250.000đ</b>
+            </div>
+            <div className="price-row">
+              <span>Trẻ em (1m-1m4):</span> <b>150.000đ</b>
+            </div>
+            <small>5 phút đến Linh Sơn Tiên Thạch Tự</small>
+          </div>
+        </div>
+        <p className="price-note">✨ Trẻ em dưới 1m00 được miễn phí hoàn toàn. Khuyên dùng gói Combo Cáp treo + Buffet Vân Sơn để tiết kiệm chi phí nhất.</p>
+      </div>
+
+      <div className="guide-search-wrapper">
+        <Search size={18} className="search-icon" />
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Tra cứu từ khóa: cáp treo, vé combo, buffet, trang phục, săn mây..."
+          className="guide-search-input"
+        />
+        {searchQuery && (
+          <button className="clear-btn" onClick={() => setSearchQuery("")} aria-label="Xóa từ khóa">
+            <X size={16} />
+          </button>
+        )}
+      </div>
+
+      <div className="filter-row">
+        {guideCategories.map((cat) => (
+          <button
+            key={cat.id}
+            className={selectedCategory === cat.id ? "active" : ""}
+            onClick={() => setSelectedCategory(cat.id)}
+          >
+            {cat.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="guide-articles-list">
+        {filteredArticles.length > 0 ? (
+          filteredArticles.map((article) => {
+            const isOpen = openArticleId === article.id;
+            return (
+              <article key={article.id} className={`guide-card ${isOpen ? "expanded" : ""}`}>
+                <div className="guide-card-header" onClick={() => setOpenArticleId(isOpen ? null : article.id)}>
+                  <img src={article.image} alt={article.title} />
+                  <div className="guide-card-main">
+                    <span className="guide-card-badge">{article.badge}</span>
+                    <h3>{article.title}</h3>
+                    <p className="guide-card-summary">{article.summary}</p>
+                  </div>
+                  <button className="toggle-btn" aria-label="Đóng/Mở chi tiết bài viết">
+                    <ChevronDown size={20} className={isOpen ? "rotate-180" : ""} />
+                  </button>
+                </div>
+
+                {isOpen && (
+                  <div className="guide-card-body">
+                    <h4>Điểm nổi bật:</h4>
+                    <ul className="highlights-list">
+                      {article.highlights.map((h, i) => (
+                        <li key={i}>
+                          <CheckCircle2 size={15} /> <span>{h}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <div className="guide-paragraphs">
+                      {article.content.map((p, i) => (
+                        <p key={i}>{p}</p>
+                      ))}
+                    </div>
+
+                    {article.tips && <div className="guide-tip-box">{article.tips}</div>}
+
+                    <div className="guide-card-footer">
+                      <button className="action-btn" onClick={() => handleAction(article)}>
+                        <Navigation size={15} /> {article.actionText || "Xem trên bản đồ"}
+                      </button>
+                      <button className="share-btn" onClick={onZalo}>
+                        <MessageCircle size={15} /> Tư vấn qua Zalo
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </article>
+            );
+          })
+        ) : (
+          <div className="empty-state">
+            <span><NotebookTabs size={28} /></span>
+            <h2>Không tìm thấy thông tin</h2>
+            <p>Thử tìm kiếm với từ khóa khác như "cáp treo", "buffet", "vé" hoặc "săn mây".</p>
+            <button onClick={() => { setSearchQuery(""); setSelectedCategory("all"); }}>Xem tất cả cẩm nang</button>
+          </div>
+        )}
+      </div>
+
+      <div className="guide-faq-section">
+        <div className="section-title">
+          <div>
+            <span>GIẢI ĐÁP THẮC MẮC</span>
+            <h2>Câu hỏi thường gặp (FAQ)</h2>
+          </div>
+        </div>
+
+        <div className="faq-list">
+          {filteredFaqs.map((faq) => {
+            const isOpen = openFaqId === faq.id;
+            return (
+              <div key={faq.id} className={`faq-item ${isOpen ? "open" : ""}`}>
+                <button
+                  className="faq-question"
+                  onClick={() => setOpenFaqId(isOpen ? null : faq.id)}
+                  aria-expanded={isOpen}
+                >
+                  <CircleHelp size={18} />
+                  <span>{faq.question}</span>
+                  <ChevronDown size={18} className={isOpen ? "rotate-180" : ""} />
+                </button>
+                {isOpen && <div className="faq-answer">{faq.answer}</div>}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="guide-footer-support">
+        <Sparkles size={24} />
+        <div>
+          <b>Bạn muốn lên lịch trình riêng cho gia đình?</b>
+          <small>Liên hệ hotline/Zalo 0584 556 556 để được hỗ trợ từ A-Z</small>
+        </div>
+        <button onClick={onZalo}>Nhắn Zalo ngay</button>
+      </div>
+    </section>
   );
 }
